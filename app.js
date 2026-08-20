@@ -345,7 +345,7 @@ const editorialArticles = [
   }
 ];
 
-const cards = [
+const cards = uniqueCardsByImage([
   ...externalPortfolioPins,
   ...externalPortfolioCards,
   ...editorialArticles,
@@ -758,7 +758,18 @@ const cards = [
   "ideas-grow",
   "perfect-not-needed",
   "do-it-today"
-].includes(card.id));
+].includes(card.id)));
+
+function uniqueCardsByImage(items) {
+  const seenImages = new Set();
+
+  return items.filter((card) => {
+    if (!card.image) return true;
+    if (seenImages.has(card.image)) return false;
+    seenImages.add(card.image);
+    return true;
+  });
+}
 
 const state = {
   category: "Todos",
@@ -856,11 +867,12 @@ const copy = {
     like: "Like",
     share: "Share",
     save: "Save",
+    credits: "Credits",
     copiedPrompt: "Card link",
     profileLabel: "Dolayout / João",
-    profileTitle: "I build visual systems for brands that need more than a pretty logo.",
-    profileText: "I'm João Dolayout, a designer and art director from Brazil. I started Dolayout as a place to make things with more rhythm, more context and less corporate fog. Branding, websites, social media, decks, campaigns: for me, it all belongs to the same visual conversation.",
-    profileNote: "I like work that has an idea behind it and enough clarity to survive outside the presentation. Less noise, more intention. Less template, more point of view.",
+    profileTitle: "Before Dolayout was a studio, it was the name people called me at college.",
+    profileText: "I'm João Felipe Nogueira Buselli, a Brazilian designer and art director. Back in college, I became João do layout: the one who was always arranging, testing and turning rough ideas into something visible. The nickname stayed and became Dolayout, my independent studio and an open visual platform for brands, websites, campaigns and whatever else asks for a point of view.",
+    profileNote: "I believe everyone can make a layout. Not because design is easy, but because creating begins when an idea leaves your head and gains form. Mine starts with curiosity, gets sharper through direction and only stops when it can live in the real world.",
     startProject: "Start a project",
     contactLabel: "Contact",
     contactTitle: "Send me the idea, the mess, the brand, the almost-brief.",
@@ -893,11 +905,12 @@ const copy = {
     like: "Curtir",
     share: "Compartilhar",
     save: "Salvar",
+    credits: "Créditos",
     copiedPrompt: "Link do card",
     profileLabel: "Dolayout / João",
-    profileTitle: "Eu crio sistemas visuais para marcas que precisam de mais do que um logo bonito.",
-    profileText: "Sou João Dolayout, designer e diretor de arte. A Dolayout nasceu como um lugar para fazer as coisas com mais ritmo, mais contexto e menos neblina corporativa. Branding, sites, social, apresentações, campanhas: para mim, tudo faz parte da mesma conversa visual.",
-    profileNote: "Gosto de trabalho que tem ideia por trás e clareza suficiente para existir fora da apresentação. Menos ruído, mais intenção. Menos template, mais ponto de vista.",
+    profileTitle: "Antes de ser um estúdio, Dolayout era o jeito como me chamavam na faculdade.",
+    profileText: "Sou João Felipe Nogueira Buselli, designer e diretor de arte. Na faculdade, virei o João do layout: o cara que estava sempre organizando, testando e transformando ideia solta em alguma coisa visível. O apelido ficou e virou Dolayout, meu estúdio independente e uma plataforma aberta para marcas, sites, campanhas e tudo o que pede um ponto de vista.",
+    profileNote: "Acredito que todo mundo pode fazer layout. Não porque design seja fácil, mas porque criar começa quando uma ideia sai da cabeça e ganha forma. O meu processo começa na curiosidade, fica mais afiado com direção e só para quando consegue existir no mundo real.",
     startProject: "Começar um projeto",
     contactLabel: "Contato",
     contactTitle: "Me manda a ideia, a bagunça, a marca, o quase-briefing.",
@@ -1022,27 +1035,38 @@ function buildPortfolioPins(projects) {
       .filter(isFeedReadyPortfolioImage)
       .slice(0, project.feedLimit || 3);
 
-    return images.map((image, index) => ({
-      id: `${project.id}-pin-${index + 1}`,
-      title: project.title,
-      category: project.categories?.[index % project.categories.length] || project.category,
-      categories: project.categories || [project.category],
-      type: "visual",
-      description: project.description,
-      tags: [...new Set([...(project.tags || []), "visual", "pin"])],
-      downloadable: false,
-      credit: project.credit,
-      height: [320, 440, 520, 360, 610, 470][index % 6],
-      tone: project.tone,
-      palette: project.palette,
-      image,
-      objectPosition: "center",
-      statement: project.title,
-      statementColor: "#ffffff",
-      source: project.source,
-      parentId: project.id,
-      openMode: "lightbox"
-    }));
+    return images.map((image, index) => {
+      const hasInternalPage = index === 0
+        && (project.gallery || []).length > 1
+        && (project.categories || []).some((category) => ["Branding", "Identity", "Website Design"].includes(category));
+
+      return {
+        id: `${project.id}-pin-${index + 1}`,
+        title: project.title,
+        titlePt: project.titlePt,
+        category: project.categories?.[index % project.categories.length] || project.category,
+        categories: project.categories || [project.category],
+        type: hasInternalPage ? "case completo" : "visual",
+        description: project.description,
+        descriptionPt: project.descriptionPt,
+        tags: [...new Set([...(project.tags || []), "visual", "pin"])],
+        downloadable: false,
+        credit: project.credit,
+        height: [320, 440, 520, 360, 610, 470][index % 6],
+        tone: project.tone,
+        palette: project.palette,
+        image,
+        objectPosition: "center",
+        statement: project.title,
+        statementColor: "#ffffff",
+        source: project.source,
+        externalLinks: project.externalLinks || [],
+        images: hasInternalPage ? project.gallery : undefined,
+        gallery: hasInternalPage ? project.gallery : undefined,
+        parentId: project.id,
+        openMode: hasInternalPage ? "detail" : "lightbox"
+      };
+    });
   });
 }
 
@@ -1371,11 +1395,11 @@ function renderDetail(card) {
           ${heroVisual(card)}
         </div>
         <aside class="detail-copy">
-          <span class="label">${card.category}</span>
+          <span class="label">${categoryLabel(card.category)}</span>
           ${card.source ? `<span class="credit-tag">${card.source === "LAF" ? "LAF" : "DO"}</span>` : ""}
           <h1>${cardTitle(card)}</h1>
           <p>${cardDescription(card)}</p>
-          <span class="credit">Créditos: ${card.credit}</span>
+          <span class="credit">${t("credits")}: ${card.credit}</span>
           ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
         </aside>
       </div>

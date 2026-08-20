@@ -1035,6 +1035,250 @@ window.dolayoutPortfolioProjects = [
     ],
     "feedLimit": 2,
     "showFeedTitle": false
+  },
+  {
+    "id": "portfolio-jinn",
+    "title": "Jinn",
+    "category": "Branding",
+    "type": "direct project",
+    "description": "A visual identity built around the flame that moves people: desire, connection and the courage to create change.",
+    "descriptionPt": "Uma identidade construída a partir da chama que move as pessoas: desejo, conexão e coragem para criar mudança.",
+    "tags": [
+      "brasil",
+      "do",
+      "branding",
+      "identity",
+      "key visual",
+      "social media",
+      "campaign",
+      "finance",
+      "dolayout",
+      "portfolio"
+    ],
+    "categories": [
+      "Branding",
+      "Identity",
+      "Key Visual",
+      "Social Media",
+      "Campaign",
+      "Art Direction"
+    ],
+    "downloadable": false,
+    "credit": "Dolayout",
+    "height": 440,
+    "tone": "dolayout",
+    "palette": [
+      "#0095ac",
+      "#ffd64f"
+    ],
+    "image": "assets/dolayout/portfolio/jinn/business-card.jpg",
+    "images": [
+      "assets/dolayout/portfolio/jinn/business-card.jpg",
+      "assets/dolayout/portfolio/jinn/social-system.jpg",
+      "assets/dolayout/portfolio/jinn/mobile-card.jpg"
+    ],
+    "gallery": [
+      "assets/dolayout/portfolio/jinn/business-card.jpg",
+      "assets/dolayout/portfolio/jinn/social-system.jpg",
+      "assets/dolayout/portfolio/jinn/social-people.jpg",
+      "assets/dolayout/portfolio/jinn/social-new-year.jpg",
+      "assets/dolayout/portfolio/jinn/mobile-card.jpg",
+      "assets/dolayout/portfolio/jinn/envelope.jpg"
+    ],
+    "kicker": "Dolayout",
+    "metric": "Branding / Campaign",
+    "displayTitle": "Jinn",
+    "statement": "Jinn",
+    "statementColor": "#ffffff",
+    "country": "Brasil",
+    "source": "DO",
+    "externalLinks": [],
+    "hidden": false,
+    "feedImages": [
+      "assets/dolayout/portfolio/jinn/business-card.jpg",
+      "assets/dolayout/portfolio/jinn/social-system.jpg",
+      "assets/dolayout/portfolio/jinn/social-people.jpg"
+    ],
+    "feedLimit": 3,
+    "showFeedTitle": false
+  },
+  {
+    "id": "portfolio-kharis",
+    "title": "KHÁRIS",
+    "category": "Branding",
+    "type": "direct project",
+    "description": "A delicate identity shaped by continuity, affection and the quiet confidence of a brand made to feel close.",
+    "descriptionPt": "Uma identidade delicada construída por continuidade, afeto e a confiança tranquila de uma marca feita para estar perto.",
+    "tags": [
+      "brasil",
+      "do",
+      "branding",
+      "identity",
+      "key visual",
+      "social media",
+      "jewelry",
+      "retail",
+      "dolayout",
+      "portfolio"
+    ],
+    "categories": [
+      "Branding",
+      "Identity",
+      "Key Visual",
+      "Social Media",
+      "Editorial",
+      "Art Direction"
+    ],
+    "downloadable": false,
+    "credit": "Dolayout",
+    "height": 440,
+    "tone": "dolayout",
+    "palette": [
+      "#2dbdb6",
+      "#fecfbf"
+    ],
+    "image": "assets/dolayout/portfolio/kharis/identity-system.jpg",
+    "images": [
+      "assets/dolayout/portfolio/kharis/identity-system.jpg",
+      "assets/dolayout/portfolio/kharis/brand-stationery.jpg",
+      "assets/dolayout/portfolio/kharis/shopping-bag.jpg"
+    ],
+    "gallery": [
+      "assets/dolayout/portfolio/kharis/identity-system.jpg",
+      "assets/dolayout/portfolio/kharis/brand-stationery.jpg",
+      "assets/dolayout/portfolio/kharis/shopping-bag.jpg",
+      "assets/dolayout/portfolio/kharis/social-brand.jpg",
+      "assets/dolayout/portfolio/kharis/social-product.jpg"
+    ],
+    "kicker": "Dolayout",
+    "metric": "Branding / Identity",
+    "displayTitle": "KHÁRIS",
+    "statement": "KHÁRIS",
+    "statementColor": "#ffffff",
+    "country": "Brasil",
+    "source": "DO",
+    "externalLinks": [],
+    "hidden": false,
+    "feedImages": [
+      "assets/dolayout/portfolio/kharis/identity-system.jpg",
+      "assets/dolayout/portfolio/kharis/shopping-bag.jpg",
+      "assets/dolayout/portfolio/kharis/social-brand.jpg"
+    ],
+    "feedLimit": 3,
+    "showFeedTitle": false
+  },
+  {
+    "id": "portfolio-light-squad",
+    "title": "Light Squad",
+    "category": "Branding",
+    "type": "direct project",
+    "description": "A black-and-white identity where light, construction and perspective meet in one precise geometric gesture.",
+    "descriptionPt": "Uma identidade em preto e branco onde luz, construção e perspectiva se encontram em um gesto geométrico preciso.",
+    "tags": [
+      "portugal",
+      "do",
+      "branding",
+      "identity",
+      "bauhaus",
+      "architecture",
+      "photography",
+      "dolayout",
+      "portfolio"
+    ],
+    "categories": [
+      "Branding",
+      "Identity",
+      "Creative Studio",
+      "Art Direction"
+    ],
+    "downloadable": false,
+    "credit": "Dolayout",
+    "height": 360,
+    "tone": "mono",
+    "palette": [
+      "#000000",
+      "#ffffff"
+    ],
+    "image": "assets/dolayout/portfolio/light-squad/business-card.jpg",
+    "images": [
+      "assets/dolayout/portfolio/light-squad/business-card.jpg"
+    ],
+    "gallery": [
+      "assets/dolayout/portfolio/light-squad/business-card.jpg"
+    ],
+    "kicker": "Dolayout",
+    "metric": "Branding / Identity",
+    "displayTitle": "Light Squad",
+    "statement": "Light Squad",
+    "statementColor": "#ffffff",
+    "country": "Portugal",
+    "source": "DO",
+    "externalLinks": [],
+    "hidden": false,
+    "feedImages": [
+      "assets/dolayout/portfolio/light-squad/business-card.jpg"
+    ],
+    "feedLimit": 1,
+    "showFeedTitle": false
+  },
+  {
+    "id": "portfolio-meritoh",
+    "title": "Méritoh",
+    "category": "Branding",
+    "type": "LAF project",
+    "description": "A recognition platform for education, translated into a clear identity where every achievement adds to visible growth.",
+    "descriptionPt": "Uma plataforma de reconhecimento para educação, traduzida em uma identidade clara onde cada conquista soma crescimento visível.",
+    "tags": [
+      "brasil",
+      "laf",
+      "branding",
+      "identity",
+      "website",
+      "digital product",
+      "education",
+      "platform",
+      "portfolio"
+    ],
+    "categories": [
+      "Branding",
+      "Identity",
+      "Website Design",
+      "Art Direction"
+    ],
+    "downloadable": false,
+    "credit": "LAF / Direção e design: Dolayout",
+    "height": 520,
+    "tone": "laf",
+    "palette": [
+      "#261f5b",
+      "#39aae6"
+    ],
+    "image": "assets/dolayout/portfolio/meritoh/mobile-application.jpg",
+    "images": [
+      "assets/dolayout/portfolio/meritoh/mobile-application.jpg",
+      "assets/dolayout/portfolio/meritoh/website-system.jpg",
+      "assets/dolayout/portfolio/meritoh/identity-system.jpg"
+    ],
+    "gallery": [
+      "assets/dolayout/portfolio/meritoh/mobile-application.jpg",
+      "assets/dolayout/portfolio/meritoh/website-system.jpg",
+      "assets/dolayout/portfolio/meritoh/identity-system.jpg"
+    ],
+    "kicker": "LAF",
+    "metric": "Branding / Digital Product",
+    "displayTitle": "Méritoh",
+    "statement": "Méritoh",
+    "statementColor": "#ffffff",
+    "country": "Brasil",
+    "source": "LAF",
+    "externalLinks": [],
+    "hidden": false,
+    "feedImages": [
+      "assets/dolayout/portfolio/meritoh/mobile-application.jpg",
+      "assets/dolayout/portfolio/meritoh/website-system.jpg"
+    ],
+    "feedLimit": 2,
+    "showFeedTitle": false
   }
 ];
 

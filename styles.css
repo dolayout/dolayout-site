@@ -413,6 +413,31 @@ body.light .symbol-light {
   transition: transform 360ms ease;
 }
 
+.pin-card:not(.art-pin) .media-visual {
+  min-height: 0;
+  display: block;
+  padding: 0;
+}
+
+.pin-card:not(.art-pin) .media-visual .card-media {
+  position: relative;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.pin-card:not(.art-pin) .media-visual .card-top {
+  position: absolute;
+  inset: 18px 18px auto;
+}
+
+.pin-card:not(.art-pin) .media-visual .card-bottom {
+  position: absolute;
+  inset: auto 18px 18px;
+}
+
 .art-pin {
   background: var(--bg);
 }
@@ -1421,9 +1446,20 @@ body.light .symbol-light {
   }
 
   .hero-visual,
-  .hero-visual .visual {
-    min-height: 520px;
+  .hero-visual .visual,
+  .project-gallery,
+  .hero-media {
+    min-height: 0;
     border-radius: 24px;
+  }
+
+  .gallery-main {
+    padding: 0;
+  }
+
+  .detail-image {
+    height: auto;
+    max-height: none;
   }
 
   .bio-copy h1,
