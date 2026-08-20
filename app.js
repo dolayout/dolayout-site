@@ -19,7 +19,9 @@ const categories = [
   "Art/Design"
 ];
 
-const externalPortfolioCards = (window.dolayoutPortfolioCards || []).filter((card) => card.image && !card.hidden);
+// The generated project boards duplicate real pins and can combine unrelated assets.
+// Keep the feed grounded in individually curated project images instead.
+const externalPortfolioCards = [];
 const externalPortfolioPins = buildPortfolioPins(window.dolayoutPortfolioProjects || []);
 
 const editorialArticles = [
@@ -757,7 +759,14 @@ const cards = uniqueCardsByImage([
   "make-something-today",
   "ideas-grow",
   "perfect-not-needed",
-  "do-it-today"
+  "do-it-today",
+  "brand-board-arca",
+  "client-atelier-casa",
+  "partner-print-lab",
+  "portfolio-web-grid",
+  "branding-festival",
+  "faca-hoje",
+  "art-design-shapes"
 ].includes(card.id)));
 
 function uniqueCardsByImage(items) {
@@ -978,7 +987,7 @@ function applyLanguage() {
   searchInput.placeholder = t("search");
   if (feedMetaLabel) feedMetaLabel.textContent = t("visualHub");
   if (languageToggle) {
-    languageToggle.textContent = state.language === "en" ? "PT-BR" : "EN";
+    languageToggle.textContent = state.language === "en" ? "PT" : "EN";
     languageToggle.setAttribute("aria-label", state.language === "en" ? "Mudar para portugues" : "Change to English");
   }
 }
@@ -1101,6 +1110,7 @@ function renderCategories() {
   categoryRail.querySelectorAll("[data-category]").forEach((button) => {
     button.addEventListener("click", () => {
       state.category = button.dataset.category;
+      scrollToPageTop();
       renderCategories();
       renderFeed();
     });
@@ -1216,6 +1226,7 @@ function artDirectedCardTemplate(card) {
 }
 
 function route() {
+  scrollToPageTop();
   const hash = window.location.hash || "#/";
 
   if (hash === "#/perfil") {
@@ -1253,6 +1264,10 @@ function route() {
 
   renderDetail(card);
   setActiveNav("");
+}
+
+function scrollToPageTop() {
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
 
 function setActiveNav(routeName) {
