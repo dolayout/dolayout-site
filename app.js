@@ -22,9 +22,333 @@ const categories = [
 const externalPortfolioCards = (window.dolayoutPortfolioCards || []).filter((card) => card.image && !card.hidden);
 const externalPortfolioPins = buildPortfolioPins(window.dolayoutPortfolioProjects || []);
 
+const editorialArticles = [
+  {
+    id: "article-make-something-today",
+    title: "Make Something Today",
+    titlePt: "Faça Alguma Coisa Hoje",
+    category: "Inspiração",
+    type: "article",
+    description: "Creativity is less about waiting for the perfect idea and more about creating enough movement for an idea to appear.",
+    descriptionPt: "Criatividade tem menos a ver com esperar a ideia perfeita e mais com criar movimento suficiente para uma ideia aparecer.",
+    tags: ["creativity", "process", "personal growth", "inspiration"],
+    credit: "Dolayout Editorial",
+    height: 520,
+    tone: "mono",
+    palette: ["#111111", "#3a3a37"],
+    image: "assets/dolayout/editorial/make-something-today.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "The blank page is rarely solved by thinking harder. Most of the time, it is solved by touching the work: moving a shape, writing a rough sentence, testing a color, opening the file before the mood arrives.",
+        "Making something today does not mean making something final. It means creating evidence. A sketch tells you what the idea is not. A bad layout shows where the rhythm breaks. A first draft gives the brain something concrete to negotiate with.",
+        "This is why creative work needs a practice, not only a deadline. When you build the habit of small execution, you stop treating inspiration like a rare weather event. You create your own conditions.",
+        "The goal is not speed for speed's sake. It is contact. The more often you meet the work, the less dramatic it becomes. The project stops being a monster and starts being a conversation.",
+        "Make something today. Then make it clearer tomorrow."
+      ],
+      pt: [
+        "A página em branco raramente se resolve pensando mais forte. Na maioria das vezes, ela se resolve encostando no trabalho: mexendo numa forma, escrevendo uma frase torta, testando uma cor, abrindo o arquivo antes da vontade aparecer.",
+        "Fazer alguma coisa hoje não significa fazer algo final. Significa criar evidência. Um rascunho mostra o que a ideia não é. Um layout ruim aponta onde o ritmo quebra. Uma primeira versão dá ao cérebro algo concreto para discutir.",
+        "Por isso trabalho criativo precisa de prática, não só de prazo. Quando você cria o hábito da pequena execução, para de tratar inspiração como um fenômeno raro. Você monta as próprias condições.",
+        "O objetivo não é correr por correr. É contato. Quanto mais você encontra o trabalho, menos dramático ele fica. O projeto deixa de ser um monstro e vira uma conversa.",
+        "Faça alguma coisa hoje. Amanhã você deixa mais claro."
+      ]
+    }
+  },
+  {
+    id: "article-brand-before-feed",
+    title: "A Good Brand Arrives Before the Feed",
+    titlePt: "Uma Boa Marca Chega Antes do Feed",
+    category: "Inspiração",
+    type: "article",
+    description: "A resolved brand makes every post, website, deck and campaign less random and more recognizable.",
+    descriptionPt: "Uma marca bem resolvida faz cada post, site, apresentação e campanha parecer menos aleatória e mais reconhecível.",
+    tags: ["branding", "identity", "strategy", "creative business"],
+    credit: "Dolayout Editorial",
+    height: 610,
+    tone: "cool",
+    palette: ["#151515", "#7bdff2"],
+    image: "assets/dolayout/editorial/brand-before-feed.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "A brand is not the logo sitting politely in the corner. It is the feeling that starts to repeat before anyone reads the caption. It is the way the page behaves, the weight of the type, the rhythm of the images, the kind of sentence the brand would or would not say.",
+        "When the brand is not resolved, every new piece becomes a new decision from zero. The feed changes personality every week. The website says one thing, the proposal says another, and the client has to work too hard to understand who is speaking.",
+        "A strong identity does not make communication rigid. It makes it easier. It gives the team a set of choices that already make sense: colors with a job, typography with attitude, compositions with a recognizable logic.",
+        "This is where branding becomes practical. A good brand saves time, reduces doubt and creates memory. It lets the business show up in different formats without losing its face.",
+        "Before posting more, solve the voice. Before designing more, solve the system. The feed should be a consequence of the brand, not the place where the brand is invented every morning."
+      ],
+      pt: [
+        "Marca não é o logo comportado no canto. É a sensação que começa a se repetir antes de alguém ler a legenda. É o jeito da página se comportar, o peso da tipografia, o ritmo das imagens, o tipo de frase que aquela marca diria ou não diria.",
+        "Quando a marca não está resolvida, cada peça nova vira uma decisão do zero. O feed muda de personalidade toda semana. O site fala uma coisa, a proposta fala outra, e o cliente precisa fazer esforço demais para entender quem está falando.",
+        "Uma identidade forte não deixa a comunicação engessada. Ela facilita. Dá ao time um conjunto de escolhas que já fazem sentido: cores com função, tipografia com atitude, composições com uma lógica reconhecível.",
+        "É aqui que branding vira prática. Uma boa marca economiza tempo, reduz dúvida e cria memória. Ela permite que o negócio apareça em formatos diferentes sem perder o rosto.",
+        "Antes de postar mais, resolva a voz. Antes de desenhar mais, resolva o sistema. O feed deveria ser consequência da marca, não o lugar onde a marca é inventada toda manhã."
+      ]
+    }
+  },
+  {
+    id: "article-creative-routine",
+    title: "Creative Routine Is Not the Enemy",
+    titlePt: "Rotina Criativa Não É Inimiga",
+    category: "Inspiração",
+    type: "article",
+    description: "Routine gives creativity a place to land without turning the work into a formula.",
+    descriptionPt: "Rotina dá um lugar para a criatividade pousar sem transformar o trabalho em fórmula.",
+    tags: ["routine", "creativity", "discipline", "process"],
+    credit: "Dolayout Editorial",
+    height: 470,
+    tone: "warm",
+    palette: ["#202020", "#ff6f3c"],
+    image: "assets/dolayout/editorial/creative-routine.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "There is a romantic idea that creativity needs chaos. Sometimes chaos gives energy, sure. But if chaos is the only method, the work becomes expensive: emotionally, mentally and professionally.",
+        "Routine does not kill surprise. It protects the space where surprise can happen. When the basics are organized, the mind can spend less energy finding the file, remembering the next step or negotiating with anxiety.",
+        "A useful creative routine is simple: collect references, define the problem, make rough options, choose a direction, refine, test in context. It is not glamorous. It works because it reduces fog.",
+        "The trick is leaving room inside the structure. A routine should guide the work, not suffocate it. You need enough repetition to build quality and enough curiosity to avoid becoming a machine.",
+        "Creativity likes freedom, but it also likes a desk, a time, a method and a reason to begin."
+      ],
+      pt: [
+        "Existe uma ideia romântica de que criatividade precisa de caos. Às vezes o caos dá energia, claro. Mas quando o caos é o único método, o trabalho fica caro: emocionalmente, mentalmente e profissionalmente.",
+        "Rotina não mata surpresa. Ela protege o espaço onde a surpresa pode acontecer. Quando o básico está organizado, a cabeça gasta menos energia achando arquivo, lembrando o próximo passo ou negociando com a ansiedade.",
+        "Uma rotina criativa útil é simples: juntar referências, entender o problema, abrir caminhos, escolher uma direção, refinar, testar no contexto. Não é glamouroso. Funciona porque reduz neblina.",
+        "O truque é deixar espaço dentro da estrutura. A rotina deve guiar o trabalho, não sufocar. Você precisa de repetição suficiente para ganhar qualidade e curiosidade suficiente para não virar máquina.",
+        "Criatividade gosta de liberdade, mas também gosta de mesa, horário, método e motivo para começar."
+      ]
+    }
+  },
+  {
+    id: "article-personal-growth",
+    title: "Growth Without Becoming Noise",
+    titlePt: "Crescer Sem Virar Ruído",
+    category: "Inspiração",
+    type: "article",
+    description: "Personal growth is not only doing more. It is choosing better what deserves your attention.",
+    descriptionPt: "Crescimento pessoal não é só fazer mais. É escolher melhor o que merece sua atenção.",
+    tags: ["growth", "focus", "career", "self development"],
+    credit: "Dolayout Editorial",
+    height: 540,
+    tone: "neon",
+    palette: ["#111827", "#f2b5d4"],
+    image: "assets/dolayout/editorial/personal-growth.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "A lot of growth looks loud from the outside: more projects, more posts, more meetings, more promises. But real growth often starts quieter. It starts when you understand what you are no longer willing to repeat.",
+        "To grow personally, you need to notice your patterns. Where do you overcomplicate? Where do you avoid decisions? Where do you accept urgency as if it were strategy?",
+        "Professional growth follows the same logic. Better work is rarely just a matter of talent. It comes from better questions, better boundaries, better taste and a clearer relationship with time.",
+        "The goal is not to become optimized. The goal is to become more honest with your energy. Some things deserve depth. Some things deserve a quick no. Some things need a better system, not a stronger personality.",
+        "Growth that matters does not turn you into more noise. It makes your signal cleaner."
+      ],
+      pt: [
+        "Muito crescimento parece barulhento por fora: mais projetos, mais posts, mais reuniões, mais promessas. Mas crescimento real muitas vezes começa mais baixo. Começa quando você entende o que não quer mais repetir.",
+        "Para crescer pessoalmente, você precisa perceber seus padrões. Onde você complica demais? Onde foge de decisões? Onde aceita urgência como se fosse estratégia?",
+        "O crescimento profissional segue a mesma lógica. Trabalho melhor raramente é só talento. Vem de perguntas melhores, limites melhores, gosto mais apurado e uma relação mais clara com o tempo.",
+        "O objetivo não é virar uma pessoa otimizada. É ser mais honesto com a própria energia. Algumas coisas merecem profundidade. Algumas merecem um não rápido. Algumas precisam de sistema, não de personalidade mais forte.",
+        "Crescimento que importa não te transforma em mais ruído. Ele deixa seu sinal mais limpo."
+      ]
+    }
+  },
+  {
+    id: "article-professional-presence",
+    title: "Professional Presence Is Built in Details",
+    titlePt: "Presença Profissional Mora nos Detalhes",
+    category: "Inspiração",
+    type: "article",
+    description: "The way you present your work teaches people how to value it.",
+    descriptionPt: "O jeito como você apresenta seu trabalho ensina as pessoas a valorizarem ele.",
+    tags: ["career", "presentation", "portfolio", "professional growth"],
+    credit: "Dolayout Editorial",
+    height: 500,
+    tone: "acid",
+    palette: ["#141414", "#d7ff3f"],
+    image: "assets/dolayout/editorial/professional-presence.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "People do not experience your work only through the final file. They experience it through the email, the deck, the meeting, the link, the caption, the way the project is named and the way the idea is explained.",
+        "Professional presence is not about pretending to be bigger than you are. It is about removing friction. Clear links, organized files, short explanations and strong visuals create trust before the first call is over.",
+        "For creative work, presentation is part of the work. A good project shown badly loses force. A simple project shown with clarity can become memorable.",
+        "This does not mean making everything fancy. It means being intentional. What needs to be seen first? What needs context? What can disappear? What would help the client decide faster?",
+        "The detail is not decoration. The detail is where confidence becomes visible."
+      ],
+      pt: [
+        "As pessoas não entram em contato com seu trabalho só pelo arquivo final. Elas sentem seu trabalho pelo e-mail, pela apresentação, pela reunião, pelo link, pela legenda, pelo nome do projeto e pelo jeito como a ideia é explicada.",
+        "Presença profissional não é fingir ser maior do que você é. É remover atrito. Links claros, arquivos organizados, explicações curtas e visuais fortes criam confiança antes da primeira reunião acabar.",
+        "No trabalho criativo, apresentação faz parte do trabalho. Um bom projeto apresentado mal perde força. Um projeto simples apresentado com clareza pode virar memorável.",
+        "Isso não significa deixar tudo chique. Significa ter intenção. O que precisa ser visto primeiro? O que precisa de contexto? O que pode sumir? O que ajudaria o cliente a decidir mais rápido?",
+        "O detalhe não é decoração. O detalhe é onde a confiança fica visível."
+      ]
+    }
+  },
+  {
+    id: "article-visual-consistency",
+    title: "Consistency Is Not Repetition",
+    titlePt: "Consistência Não É Repetição",
+    category: "Inspiração",
+    type: "article",
+    description: "A consistent visual system can change, breathe and still be recognized.",
+    descriptionPt: "Um sistema visual consistente pode mudar, respirar e continuar reconhecível.",
+    tags: ["design system", "brand", "identity", "visual language"],
+    credit: "Dolayout Editorial",
+    height: 590,
+    tone: "cool",
+    palette: ["#171717", "#6ad5df"],
+    image: "assets/dolayout/editorial/visual-consistency.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "Many brands confuse consistency with copying the same layout forever. The result is not identity. It is fatigue. Everything looks correct, but nothing feels alive enough to hold attention.",
+        "True consistency lives deeper than the template. It lives in proportion, rhythm, contrast, language, point of view and the way decisions repeat with intelligence.",
+        "A good system gives variation a home. You can change format, color weight, image style or composition because the underlying logic is clear. The audience feels continuity even when the piece is new.",
+        "This is especially important for social media. If every post is identical, people stop looking. If every post is unrelated, people stop remembering. The sweet spot is recognition with movement.",
+        "Consistency is not repetition. It is a memory system."
+      ],
+      pt: [
+        "Muita marca confunde consistência com copiar o mesmo layout para sempre. O resultado não é identidade. É cansaço. Tudo parece correto, mas nada tem vida suficiente para segurar atenção.",
+        "Consistência de verdade mora mais fundo que o template. Mora na proporção, no ritmo, no contraste, na linguagem, no ponto de vista e no jeito como as decisões se repetem com inteligência.",
+        "Um bom sistema dá casa para a variação. Você pode mudar formato, peso de cor, estilo de imagem ou composição porque a lógica por trás está clara. O público sente continuidade mesmo quando a peça é nova.",
+        "Isso é especialmente importante em social media. Se todo post é igual, as pessoas param de olhar. Se todo post é desconectado, elas param de lembrar. O ponto bom é reconhecimento com movimento.",
+        "Consistência não é repetição. É um sistema de memória."
+      ]
+    }
+  },
+  {
+    id: "article-ideas-grow",
+    title: "Ideas Grow When You Share Them",
+    titlePt: "Ideias Crescem Quando São Compartilhadas",
+    category: "Inspiração",
+    type: "article",
+    description: "An idea kept too protected can stay elegant, but small. Sharing creates friction, and friction creates shape.",
+    descriptionPt: "Uma ideia protegida demais pode continuar elegante, mas pequena. Compartilhar cria atrito, e atrito cria forma.",
+    tags: ["ideas", "collaboration", "creative process", "feedback"],
+    credit: "Dolayout Editorial",
+    height: 620,
+    tone: "cool",
+    palette: ["#10252c", "#7bdff2"],
+    image: "assets/dolayout/editorial/ideas-grow.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "There is a moment when an idea needs to leave your head before it is ready. Not because it is finished, but because it needs air. It needs to be seen from another angle.",
+        "Sharing an idea is risky because people can misunderstand it. But that risk is useful. If the idea cannot survive a question, maybe the structure is not clear yet. If the idea becomes stronger after a question, you just found a better path.",
+        "Feedback is not a vote. It is material. You do not have to obey every opinion, but you should listen for patterns: what is confusing, what is memorable, what creates energy, what sounds empty.",
+        "The best creative conversations do not flatten the idea. They sharpen it. They help the work become more itself.",
+        "Keep the fragile part protected, but do not hide the whole thing forever. Ideas grow when they meet the world."
+      ],
+      pt: [
+        "Existe um momento em que a ideia precisa sair da sua cabeça antes de estar pronta. Não porque acabou, mas porque precisa de ar. Precisa ser vista por outro ângulo.",
+        "Compartilhar uma ideia dá medo porque as pessoas podem entender errado. Mas esse risco é útil. Se a ideia não sobrevive a uma pergunta, talvez a estrutura ainda não esteja clara. Se ela fica melhor depois da pergunta, você achou um caminho mais forte.",
+        "Feedback não é votação. É material. Você não precisa obedecer toda opinião, mas deve escutar padrões: o que confunde, o que fica na memória, o que gera energia, o que soa vazio.",
+        "As melhores conversas criativas não achatam a ideia. Elas afinam. Ajudam o trabalho a ficar mais ele mesmo.",
+        "Proteja a parte frágil, mas não esconda tudo para sempre. Ideias crescem quando encontram o mundo."
+      ]
+    }
+  },
+  {
+    id: "article-attention-economy",
+    title: "Attention Is a Design Problem",
+    titlePt: "Atenção É um Problema de Design",
+    category: "Inspiração",
+    type: "article",
+    description: "If people are scrolling fast, clarity is not optional. It is the first layer of respect.",
+    descriptionPt: "Se as pessoas estão rolando rápido, clareza não é opcional. É a primeira camada de respeito.",
+    tags: ["attention", "communication", "social media", "design"],
+    credit: "Dolayout Editorial",
+    height: 560,
+    tone: "warm",
+    palette: ["#1b1715", "#ff6f3c"],
+    image: "assets/dolayout/editorial/attention-economy.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "Attention is not something the audience owes the brand. It is something the brand earns by being clear, relevant and visually precise.",
+        "A lot of communication fails because it asks too much too soon. Too many messages, too many effects, too many calls to action, too little hierarchy. The piece becomes loud, but not readable.",
+        "Good design creates an order of entry. First, something catches the eye. Then the message becomes clear. Then the detail rewards the person who stays longer.",
+        "This matters because attention is also trust. When a brand communicates with clarity, it signals that it understands the viewer's time. It does not force the audience to decode what should have been designed.",
+        "In a fast feed, beauty helps. But hierarchy decides."
+      ],
+      pt: [
+        "Atenção não é algo que o público deve para a marca. É algo que a marca conquista sendo clara, relevante e visualmente precisa.",
+        "Muita comunicação falha porque pede demais cedo demais. Mensagens demais, efeitos demais, chamadas demais, hierarquia de menos. A peça fica barulhenta, mas não legível.",
+        "Bom design cria uma ordem de entrada. Primeiro algo prende o olhar. Depois a mensagem fica clara. Depois o detalhe recompensa quem ficou mais tempo.",
+        "Isso importa porque atenção também é confiança. Quando a marca se comunica com clareza, ela mostra que entende o tempo de quem está vendo. Não obriga o público a decifrar o que deveria ter sido desenhado.",
+        "Num feed rápido, beleza ajuda. Mas hierarquia decide."
+      ]
+    }
+  },
+  {
+    id: "article-portfolio-as-platform",
+    title: "Your Portfolio Is a Platform",
+    titlePt: "Seu Portfólio É uma Plataforma",
+    category: "Inspiração",
+    type: "article",
+    description: "A portfolio should not only archive work. It should create a way for people to understand your taste.",
+    descriptionPt: "Um portfólio não deveria só arquivar trabalhos. Deveria criar um jeito das pessoas entenderem seu olhar.",
+    tags: ["portfolio", "curation", "creative career", "presentation"],
+    credit: "Dolayout Editorial",
+    height: 640,
+    tone: "neon",
+    palette: ["#0e0d12", "#f2b5d4"],
+    image: "assets/dolayout/editorial/portfolio-as-platform.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "A portfolio is not a folder with nicer spacing. It is a point of view. It tells people what you notice, what you value, how you organize complexity and what kind of problems you are good at solving.",
+        "That means curation matters as much as quantity. Ten strong pieces can say more than fifty average ones. A project shown in context can say more than a logo isolated on a white background.",
+        "The best portfolios create rhythm. Big image, small note, case, detail, pause, next piece. They let the visitor feel the work before asking them to read too much.",
+        "A portfolio also changes the conversation with clients. Instead of only proving that you can execute, it shows how you think. It attracts better questions.",
+        "Do not treat your portfolio like storage. Treat it like a living editorial system for your own practice."
+      ],
+      pt: [
+        "Portfólio não é uma pasta com espaçamento melhor. É ponto de vista. Ele mostra o que você percebe, o que valoriza, como organiza complexidade e que tipo de problema sabe resolver.",
+        "Por isso curadoria importa tanto quanto quantidade. Dez peças fortes podem dizer mais que cinquenta médias. Um projeto mostrado em contexto pode dizer mais que um logo isolado no fundo branco.",
+        "Os melhores portfólios criam ritmo. Imagem grande, nota pequena, case, detalhe, pausa, próxima peça. Deixam a pessoa sentir o trabalho antes de pedir leitura demais.",
+        "Um portfólio também muda a conversa com clientes. Em vez de provar só que você executa, ele mostra como você pensa. Atrai perguntas melhores.",
+        "Não trate seu portfólio como armazenamento. Trate como um sistema editorial vivo da sua própria prática."
+      ]
+    }
+  },
+  {
+    id: "article-do-layout-today",
+    title: "Do It Today. Do Layout.",
+    titlePt: "Faça Hoje. Faça Dolayout.",
+    category: "Inspiração",
+    type: "article",
+    description: "Execution is not the opposite of strategy. It is where strategy stops being abstract.",
+    descriptionPt: "Execução não é o oposto de estratégia. É onde a estratégia deixa de ser abstrata.",
+    tags: ["execution", "strategy", "design", "creative practice"],
+    credit: "Dolayout Editorial",
+    height: 500,
+    tone: "acid",
+    palette: ["#11110f", "#d7ff3f"],
+    image: "assets/dolayout/editorial/do-layout-today.svg",
+    showFeedTitle: true,
+    article: {
+      en: [
+        "There is a point where talking about the idea stops helping the idea. The next level of thinking happens through layout: scale, order, contrast, image, pause, sequence.",
+        "Execution is not a lesser stage. It is where the concept gets tested. A strategy that cannot become a clear page, a strong post or a useful website is probably still too vague.",
+        "To do layout is to make decisions visible. What comes first? What can be smaller? What needs tension? What should disappear? The page forces honesty.",
+        "This is why making matters. Not because thinking is useless, but because thinking needs a body. A layout gives the idea weight, distance, rhythm and consequence.",
+        "Do it today. Not perfectly. Not forever. Just enough for the idea to become real enough to improve."
+      ],
+      pt: [
+        "Existe um ponto em que falar sobre a ideia para de ajudar a ideia. O próximo nível de pensamento acontece no layout: escala, ordem, contraste, imagem, pausa, sequência.",
+        "Execução não é uma etapa menor. É onde o conceito é testado. Uma estratégia que não vira página clara, post forte ou site útil provavelmente ainda está vaga demais.",
+        "Fazer layout é tornar decisões visíveis. O que vem primeiro? O que pode ser menor? O que precisa de tensão? O que deve sumir? A página força honestidade.",
+        "É por isso que fazer importa. Não porque pensar é inútil, mas porque pensamento precisa de corpo. Um layout dá peso, distância, ritmo e consequência para a ideia.",
+        "Faça hoje. Não perfeito. Não definitivo. Só o suficiente para a ideia ficar real o bastante para melhorar."
+      ]
+    }
+  }
+];
+
 const cards = [
   ...externalPortfolioPins,
   ...externalPortfolioCards,
+  ...editorialArticles,
   {
     id: "partilha-urbana-case",
     title: "Partilha Urbana",
@@ -429,7 +753,12 @@ const cards = [
     statement: "Shape / Motion",
     statementColor: "#f2b5d4"
   }
-];
+].filter((card) => ![
+  "make-something-today",
+  "ideas-grow",
+  "perfect-not-needed",
+  "do-it-today"
+].includes(card.id));
 
 const state = {
   category: "Todos",
@@ -615,6 +944,22 @@ function categoryLabel(category) {
   return categoryLabels[state.language]?.[category] || category;
 }
 
+function cardTitle(card) {
+  return state.language === "pt" && card.titlePt ? card.titlePt : card.title;
+}
+
+function cardDescription(card) {
+  return state.language === "pt" && card.descriptionPt ? card.descriptionPt : card.description;
+}
+
+function cardStatement(card) {
+  return state.language === "pt" && card.statementPt ? card.statementPt : card.statement;
+}
+
+function articleBody(card) {
+  return card.article?.[state.language] || card.article?.en || [];
+}
+
 function applyLanguage() {
   document.documentElement.lang = state.language === "pt" ? "pt-BR" : "en";
   searchInput.placeholder = t("search");
@@ -780,16 +1125,16 @@ function renderFeed(items = filteredCards()) {
 function shouldOpenDetail(card) {
   if (card.openMode === "lightbox") return false;
   const haystack = [card.type, card.category, ...(card.categories || []), ...(card.tags || [])].join(" ").toLowerCase();
-  return /case completo|branding|identity|website|website design|complete case/.test(haystack);
+  return /article|matéria|case completo|branding|identity|website|website design|complete case/.test(haystack);
 }
 
 function cardTemplate(card) {
   if (card.layout) return artDirectedCardTemplate(card);
 
   const cardLabel = `<span class="label">${card.category}</span>`;
-  const media = card.image ? `<img class="card-media" src="${card.image}" alt="${card.title}" loading="lazy">` : "";
+  const media = card.image ? `<img class="card-media" src="${card.image}" alt="${cardTitle(card)}" loading="lazy">` : "";
   const mediaClass = card.image ? "media-visual" : "";
-  const showText = !card.image || card.category === "Nota do Dia";
+  const showText = !card.image || card.category === "Nota do Dia" || card.type === "article" || card.showFeedTitle;
 
   return `
     <button class="pin-card" type="button" data-id="${card.id}" data-tone="${card.tone}" style="--card-height:${card.height}px; --c1:${card.palette[0]}; --c2:${card.palette[1]}; --statement-color:${card.statementColor}; --object-position:${card.objectPosition || "center"};">
@@ -801,10 +1146,10 @@ function cardTemplate(card) {
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
           </span>
         </div>
-        <div class="statement">${card.statement}</div>
+        <div class="statement">${cardStatement(card)}</div>
         <div class="card-bottom ${showText ? "" : "is-quiet"}">
           <div>
-            ${showText ? `<h2 class="card-title">${card.title}</h2><p class="card-subtitle">${card.type} / ${card.tags.slice(0, 2).join(", ")}</p>` : ""}
+            ${showText ? `<h2 class="card-title">${cardTitle(card)}</h2><p class="card-subtitle">${card.type} / ${card.tags.slice(0, 2).join(", ")}</p>` : ""}
           </div>
         </div>
       </div>
@@ -820,7 +1165,7 @@ function artDirectedCardTemplate(card) {
   const images = card.images?.length ? card.images : [card.image];
   const frames = images.slice(0, 3).map((image, index) => `
     <span class="mock-frame frame-${index + 1}">
-      <img src="${image}" alt="${card.title} ${index + 1}" loading="lazy">
+      <img src="${image}" alt="${cardTitle(card)} ${index + 1}" loading="lazy">
     </span>
   `).join("");
 
@@ -995,6 +1340,11 @@ function renderContact() {
 }
 
 function renderDetail(card) {
+  if (card.article) {
+    renderArticleDetail(card);
+    return;
+  }
+
   homeView.classList.remove("is-visible");
   detailView.classList.add("is-visible");
 
@@ -1023,8 +1373,8 @@ function renderDetail(card) {
         <aside class="detail-copy">
           <span class="label">${card.category}</span>
           ${card.source ? `<span class="credit-tag">${card.source === "LAF" ? "LAF" : "DO"}</span>` : ""}
-          <h1>${card.title}</h1>
-          <p>${card.description}</p>
+          <h1>${cardTitle(card)}</h1>
+          <p>${cardDescription(card)}</p>
           <span class="credit">Créditos: ${card.credit}</span>
           ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
         </aside>
@@ -1065,16 +1415,79 @@ function renderDetail(card) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function renderArticleDetail(card) {
+  homeView.classList.remove("is-visible");
+  detailView.classList.add("is-visible");
+
+  const related = cards
+    .filter((item) => item.id !== card.id && item.category === "Inspiração")
+    .slice(0, 6);
+  const paragraphs = articleBody(card);
+
+  detailView.innerHTML = `
+    <article class="article-shell">
+      <div class="detail-actions-top">
+        <button class="back-button" type="button" data-back>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          ${t("back")}
+        </button>
+        <div class="detail-action-row">
+          ${actionButton("like", t("like"), "M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7Z", state.liked.has(card.id))}
+          ${actionButton("share", t("share"), "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14", false)}
+          ${actionButton("save", t("save"), "M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z", state.saved.has(card.id))}
+        </div>
+      </div>
+
+      <header class="article-header">
+        <span class="label">${categoryLabel(card.category)}</span>
+        <h1>${cardTitle(card)}</h1>
+        <p>${cardDescription(card)}</p>
+      </header>
+
+      <figure class="article-hero">
+        <img src="${card.image}" alt="${cardTitle(card)}">
+      </figure>
+
+      <div class="article-body">
+        ${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+      </div>
+
+      <h2 class="related-title">${t("related")}</h2>
+      <div class="masonry related-masonry">
+        ${related.map(cardTemplate).join("")}
+      </div>
+    </article>
+  `;
+
+  detailView.querySelector("[data-back]").addEventListener("click", () => {
+    if (history.length > 1) {
+      history.back();
+      return;
+    }
+    window.location.hash = "/";
+  });
+  detailView.querySelectorAll("[data-action]").forEach((button) => {
+    button.addEventListener("click", () => handleAction(button.dataset.action, card, button));
+  });
+  detailView.querySelectorAll(".pin-card").forEach((item) => {
+    item.addEventListener("click", () => {
+      window.location.hash = `/card/${item.dataset.id}`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function heroVisual(card) {
   if (card.gallery?.length) {
     return `
       <div class="project-gallery" data-gallery>
         <div class="gallery-main">
-          <img class="detail-image" src="${card.gallery[0]}" alt="${card.title}" data-gallery-main>
+          <img class="detail-image" src="${card.gallery[0]}" alt="${cardTitle(card)}" data-gallery-main>
         </div>
         ${card.gallery.length > 1 ? `<div class="gallery-strip">${card.gallery.map((image, index) => `
           <button class="gallery-thumb ${index === 0 ? "is-active" : ""}" type="button" data-gallery-image="${image}" aria-label="Ver imagem ${index + 1}">
-            <img src="${image}" alt="${card.title} ${index + 1}">
+            <img src="${image}" alt="${cardTitle(card)} ${index + 1}">
           </button>
         `).join("")}</div>` : ""}
       </div>
@@ -1084,7 +1497,7 @@ function heroVisual(card) {
   if (card.image) {
     return `
       <div class="hero-media">
-        <img class="detail-image" src="${card.image}" alt="${card.title}">
+        <img class="detail-image" src="${card.image}" alt="${cardTitle(card)}">
       </div>
     `;
   }
@@ -1094,10 +1507,10 @@ function heroVisual(card) {
       <div class="card-top">
         <span class="label">${card.type}</span>
       </div>
-      <div class="statement">${card.statement}</div>
+      <div class="statement">${cardStatement(card)}</div>
       <div class="card-bottom">
         <div>
-          <h2 class="card-title">${card.title}</h2>
+          <h2 class="card-title">${cardTitle(card)}</h2>
           <p class="card-subtitle">${card.tags.join(" / ")}</p>
         </div>
       </div>

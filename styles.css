@@ -972,6 +972,65 @@ body.light .symbol-light {
   margin: 0 auto;
 }
 
+.article-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.article-header {
+  max-width: 920px;
+  margin: clamp(18px, 4vw, 48px) 0 clamp(18px, 4vw, 38px);
+}
+
+.article-header h1 {
+  margin: 18px 0;
+  font-size: clamp(3rem, 8vw, 8.2rem);
+  line-height: 0.88;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.article-header p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.6;
+}
+
+.article-hero {
+  margin: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.article-hero img {
+  width: 100%;
+  max-height: 78vh;
+  display: block;
+  object-fit: cover;
+}
+
+.article-body {
+  max-width: 760px;
+  margin: clamp(28px, 6vw, 76px) auto 0;
+}
+
+.article-body p {
+  margin: 0 0 1.35em;
+  color: color-mix(in srgb, var(--text) 86%, var(--muted));
+  font-size: clamp(1.05rem, 1.45vw, 1.22rem);
+  line-height: 1.75;
+}
+
+.article-body p:first-child {
+  color: var(--text);
+  font-size: clamp(1.22rem, 2vw, 1.55rem);
+  line-height: 1.55;
+}
+
 .bio-hero,
 .contact-page {
   display: grid;
