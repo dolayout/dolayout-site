@@ -1,0 +1,16 @@
+# Local runtime noise
+tmp-edge-*/
+dist/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependency folders
+node_modules/
+
+# Local environment
+.env
+.env.*
+

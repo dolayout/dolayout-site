@@ -1,0 +1,11 @@
+{
+  "name": "dolayout-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dolayout visual hub and portfolio.",
+  "scripts": {
+    "build": "node tools/build-static-site.js",
+    "serve": "node tools/dolayout-static-server.js"
+  }
+}
+

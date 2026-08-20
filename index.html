@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050505">
+    <title>Dolayout | Visual Hub</title>
+    <meta name="description" content="Dolayout, hub visual de João Dolayout para branding, websites, social media, campanhas e direção de arte.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacao principal">
+        <a class="sidebar-logo" href="#/" aria-label="Dolayout home">
+          <span class="logo-mark">do</span>
+        </a>
+        <nav class="sidebar-nav">
+          <a class="nav-icon is-active" href="#/" aria-label="Home" title="Home" data-route="home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5v-9Z"/></svg>
+          </a>
+          <button class="nav-icon" type="button" aria-label="Busca" title="Busca" data-focus-search>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.2-4.2M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z"/></svg>
+          </button>
+          <button class="nav-icon" type="button" aria-label="Adicionar" title="Adicionar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <a class="nav-icon" href="#/contato" aria-label="Contato" title="Contato" data-route="contact">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg>
+          </a>
+          <a class="nav-icon" href="#/perfil" aria-label="Perfil" title="Perfil" data-route="profile">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/></svg>
+          </a>
+        </nav>
+        <button class="nav-icon theme-toggle" type="button" aria-label="Alternar tema" title="Alternar tema">
+          <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>
+        </button>
+      </aside>
+
+      <main class="main-view">
+        <header class="topbar">
+          <a class="brand" href="#/" aria-label="Dolayout">
+            <span class="brand-fav">do</span>
+            <span class="brand-name">dolayout</span>
+          </a>
+          <label class="search-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.2-4.2M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z"/></svg>
+            <input id="searchInput" type="search" placeholder="Buscar ideias, trabalhos e cases" autocomplete="off">
+          </label>
+          <button class="mobile-theme theme-toggle" type="button" aria-label="Alternar tema">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>
+          </button>
+        </header>
+
+        <div class="category-rail" id="categoryRail" aria-label="Categorias"></div>
+
+        <div id="homeView" class="view is-visible">
+          <div class="feed-meta">
+            <p>Visual hub</p>
+            <span id="resultCount"></span>
+          </div>
+          <div class="masonry" id="feed" aria-live="polite"></div>
+        </div>
+
+        <article id="detailView" class="detail-view view" aria-live="polite"></article>
+      </main>
+
+      <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Visual">
+        <button class="lightbox-close" type="button" aria-label="Fechar">×</button>
+        <img class="lightbox-image" alt="">
+        <div class="lightbox-meta"></div>
+      </div>
+
+      <nav class="bottom-nav" aria-label="Navegacao mobile">
+        <a class="nav-icon is-active" href="#/" aria-label="Home" title="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H4.5A1.5 1.5 0 0 1 3 19.5v-9Z"/></svg>
+        </a>
+        <button class="nav-icon" type="button" aria-label="Busca" title="Busca" data-focus-search>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.2-4.2M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z"/></svg>
+        </button>
+        <button class="nav-icon add-button" type="button" aria-label="Adicionar" title="Adicionar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <a class="nav-icon" href="#/contato" aria-label="Contato" title="Contato" data-route="contact">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></svg>
+        </a>
+        <a class="nav-icon" href="#/perfil" aria-label="Perfil" title="Perfil" data-route="profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/></svg>
+        </a>
+      </nav>
+    </div>
+
+    <script src="portfolio-data.js" defer></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
