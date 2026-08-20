@@ -434,6 +434,7 @@ const cards = [
 const state = {
   category: "Todos",
   query: "",
+  language: localStorage.getItem("dolayout-language") || "en",
   liked: new Set(),
   saved: new Set()
 };
@@ -446,6 +447,8 @@ const detailView = document.querySelector("#detailView");
 const lightbox = document.querySelector("#lightbox");
 const resultCount = document.querySelector("#resultCount");
 const themeButtons = document.querySelectorAll(".theme-toggle");
+const languageToggle = document.querySelector("[data-language-toggle]");
+const feedMetaLabel = document.querySelector(".feed-meta p");
 
 const contact = {
   name: "João Dolayout",
@@ -453,6 +456,33 @@ const contact = {
   phone: "11941992365",
   phoneDisplay: "(11) 94199-2365",
   whatsapp: "https://wa.me/5511941992365"
+};
+
+const servicesByLang = {
+  en: [
+    "Branding",
+    "Visual identity",
+    "Key visual",
+    "Website design",
+    "Social media",
+    "Campaign",
+    "Editorial",
+    "Art direction",
+    "Portfolio / deck",
+    "Creative studio"
+  ],
+  pt: [
+    "Branding",
+    "Identidade visual",
+    "Key visual",
+    "Website design",
+    "Social media",
+    "Campanha",
+    "Editorial",
+    "Direção de arte",
+    "Portfólio / apresentação",
+    "Creative studio"
+  ]
 };
 
 const services = [
@@ -468,13 +498,131 @@ const services = [
   "Creative studio"
 ];
 
+const categoryLabels = {
+  en: {
+    "Todos": "All",
+    "Inspiração": "Inspiration",
+    "Portfólio": "Portfolio",
+    "Clientes": "Clients",
+    "Parceiros": "Partners"
+  },
+  pt: {
+    "Campaign": "Campanha",
+    "Website": "Sites",
+    "My Works": "Meus trabalhos",
+    "Social Media": "Social media",
+    "Art Direction": "Direção de arte",
+    "Creative Studio": "Estúdio criativo"
+  }
+};
+
+const copy = {
+  en: {
+    search: "Search ideas, works and cases",
+    visualHub: "Visual hub",
+    cards: "cards",
+    empty: "No cards found. Try another search or category.",
+    back: "Back",
+    related: "Related",
+    like: "Like",
+    share: "Share",
+    save: "Save",
+    copiedPrompt: "Card link",
+    profileLabel: "Dolayout / João",
+    profileTitle: "I build visual systems for brands that need more than a pretty logo.",
+    profileText: "I'm João Dolayout, a designer and art director from Brazil. I started Dolayout as a place to make things with more rhythm, more context and less corporate fog. Branding, websites, social media, decks, campaigns: for me, it all belongs to the same visual conversation.",
+    profileNote: "I like work that has an idea behind it and enough clarity to survive outside the presentation. Less noise, more intention. Less template, more point of view.",
+    startProject: "Start a project",
+    contactLabel: "Contact",
+    contactTitle: "Send me the idea, the mess, the brand, the almost-brief.",
+    contactText: "The more context, the better. This form turns your first message into a clean email brief.",
+    whatsapp: "WhatsApp",
+    name: "Name",
+    email: "Email",
+    phone: "WhatsApp",
+    company: "Brand / company",
+    interest: "Main interest",
+    choose: "Choose an area",
+    timeline: "Ideal timing",
+    timelineOptions: ["No rush, let's build it properly", "This month", "30 to 60 days", "Urgent"],
+    budget: "Estimated investment",
+    budgetOptions: ["Not defined yet", "Up to R$ 3k", "R$ 3k to R$ 8k", "R$ 8k to R$ 15k", "Above R$ 15k"],
+    need: "What do you need?",
+    message: "Tell me a bit about the project",
+    messagePlaceholder: "Context, goal, references, links, timing, main doubt...",
+    submit: "Send brief",
+    status: "Opening your email with the brief ready.",
+    mailSubject: "Dolayout brief"
+  },
+  pt: {
+    search: "Buscar ideias, trabalhos e cases",
+    visualHub: "Visual hub",
+    cards: "cards",
+    empty: "Nenhum card encontrado. Tente outra busca ou categoria.",
+    back: "Voltar",
+    related: "Relacionados",
+    like: "Curtir",
+    share: "Compartilhar",
+    save: "Salvar",
+    copiedPrompt: "Link do card",
+    profileLabel: "Dolayout / João",
+    profileTitle: "Eu crio sistemas visuais para marcas que precisam de mais do que um logo bonito.",
+    profileText: "Sou João Dolayout, designer e diretor de arte. A Dolayout nasceu como um lugar para fazer as coisas com mais ritmo, mais contexto e menos neblina corporativa. Branding, sites, social, apresentações, campanhas: para mim, tudo faz parte da mesma conversa visual.",
+    profileNote: "Gosto de trabalho que tem ideia por trás e clareza suficiente para existir fora da apresentação. Menos ruído, mais intenção. Menos template, mais ponto de vista.",
+    startProject: "Começar um projeto",
+    contactLabel: "Contato",
+    contactTitle: "Me manda a ideia, a bagunça, a marca, o quase-briefing.",
+    contactText: "Quanto mais contexto, melhor. O formulário organiza sua primeira mensagem em um briefing por e-mail.",
+    whatsapp: "WhatsApp",
+    name: "Nome",
+    email: "E-mail",
+    phone: "WhatsApp",
+    company: "Marca / empresa",
+    interest: "Interesse principal",
+    choose: "Escolha uma área",
+    timeline: "Prazo ideal",
+    timelineOptions: ["Sem pressa, quero construir com calma", "Este mês", "30 a 60 dias", "Tenho urgência"],
+    budget: "Investimento estimado",
+    budgetOptions: ["Ainda não defini", "Até R$ 3 mil", "R$ 3 mil a R$ 8 mil", "R$ 8 mil a R$ 15 mil", "Acima de R$ 15 mil"],
+    need: "O que você precisa?",
+    message: "Conte um pouco do projeto",
+    messagePlaceholder: "Contexto, objetivo, referências, links, prazo, dúvida principal...",
+    submit: "Enviar briefing",
+    status: "Abrindo seu e-mail com o briefing pronto.",
+    mailSubject: "Briefing Dolayout"
+  }
+};
+
 function init() {
   const storedTheme = localStorage.getItem("dolayout-theme");
   if (storedTheme === "light") document.body.classList.add("light");
+  applyLanguage();
   renderCategories();
   renderFeed();
   bindEvents();
   route();
+}
+
+function t(key) {
+  return copy[state.language][key] || copy.en[key] || key;
+}
+
+function serviceList() {
+  return servicesByLang[state.language] || servicesByLang.en;
+}
+
+function categoryLabel(category) {
+  return categoryLabels[state.language]?.[category] || category;
+}
+
+function applyLanguage() {
+  document.documentElement.lang = state.language === "pt" ? "pt-BR" : "en";
+  searchInput.placeholder = t("search");
+  if (feedMetaLabel) feedMetaLabel.textContent = t("visualHub");
+  if (languageToggle) {
+    languageToggle.textContent = state.language === "en" ? "PT-BR" : "EN";
+    languageToggle.setAttribute("aria-label", state.language === "en" ? "Mudar para portugues" : "Change to English");
+  }
 }
 
 function bindEvents() {
@@ -499,6 +647,15 @@ function bindEvents() {
       document.body.classList.toggle("light");
       localStorage.setItem("dolayout-theme", document.body.classList.contains("light") ? "light" : "dark");
     });
+  });
+
+  languageToggle?.addEventListener("click", () => {
+    state.language = state.language === "en" ? "pt" : "en";
+    localStorage.setItem("dolayout-language", state.language);
+    applyLanguage();
+    renderCategories();
+    renderFeed();
+    route();
   });
 
   window.addEventListener("hashchange", route);
@@ -568,7 +725,7 @@ function isFeedReadyPortfolioImage(image) {
 function renderCategories() {
   categoryRail.innerHTML = categories.map((category) => `
     <button class="category-button ${category === state.category ? "is-active" : ""}" type="button" data-category="${category}">
-      ${category}
+      ${categoryLabel(category)}
     </button>
   `).join("");
 
@@ -598,10 +755,10 @@ function filteredCards(excludeId) {
 }
 
 function renderFeed(items = filteredCards()) {
-  resultCount.textContent = `${items.length} cards`;
+  resultCount.textContent = `${items.length} ${t("cards")}`;
 
   if (!items.length) {
-    feed.innerHTML = `<div class="empty-state">Nenhum card encontrado. Tente outra busca ou categoria.</div>`;
+    feed.innerHTML = `<div class="empty-state">${t("empty")}</div>`;
     return;
   }
 
@@ -741,25 +898,28 @@ function renderProfile() {
   detailView.innerHTML = `
     <div class="profile-page">
       <section class="bio-hero">
-        <div class="bio-mark">do</div>
+        <div class="bio-mark">
+          <img class="brand-symbol symbol-dark" src="assets/dolayout/brand/simbolo-branco.svg" alt="">
+          <img class="brand-symbol symbol-light" src="assets/dolayout/brand/simbolo-escuro.svg" alt="">
+        </div>
         <div class="bio-copy">
-          <span class="label">Dolayout / João</span>
-          <h1>Direção visual para marcas que precisam parecer vivas.</h1>
-          <p>Sou João Dolayout, designer e diretor de arte. Crio identidades, sites, campanhas e sistemas visuais com foco em clareza, ritmo e presença. Meu trabalho mistura pensamento de marca, composição editorial e execução prática para fazer ideias saírem do briefing e ganharem forma no mundo.</p>
+          <span class="label">${t("profileLabel")}</span>
+          <h1>${t("profileTitle")}</h1>
+          <p>${t("profileText")}</p>
           <div class="bio-actions">
-            <a href="#/contato">Começar um projeto</a>
+            <a href="#/contato">${t("startProject")}</a>
             <a href="mailto:${contact.email}">${contact.email}</a>
             <a href="${contact.whatsapp}" target="_blank" rel="noreferrer">${contact.phoneDisplay}</a>
           </div>
         </div>
       </section>
 
-      <section class="service-cloud" aria-label="Serviços">
-        ${services.map((service) => `<span>${service}</span>`).join("")}
+      <section class="service-cloud" aria-label="${state.language === "pt" ? "Serviços" : "Services"}">
+        ${serviceList().map((service) => `<span>${service}</span>`).join("")}
       </section>
 
       <section class="profile-note">
-        <p>Branding, websites e conteúdo visual não são peças separadas para mim. São partes do mesmo sistema: como a marca se apresenta, conversa, vende e é lembrada.</p>
+        <p>${t("profileNote")}</p>
       </section>
     </div>
   `;
@@ -772,11 +932,11 @@ function renderContact() {
   detailView.innerHTML = `
     <div class="contact-page">
       <section class="contact-intro">
-        <span class="label">Contato</span>
-        <h1>Me chama com uma ideia, uma marca ou um problema visual.</h1>
-        <p>Quanto mais contexto, melhor. O formulário organiza o briefing inicial e abre uma mensagem pronta no seu e-mail.</p>
+        <span class="label">${t("contactLabel")}</span>
+        <h1>${t("contactTitle")}</h1>
+        <p>${t("contactText")}</p>
         <div class="contact-links">
-          <a href="${contact.whatsapp}" target="_blank" rel="noreferrer">WhatsApp ${contact.phoneDisplay}</a>
+          <a href="${contact.whatsapp}" target="_blank" rel="noreferrer">${t("whatsapp")} ${contact.phoneDisplay}</a>
           <a href="tel:+5511941992365">${contact.phoneDisplay}</a>
           <a href="mailto:${contact.email}">${contact.email}</a>
         </div>
@@ -784,55 +944,48 @@ function renderContact() {
 
       <form class="contact-form" id="contactForm">
         <div class="form-grid">
-          <label>Nome
+          <label>${t("name")}
             <input name="name" autocomplete="name" required>
           </label>
-          <label>E-mail
+          <label>${t("email")}
             <input name="email" type="email" autocomplete="email" required>
           </label>
-          <label>WhatsApp
+          <label>${t("phone")}
             <input name="phone" type="tel" autocomplete="tel">
           </label>
-          <label>Marca / empresa
+          <label>${t("company")}
             <input name="company" autocomplete="organization">
           </label>
-          <label>Interesse principal
+          <label>${t("interest")}
             <select name="interest" required>
-              <option value="">Escolha uma área</option>
-              ${services.map((service) => `<option>${service}</option>`).join("")}
+              <option value="">${t("choose")}</option>
+              ${serviceList().map((service) => `<option>${service}</option>`).join("")}
             </select>
           </label>
-          <label>Prazo ideal
+          <label>${t("timeline")}
             <select name="timeline">
-              <option>Sem pressa, quero construir com calma</option>
-              <option>Este mês</option>
-              <option>30 a 60 dias</option>
-              <option>Tenho urgência</option>
+              ${t("timelineOptions").map((option) => `<option>${option}</option>`).join("")}
             </select>
           </label>
-          <label>Investimento estimado
+          <label>${t("budget")}
             <select name="budget">
-              <option>Ainda não defini</option>
-              <option>Até R$ 3 mil</option>
-              <option>R$ 3 mil a R$ 8 mil</option>
-              <option>R$ 8 mil a R$ 15 mil</option>
-              <option>Acima de R$ 15 mil</option>
+              ${t("budgetOptions").map((option) => `<option>${option}</option>`).join("")}
             </select>
           </label>
           <fieldset class="service-options">
-            <legend>O que você precisa?</legend>
-            ${services.map((service) => `
+            <legend>${t("need")}</legend>
+            ${serviceList().map((service) => `
               <label>
                 <input type="checkbox" name="services" value="${service}">
                 <span>${service}</span>
               </label>
             `).join("")}
           </fieldset>
-          <label class="full-field">Conte um pouco do projeto
-            <textarea id="projectMessage" name="message" rows="7" placeholder="Contexto, objetivo, referências, links, prazo, dúvida principal..." required></textarea>
+          <label class="full-field">${t("message")}
+            <textarea id="projectMessage" name="message" rows="7" placeholder="${t("messagePlaceholder")}" required></textarea>
           </label>
         </div>
-        <button class="submit-brief" type="submit">Enviar briefing</button>
+        <button class="submit-brief" type="submit">${t("submit")}</button>
         <p class="form-status" id="formStatus" role="status"></p>
       </form>
     </div>
@@ -854,12 +1007,12 @@ function renderDetail(card) {
       <div class="detail-actions-top">
         <button class="back-button" type="button" data-back>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-          Voltar
+          ${t("back")}
         </button>
         <div class="detail-action-row">
-          ${actionButton("like", "Curtir", "M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7Z", state.liked.has(card.id))}
-          ${actionButton("share", "Compartilhar", "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14", false)}
-          ${actionButton("save", "Salvar", "M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z", state.saved.has(card.id))}
+          ${actionButton("like", t("like"), "M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7Z", state.liked.has(card.id))}
+          ${actionButton("share", t("share"), "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14", false)}
+          ${actionButton("save", t("save"), "M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z", state.saved.has(card.id))}
         </div>
       </div>
 
@@ -877,7 +1030,7 @@ function renderDetail(card) {
         </aside>
       </div>
 
-      <h2 class="related-title">Relacionados</h2>
+      <h2 class="related-title">${t("related")}</h2>
       <div class="masonry related-masonry">
         ${related.map(cardTemplate).join("")}
       </div>
@@ -990,22 +1143,22 @@ function submitContactForm(event) {
   const data = new FormData(form);
   const selectedServices = data.getAll("services");
   const lines = [
-    `Nome: ${data.get("name") || ""}`,
-    `E-mail: ${data.get("email") || ""}`,
-    `WhatsApp: ${data.get("phone") || ""}`,
-    `Marca/empresa: ${data.get("company") || ""}`,
-    `Interesse principal: ${data.get("interest") || ""}`,
-    `Serviços: ${selectedServices.length ? selectedServices.join(", ") : "Não informado"}`,
-    `Prazo: ${data.get("timeline") || ""}`,
-    `Investimento estimado: ${data.get("budget") || ""}`,
+    `${t("name")}: ${data.get("name") || ""}`,
+    `${t("email")}: ${data.get("email") || ""}`,
+    `${t("phone")}: ${data.get("phone") || ""}`,
+    `${t("company")}: ${data.get("company") || ""}`,
+    `${t("interest")}: ${data.get("interest") || ""}`,
+    `${state.language === "pt" ? "Serviços" : "Services"}: ${selectedServices.length ? selectedServices.join(", ") : state.language === "pt" ? "Não informado" : "Not informed"}`,
+    `${t("timeline")}: ${data.get("timeline") || ""}`,
+    `${t("budget")}: ${data.get("budget") || ""}`,
     "",
-    "Projeto:",
+    `${state.language === "pt" ? "Projeto" : "Project"}:`,
     data.get("message") || ""
   ];
-  const subject = encodeURIComponent(`Briefing Dolayout - ${data.get("name") || "Novo projeto"}`);
+  const subject = encodeURIComponent(`${t("mailSubject")} - ${data.get("name") || (state.language === "pt" ? "Novo projeto" : "New project")}`);
   const body = encodeURIComponent(lines.join("\n"));
   const status = form.querySelector("#formStatus");
-  status.textContent = "Abrindo seu e-mail com o briefing pronto.";
+  status.textContent = t("status");
   window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
 }
 
@@ -1028,7 +1181,7 @@ async function shareCard(card) {
   try {
     await navigator.clipboard.writeText(url);
   } catch {
-    window.prompt("Link do card", url);
+    window.prompt(t("copiedPrompt"), url);
   }
 }
 

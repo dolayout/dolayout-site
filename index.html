@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#050505">
     <title>Dolayout | Visual Hub</title>
-    <meta name="description" content="Dolayout, hub visual de João Dolayout para branding, websites, social media, campanhas e direção de arte.">
+    <meta name="description" content="Dolayout, a visual hub by João Dolayout for branding, websites, social media, campaigns and art direction.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar" aria-label="Navegacao principal">
         <a class="sidebar-logo" href="#/" aria-label="Dolayout home">
-          <span class="logo-mark">do</span>
+          <img class="brand-symbol symbol-dark" src="assets/dolayout/brand/simbolo-branco.svg" alt="">
+          <img class="brand-symbol symbol-light" src="assets/dolayout/brand/simbolo-escuro.svg" alt="">
         </a>
         <nav class="sidebar-nav">
           <a class="nav-icon is-active" href="#/" aria-label="Home" title="Home" data-route="home">
@@ -42,7 +43,10 @@
       <main class="main-view">
         <header class="topbar">
           <a class="brand" href="#/" aria-label="Dolayout">
-            <span class="brand-fav">do</span>
+            <span class="brand-fav">
+              <img class="brand-symbol symbol-dark" src="assets/dolayout/brand/simbolo-branco.svg" alt="">
+              <img class="brand-symbol symbol-light" src="assets/dolayout/brand/simbolo-escuro.svg" alt="">
+            </span>
             <span class="brand-name">dolayout</span>
           </a>
           <label class="search-wrap">
@@ -52,6 +56,7 @@
           <button class="mobile-theme theme-toggle" type="button" aria-label="Alternar tema">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>
           </button>
+          <button class="language-toggle" type="button" data-language-toggle aria-label="Change language">PT-BR</button>
         </header>
 
         <div class="category-rail" id="categoryRail" aria-label="Categorias"></div>
