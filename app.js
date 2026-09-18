@@ -1283,8 +1283,8 @@ function renderProfile() {
     <div class="profile-page">
       <section class="bio-hero">
         <div class="bio-mark">
-          <img class="brand-symbol symbol-dark" src="assets/dolayout/brand/simbolo-branco.svg" alt="">
-          <img class="brand-symbol symbol-light" src="assets/dolayout/brand/simbolo-escuro.svg" alt="">
+          <img class="brand-symbol symbol-dark" src="assets/dolayout/brand/dolayout-symbol-full-br.svg" alt="">
+          <img class="brand-symbol symbol-light" src="assets/dolayout/brand/dolayout-symbol-full-dark.svg" alt="">
         </div>
         <div class="bio-copy">
           <span class="label">${t("profileLabel")}</span>
