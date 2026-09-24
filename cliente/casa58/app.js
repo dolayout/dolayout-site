@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = '5511998679980';
+const WHATSAPP_NUMBER = '5548988723955';
 const products = [
   {id:'pizza-queijos',cat:'pizza',tag:'Pizza individual · 30 cm',name:'Tomate & queijos',desc:'Molho da casa, muçarela e borda dourada no azeite.',price:36,image:'assets/menu/pizza-tomate-queijos.png'},
   {id:'pizza-linguica',cat:'pizza',tag:'Pizza individual · 30 cm',name:'Linguiça Blumenau',desc:'Linguiça Blumenau, muçarela e cebola roxa.',price:42,image:'assets/menu/pizza-linguica.png'},
