@@ -29,10 +29,21 @@ function copyFile(relativePath) {
   fs.copyFileSync(from, to);
 }
 
+function copyDirectory(relativePath) {
+  const sourceDir = path.join(root, relativePath);
+  if (!fs.existsSync(sourceDir)) return;
+  for (const entry of fs.readdirSync(sourceDir, { withFileTypes: true })) {
+    const childPath = path.join(relativePath, entry.name);
+    if (entry.isDirectory()) copyDirectory(childPath);
+    else copyFile(childPath);
+  }
+}
+
 removeDir(outDir);
 fs.mkdirSync(outDir, { recursive: true });
 
 files.forEach(copyFile);
+copyDirectory("cliente/casa58");
 
 const referencedAssets = new Set();
 for (const relativePath of ["index.html", "styles.css", "app.js", "portfolio-data.js"]) {

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#faf4ea" />
+  <meta name="description" content="Casa 58: pizzas de massa caseira, café, almoço por encomenda e bebidas na Praia da Gamboa." />
+  <base href="/cliente/casa58/" />
+  <title>Casa 58 — pizzas e massas na Gamboa</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/logo-casa58-header.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="header-logo" href="#inicio" aria-label="Casa 58, início"><img src="assets/brand/logo-casa58-header.svg" alt="Casa 58" /></a>
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Ativar modo escuro" title="Alternar modo escuro"><span class="theme-icon" aria-hidden="true">◐</span><span class="theme-label">Modo escuro</span></button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="fullMenu"><span>Menu</span><span class="hamburger" aria-hidden="true"><i></i><i></i></span></button>
+    </div>
+  </header>
+
+  <nav class="full-menu" id="fullMenu" aria-label="Menu principal" inert>
+    <div class="full-menu-inner">
+      <p class="overline">Casa 58 · Gamboa, SC</p>
+      <a href="#inicio" data-menu-link><span>01</span>Início</a>
+      <a href="#cardapio" data-menu-link><span>02</span>Cardápio</a>
+      <a href="#encomendas" data-menu-link><span>03</span>Encomendas</a>
+      <a href="#casa" data-menu-link><span>04</span>A casa</a>
+      <div class="full-menu-bottom"><p>Pizza de massa caseira no caminho da praia.</p><button id="menuCart" type="button">Ver meu pedido <span>↗</span></button></div>
+    </div>
+  </nav>
+
+  <main id="inicio">
+    <section class="hero" aria-label="Casa 58, pizzas e massas">
+      <div class="hero-photo" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-content wrap">
+        <p class="hero-location">Praia da Gamboa · Garopaba / SC</p>
+        <h1>O caminho da praia<br />passa pela <em>Casa 58.</em></h1>
+        <p>Pizza de massa caseira, café e comida boa para levar. Escolha o seu momento.</p>
+        <a class="hero-cta" href="#cardapio">Explorar cardápio <span>↓</span></a>
+      </div>
+      <div class="hero-bottom wrap"><span>Feito na Gamboa, com calma.</span><span>Role para descobrir ↓</span></div>
+    </section>
+
+    <section class="menu-section wrap" id="cardapio">
+      <div class="section-head"><div><p class="overline">Do primeiro café à última fatia</p><h2>O cardápio</h2></div><p>Receita de família, escolhas simples e uma boa pausa entre a rua e a praia.</p></div>
+      <div class="category-grid" aria-label="Categorias do cardápio">
+        <button class="category-card" data-category="pizza" type="button"><img src="assets/menu/categoria-pizzas.png" alt="Pizza de massa caseira" /><span class="category-overlay"><small>01 / A assinatura</small><strong>Pizzas</strong><i aria-hidden="true">↗</i></span></button>
+        <button class="category-card" data-category="cafe" type="button"><img src="assets/menu/categoria-cafe.png" alt="Café e pão de queijo" /><span class="category-overlay"><small>02 / Para começar</small><strong>Café & manhã</strong><i aria-hidden="true">↗</i></span></button>
+        <button class="category-card" data-category="almoco" type="button"><img src="assets/menu/categoria-almoco.png" alt="Almoço caseiro" /><span class="category-overlay"><small>03 / Com hora marcada</small><strong>Almoço</strong><i aria-hidden="true">↗</i></span></button>
+        <button class="category-card" data-category="bebidas" type="button"><img src="assets/menu/categoria-bebidas.png" alt="Bebidas geladas" /><span class="category-overlay"><small>04 / Para acompanhar</small><strong>Bebidas</strong><i aria-hidden="true">↗</i></span></button>
+      </div>
+      <div class="products-heading"><div><p class="overline">Escolha e adicione ao pedido</p><h3 id="productsTitle">Tudo da casa</h3></div><div class="filters" role="group" aria-label="Filtrar produtos"><button class="filter active" data-filter="todos" type="button">Tudo</button><button class="filter" data-filter="pizza" type="button">Pizzas</button><button class="filter" data-filter="cafe" type="button">Café</button><button class="filter" data-filter="almoco" type="button">Almoço</button><button class="filter" data-filter="bebidas" type="button">Bebidas</button></div></div>
+      <div class="menu-grid" id="menuGrid"></div>
+      <p class="price-note">Imagens ilustrativas. Valores sugeridos para prévia do cardápio; confirme preço e disponibilidade antes de divulgar.</p>
+    </section>
+
+    <section class="order-band" id="encomendas"><div class="wrap order-inner"><div><p class="overline">Quinta, sexta e sábado</p><h2>Almoço com hora marcada.</h2><p>Feito em pequenas quantidades, com reserva até o dia anterior.</p></div><a href="#cardapio" class="outline-button" data-filter-link="almoco">Ver almoços <span>↗</span></a></div></section>
+    <section class="about wrap" id="casa"><div class="about-mark"><img src="assets/brand/arco-01.svg" alt="" /></div><div><p class="overline">Nossa casa</p><h2>Uma receita de família. Uma parada boa na Gamboa.</h2><p>A pizza individual de 30 cm é a nossa assinatura: massa caseira, aberta no azeite e assada até ficar dourada. Um balcão pequeno, de passagem e de encontro.</p><p class="hours">Horários sugeridos na baixa temporada: qui–sex, 10h–19h · sáb–dom, 9h–19h.</p></div></section>
+  </main>
+
+  <div class="cart-backdrop" id="cartBackdrop" hidden></div>
+  <aside class="cart" id="cart" aria-label="Seu pedido" aria-hidden="true" inert><div class="cart-top"><div><p class="overline">Seu pedido</p><h3 id="cartTitle">Nada por aqui ainda</h3></div><button class="cart-close" id="cartClose" type="button" aria-label="Fechar pedido">×</button></div><div id="cartItems" class="cart-items"></div><div class="cart-bottom"><div class="total"><span>Total estimado</span><strong id="cartTotal">R$ 0,00</strong></div><button class="whatsapp-button" id="whatsappButton" type="button">Enviar pelo WhatsApp <span>↗</span></button><p class="cart-note">A equipe confirma o pedido, os valores e o horário pelo WhatsApp.</p></div></aside>
+  <button class="floating-cart" id="floatingCart" type="button" aria-label="Abrir pedido"><span>Meu pedido</span><b id="cartCount">0</b></button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <footer class="footer"><div class="wrap footer-inner"><img src="assets/brand/logo-casa58-header.svg" alt="Casa 58" /><span>Entre a rua e a praia · Praia da Gamboa, Garopaba / SC</span><span>Casa 58 © 2026</span></div></footer>
+  <script src="app.js"></script>
+</body>
+</html>
