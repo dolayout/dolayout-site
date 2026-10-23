@@ -438,6 +438,126 @@ body.light .symbol-light {
   inset: auto 18px 18px;
 }
 
+.portfolio-feed-card {
+  background: #07003f;
+  touch-action: pan-y;
+}
+
+.portfolio-feed-stage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #07003f;
+}
+
+.portfolio-feed-media,
+.portfolio-feed-image,
+.portfolio-feed-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.portfolio-feed-image,
+.portfolio-feed-video {
+  object-fit: cover;
+}
+
+.portfolio-feed-stage > .label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+}
+
+.portfolio-feed-count {
+  position: absolute;
+  right: 16px;
+  bottom: 15px;
+  z-index: 2;
+  color: #fff;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+}
+
+.portfolio-feed-count b {
+  font-weight: 800;
+}
+
+.portfolio-feed-count i {
+  color: rgba(255, 255, 255, 0.68);
+  font-style: normal;
+}
+
+.portfolio-feed-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+}
+
+.portfolio-feed-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.portfolio-feed-dot.is-active {
+  width: 14px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.portfolio-feed-control {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  padding: 0;
+  background: rgba(7, 7, 7, 0.72);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 160ms ease, background 160ms ease;
+}
+
+.portfolio-feed-control:hover {
+  background: rgba(7, 7, 7, 0.96);
+}
+
+.portfolio-feed-control.is-previous {
+  left: 10px;
+}
+
+.portfolio-feed-control.is-next {
+  right: 10px;
+}
+
+.portfolio-feed-control svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.portfolio-feed-card:hover .portfolio-feed-control,
+.portfolio-feed-card:focus-within .portfolio-feed-control {
+  opacity: 1;
+}
+
 .art-pin {
   background: var(--bg);
 }
@@ -873,6 +993,10 @@ body.light .symbol-light {
   display: block;
 }
 
+.detail-image.detail-video {
+  background: #07003f;
+}
+
 .project-gallery {
   display: grid;
   min-height: min(72vh, 760px);
@@ -885,6 +1009,7 @@ body.light .symbol-light {
   display: grid;
   place-items: center;
   padding: 18px;
+  overflow: hidden;
 }
 
 .gallery-strip {
@@ -924,6 +1049,23 @@ body.light .symbol-light {
   display: block;
 }
 
+.gallery-thumb.is-video {
+  display: grid;
+  place-items: center;
+  background: #07003f;
+  color: #fff;
+}
+
+.gallery-video-mark {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  font-size: 0.66rem;
+}
+
 .detail-copy {
   position: sticky;
   top: 156px;
@@ -955,6 +1097,20 @@ body.light .symbol-light {
   margin-bottom: 18px;
   color: var(--muted);
   font-size: 0.84rem;
+}
+
+.project-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  margin: 8px 0 20px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.project-hashtags span {
+  white-space: nowrap;
 }
 
 .credit-tag {
@@ -1510,5 +1666,13 @@ body.light .symbol-light {
   .more-button {
     width: 26px;
     height: 26px;
+  }
+}
+
+@media (hover: none) {
+  .portfolio-feed-control {
+    width: 30px;
+    height: 30px;
+    opacity: 0.82;
   }
 }

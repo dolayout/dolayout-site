@@ -5,18 +5,14 @@ const categories = [
   "Branding",
   "Identity",
   "Key Visual",
-  "Campaign",
-  "Clientes",
-  "Parceiros",
-  "My Works",
   "Social Media",
-  "Website",
-  "Posters",
+  "Website Design",
+  "Campaign",
+  "Packaging",
+  "Menu Design",
   "Editorial",
-  "Motion",
   "Art Direction",
-  "Creative Studio",
-  "Art/Design"
+  "Creative Studio"
 ];
 
 // The generated project boards duplicate real pins and can combine unrelated assets.
@@ -755,19 +751,7 @@ const cards = uniqueCardsByImage([
     statement: "Shape / Motion",
     statementColor: "#f2b5d4"
   }
-].filter((card) => ![
-  "make-something-today",
-  "ideas-grow",
-  "perfect-not-needed",
-  "do-it-today",
-  "brand-board-arca",
-  "client-atelier-casa",
-  "partner-print-lab",
-  "portfolio-web-grid",
-  "branding-festival",
-  "faca-hoje",
-  "art-design-shapes"
-].includes(card.id)));
+].filter((card) => card.article || card.parentId));
 
 function uniqueCardsByImage(items) {
   const seenImages = new Set();
@@ -852,16 +836,27 @@ const categoryLabels = {
     "Todos": "All",
     "Inspiração": "Inspiration",
     "Portfólio": "Portfolio",
-    "Clientes": "Clients",
-    "Parceiros": "Partners"
+    "Branding": "Branding",
+    "Identity": "Identity",
+    "Key Visual": "Key Visual",
+    "Social Media": "Social Media",
+    "Website Design": "Website Design",
+    "Campaign": "Campaign",
+    "Packaging": "Packaging",
+    "Menu Design": "Menu Design",
+    "Editorial": "Editorial",
+    "Art Direction": "Art Direction",
+    "Creative Studio": "Creative Studio"
   },
   pt: {
+    "Identity": "Identidade",
     "Campaign": "Campanha",
-    "Website": "Sites",
-    "My Works": "Meus trabalhos",
-    "Social Media": "Social media",
+    "Website Design": "Sites",
+    "Social Media": "Redes sociais",
     "Art Direction": "Direção de arte",
-    "Creative Studio": "Estúdio criativo"
+    "Creative Studio": "Estúdio criativo",
+    "Menu Design": "Cardápios",
+    "Packaging": "Embalagem"
   }
 };
 
@@ -1039,6 +1034,38 @@ function buildPortfolioPins(projects) {
   return projects.flatMap((project) => {
     if (project.hidden) return [];
 
+    if (project.feedCarousel?.length) {
+      const categories = project.categories || [project.category];
+      return [{
+        id: `${project.id}-pin-1`,
+        title: project.title,
+        titlePt: project.titlePt,
+        category: categories[0] || project.category,
+        categories,
+        type: "case completo",
+        description: project.description,
+        descriptionPt: project.descriptionPt,
+        tags: [...new Set([...(project.tags || []), "visual", "pin"])],
+        hashtags: project.hashtags || [],
+        downloadable: false,
+        credit: project.credit,
+        creditPt: project.creditPt,
+        height: 500,
+        tone: project.tone,
+        palette: project.palette,
+        image: project.feedCarousel[0],
+        images: project.feedCarousel,
+        gallery: project.gallery || [],
+        feedCarousel: true,
+        statement: project.title,
+        statementColor: "#ffffff",
+        source: project.source,
+        externalLinks: project.externalLinks || [],
+        parentId: project.id,
+        openMode: "detail"
+      }];
+    }
+
     const sourceImages = project.feedImages?.length ? project.feedImages : (project.gallery || []).slice(1);
     const images = uniquePortfolioImages(sourceImages)
       .filter(isFeedReadyPortfolioImage)
@@ -1122,12 +1149,11 @@ function filteredCards(excludeId) {
     const categoryMatch = state.category === "Todos"
       || card.category === state.category
       || (card.categories && card.categories.includes(state.category))
-      || (state.category === "Portfólio" && card.type === "portfólio")
+      || (state.category === "Portfólio" && Boolean(card.parentId))
       || (state.category === "Branding" && card.tags.includes("branding"))
-      || (state.category === "Website" && card.tags.includes("website"))
-      || (state.category === "Art/Design" && card.tags.includes("art/design"));
+      || (state.category === "Website Design" && card.tags.includes("website"));
 
-    const haystack = [card.title, card.category, card.type, card.description, ...card.tags].join(" ").toLowerCase();
+    const haystack = [card.title, card.category, card.type, card.description, ...(card.categories || []), ...(card.tags || []), ...(card.hashtags || [])].join(" ").toLowerCase();
     const queryMatch = !state.query || haystack.includes(state.query);
     return categoryMatch && queryMatch && card.id !== excludeId;
   });
@@ -1144,6 +1170,12 @@ function renderFeed(items = filteredCards()) {
   feed.innerHTML = items.map(cardTemplate).join("");
   feed.querySelectorAll(".pin-card").forEach((card) => {
     card.addEventListener("click", (event) => {
+      if (event.target.closest(".portfolio-feed-control")) return;
+      if (card.dataset.swiped === "true") {
+        delete card.dataset.swiped;
+        event.preventDefault();
+        return;
+      }
       if (event.target.closest(".more-button")) return;
       const item = cards.find((entry) => entry.id === card.dataset.id);
       if (!item) return;
@@ -1153,6 +1185,50 @@ function renderFeed(items = filteredCards()) {
         openLightbox(item);
       }
     });
+
+    card.addEventListener("keydown", (event) => {
+      if (event.target !== card || !["Enter", " "].includes(event.key)) return;
+      event.preventDefault();
+      card.click();
+    });
+
+    if (card.dataset.feedCarousel === "true") {
+      let startX = null;
+      let activeIndex = 0;
+      const slides = JSON.parse(card.dataset.slides);
+      const stage = card.querySelector(".portfolio-feed-stage");
+      const dots = card.querySelectorAll(".portfolio-feed-dot");
+      const showSlide = (direction) => {
+        activeIndex = (activeIndex + direction + slides.length) % slides.length;
+        stage.querySelector(".portfolio-feed-media").innerHTML = feedCarouselMedia(slides[activeIndex], cardTitle(cards.find((item) => item.id === card.dataset.id)));
+        stage.querySelector(".portfolio-feed-current").textContent = String(activeIndex + 1).padStart(2, "0");
+        dots.forEach((dot, index) => dot.classList.toggle("is-active", index === activeIndex));
+      };
+
+      card.querySelectorAll("[data-carousel-step]").forEach((control) => {
+        control.addEventListener("click", (event) => {
+          event.stopPropagation();
+          showSlide(Number(control.dataset.carouselStep));
+        });
+      });
+
+      const startDrag = (clientX) => { startX = clientX; };
+      const finishDrag = (clientX) => {
+        if (startX === null) return;
+        const delta = clientX - startX;
+        startX = null;
+        if (Math.abs(delta) < 36) return;
+        showSlide(delta < 0 ? 1 : -1);
+        card.dataset.swiped = "true";
+      };
+      stage.addEventListener("pointerdown", (event) => startDrag(event.clientX));
+      stage.addEventListener("mousedown", (event) => startDrag(event.clientX));
+      stage.addEventListener("touchstart", (event) => startDrag(event.changedTouches[0].clientX), { passive: true });
+      window.addEventListener("pointerup", (event) => finishDrag(event.clientX));
+      window.addEventListener("mouseup", (event) => finishDrag(event.clientX));
+      window.addEventListener("touchend", (event) => finishDrag(event.changedTouches[0].clientX), { passive: true });
+      stage.addEventListener("pointercancel", () => { startX = null; });
+    }
   });
 }
 
@@ -1163,12 +1239,13 @@ function shouldOpenDetail(card) {
 }
 
 function cardTemplate(card) {
+  if (card.feedCarousel) return feedCarouselCardTemplate(card);
   if (card.layout) return artDirectedCardTemplate(card);
 
-  const cardLabel = `<span class="label">${card.category}</span>`;
+  const cardLabel = card.type === "article" ? "" : `<span class="label">${categoryLabel(card.category)}</span>`;
   const media = card.image ? `<img class="card-media" src="${card.image}" alt="${cardTitle(card)}" loading="lazy">` : "";
   const mediaClass = card.image ? "media-visual" : "";
-  const showText = !card.image || card.category === "Nota do Dia" || card.type === "article" || card.showFeedTitle;
+  const showText = !card.image || card.category === "Nota do Dia" || (card.type !== "article" && card.showFeedTitle);
 
   return `
     <button class="pin-card" type="button" data-id="${card.id}" data-tone="${card.tone}" style="--card-height:${card.height}px; --c1:${card.palette[0]}; --c2:${card.palette[1]}; --statement-color:${card.statementColor}; --object-position:${card.objectPosition || "center"};">
@@ -1188,6 +1265,29 @@ function cardTemplate(card) {
         </div>
       </div>
     </button>
+  `;
+}
+
+function feedCarouselMedia(src, alt) {
+  if (/\.(mp4|webm|ogg)(\?|$)/i.test(src)) {
+    return `<video class="portfolio-feed-video" src="${src}" autoplay muted playsinline loop preload="metadata" aria-label="${alt}"></video>`;
+  }
+  return `<img class="portfolio-feed-image" src="${src}" alt="${alt}" loading="lazy">`;
+}
+
+function feedCarouselCardTemplate(card) {
+  const slides = card.images || [card.image];
+  return `
+    <div class="pin-card portfolio-feed-card" role="button" tabindex="0" data-id="${card.id}" data-tone="${card.tone}" data-feed-carousel="true" data-slides='${JSON.stringify(slides)}' style="--c1:${card.palette[0]}; --c2:${card.palette[1]};">
+      <div class="portfolio-feed-stage">
+        <span class="portfolio-feed-media">${feedCarouselMedia(slides[0], cardTitle(card))}</span>
+        <span class="label">${categoryLabel(card.category)}</span>
+        <span class="portfolio-feed-count"><b class="portfolio-feed-current">01</b> <i>/ ${String(slides.length).padStart(2, "0")}</i></span>
+        <span class="portfolio-feed-dots" aria-hidden="true">${slides.map((_, index) => `<i class="portfolio-feed-dot ${index === 0 ? "is-active" : ""}"></i>`).join("")}</span>
+        <button class="portfolio-feed-control is-previous" type="button" data-carousel-step="-1" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="portfolio-feed-control is-next" type="button" data-carousel-step="1" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+    </div>
   `;
 }
 
@@ -1390,6 +1490,7 @@ function renderDetail(card) {
   const related = cards
     .filter((item) => item.id !== card.id && (item.category === card.category || item.tags.some((tag) => card.tags.includes(tag))))
     .slice(0, 6);
+  const projectHashtags = (card.hashtags || []).slice(0, 7);
 
   detailView.innerHTML = `
     <div class="detail-shell">
@@ -1414,7 +1515,8 @@ function renderDetail(card) {
           ${card.source ? `<span class="credit-tag">${card.source === "LAF" ? "LAF" : "DO"}</span>` : ""}
           <h1>${cardTitle(card)}</h1>
           <p>${cardDescription(card)}</p>
-          <span class="credit">${t("credits")}: ${card.credit}</span>
+          <span class="credit">${t("credits")}: ${state.language === "pt" && card.creditPt ? card.creditPt : card.credit}</span>
+          ${projectHashtags.length ? `<div class="project-hashtags" aria-label="${state.language === "pt" ? "Tags do projeto" : "Project tags"}">${projectHashtags.map((tag) => `<span>#${tag}</span>`).join("")}</div>` : ""}
           ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
         </aside>
       </div>
@@ -1446,7 +1548,7 @@ function renderDetail(card) {
     button.addEventListener("click", () => {
       const main = detailView.querySelector("[data-gallery-main]");
       if (!main) return;
-      main.src = button.dataset.galleryImage;
+      main.innerHTML = galleryAssetMarkup(button.dataset.galleryImage, cardTitle(card));
       detailView.querySelectorAll("[data-gallery-image]").forEach((thumb) => thumb.classList.remove("is-active"));
       button.classList.add("is-active");
     });
@@ -1521,12 +1623,12 @@ function heroVisual(card) {
   if (card.gallery?.length) {
     return `
       <div class="project-gallery" data-gallery>
-        <div class="gallery-main">
-          <img class="detail-image" src="${card.gallery[0]}" alt="${cardTitle(card)}" data-gallery-main>
+        <div class="gallery-main" data-gallery-main>
+          ${galleryAssetMarkup(card.gallery[0], cardTitle(card))}
         </div>
         ${card.gallery.length > 1 ? `<div class="gallery-strip">${card.gallery.map((image, index) => `
-          <button class="gallery-thumb ${index === 0 ? "is-active" : ""}" type="button" data-gallery-image="${image}" aria-label="Ver imagem ${index + 1}">
-            <img src="${image}" alt="${cardTitle(card)} ${index + 1}">
+          <button class="gallery-thumb ${index === 0 ? "is-active" : ""} ${isVideoAsset(image) ? "is-video" : ""}" type="button" data-gallery-image="${image}" aria-label="${isVideoAsset(image) ? "Reproduzir vídeo" : `Ver imagem ${index + 1}`}">
+            ${isVideoAsset(image) ? `<span class="gallery-video-mark" aria-hidden="true">▶</span>` : `<img src="${image}" alt="${cardTitle(card)} ${index + 1}" loading="lazy">`}
           </button>
         `).join("")}</div>` : ""}
       </div>
@@ -1555,6 +1657,17 @@ function heroVisual(card) {
       </div>
     </div>
   `;
+}
+
+function isVideoAsset(asset) {
+  return /\.(mp4|webm|ogg)(\?|$)/i.test(asset || "");
+}
+
+function galleryAssetMarkup(asset, title) {
+  if (isVideoAsset(asset)) {
+    return `<video class="detail-image detail-video" src="${asset}" autoplay muted playsinline loop controls preload="metadata" aria-label="${title}"></video>`;
+  }
+  return `<img class="detail-image" src="${asset}" alt="${title}" loading="eager">`;
 }
 
 function actionButton(action, label, path, active, disabled = false) {

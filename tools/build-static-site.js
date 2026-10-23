@@ -8,7 +8,7 @@ const files = [
   "index.html",
   "styles.css",
   "app.js",
-  "portfolio-data.js",
+  "site-portfolio-data.js",
   "CNAME",
   ".nojekyll",
   "robots.txt",
@@ -46,7 +46,7 @@ files.forEach(copyFile);
 copyDirectory("cliente/casa58");
 
 const referencedAssets = new Set();
-for (const relativePath of ["index.html", "styles.css", "app.js", "portfolio-data.js"]) {
+for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js"]) {
   const source = path.join(root, relativePath);
   if (!fs.existsSync(source)) continue;
   const content = fs.readFileSync(source, "utf8");
@@ -55,8 +55,23 @@ for (const relativePath of ["index.html", "styles.css", "app.js", "portfolio-dat
   }
 }
 
+const appSource = path.join(root, "app.js");
+if (fs.existsSync(appSource)) {
+  const content = fs.readFileSync(appSource, "utf8");
+  for (const match of content.matchAll(/assets\/dolayout\/editorial\/[^"'`)\s]+/g)) {
+    referencedAssets.add(match[0]);
+  }
+}
+
 for (const asset of referencedAssets) {
   copyFile(asset);
+}
+
+const curatedPortfolioDir = path.join(root, "assets", "dolayout", "portfolio", "site");
+if (fs.existsSync(curatedPortfolioDir)) {
+  for (const entry of fs.readdirSync(curatedPortfolioDir, { withFileTypes: true })) {
+    if (entry.isFile()) copyFile(path.join("assets", "dolayout", "portfolio", "site", entry.name));
+  }
 }
 
 const copiedFiles = [];
