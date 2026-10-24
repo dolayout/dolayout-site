@@ -1747,13 +1747,18 @@ function renderDetail(card) {
 
   detailView.innerHTML = `
     <div class="detail-shell">
-      <header class="project-intro">
-        <span class="label">${categoryLabel(card.category)}</span>
-        <h1>${cardTitle(card)}</h1>
-        <p>${cardDescription(card)}</p>
-        ${projectHashtags.length ? `<div class="project-hashtags" aria-label="${state.language === "pt" ? "Tags do projeto" : "Project tags"}">${projectHashtags.map((tag) => `<span>#${tag.replace(/^#/, "")}</span>`).join("")}</div>` : ""}
-        ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
-      </header>
+      <div class="project-detail-layout">
+        <header class="project-intro">
+          <span class="label">${categoryLabel(card.category)}</span>
+          <h1>${cardTitle(card)}</h1>
+          <p>${cardDescription(card)}</p>
+          ${projectHashtags.length ? `<div class="project-hashtags" aria-label="${state.language === "pt" ? "Tags do projeto" : "Project tags"}">${projectHashtags.map((tag) => `<span>#${tag.replace(/^#/, "")}</span>`).join("")}</div>` : ""}
+          ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
+        </header>
+        <div class="project-carousel" data-project-carousel aria-label="${state.language === "pt" ? "Galeria do projeto" : "Project gallery"}">
+          ${projectCarouselMarkup(card)}
+        </div>
+      </div>
       <div class="project-image-stack">${projectMediaStack(card)}</div>
 
       ${commentsSectionMarkup(card)}
@@ -1786,6 +1791,7 @@ function renderDetail(card) {
   detailView.querySelectorAll("[data-action]").forEach((button) => {
     button.addEventListener("click", () => handleAction(button.dataset.action, card, button));
   });
+  bindProjectCarousel(detailView.querySelector("[data-project-carousel]"));
   bindDetailComments(card);
   detailView.querySelectorAll(".pin-card").forEach((item) => {
     item.addEventListener("click", (event) => {
@@ -1964,6 +1970,68 @@ function projectMediaStack(card) {
         : `<img src="${asset}" alt="${cardTitle(card)} ${index + 1}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async">`}
     </figure>
   `).join("");
+}
+
+function projectCarouselMarkup(card) {
+  const assets = card.gallery?.length ? card.gallery : card.image ? [card.image] : [];
+  if (!assets.length) return "";
+  return `
+    <div class="project-carousel-stage" data-carousel-stage>
+      <div class="project-carousel-track" data-carousel-track>
+        ${assets.map((asset, index) => `
+          <figure class="project-carousel-slide${index === 0 ? " is-active" : ""}" data-carousel-slide aria-hidden="${index !== 0}">
+            ${isVideoAsset(asset)
+              ? `<video src="${asset}" muted playsinline loop controls preload="metadata" aria-label="${cardTitle(card)} ${index + 1}"></video>`
+              : `<img src="${asset}" alt="${cardTitle(card)} ${index + 1}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async">`}
+          </figure>
+        `).join("")}
+      </div>
+      ${assets.length > 1 ? `
+        <button class="project-carousel-arrow is-previous" type="button" data-carousel-prev aria-label="${state.language === "pt" ? "Imagem anterior" : "Previous image"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="project-carousel-arrow is-next" type="button" data-carousel-next aria-label="${state.language === "pt" ? "Próxima imagem" : "Next image"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      ` : ""}
+    </div>
+    ${assets.length > 1 ? `<div class="project-carousel-footer"><div class="project-carousel-dots">${assets.map((_, index) => `<button class="project-carousel-dot${index === 0 ? " is-active" : ""}" type="button" data-carousel-to="${index}" aria-label="${state.language === "pt" ? `Ir para imagem ${index + 1}` : `Go to image ${index + 1}`}" aria-current="${index === 0 ? "true" : "false"}"></button>`).join("")}</div><span class="project-carousel-count" data-carousel-count>01 <i>/ ${String(assets.length).padStart(2, "0")}</i></span></div>` : ""}
+  `;
+}
+
+function bindProjectCarousel(carousel) {
+  if (!carousel) return;
+  const slides = [...carousel.querySelectorAll("[data-carousel-slide]")];
+  if (slides.length < 2) return;
+  const dots = [...carousel.querySelectorAll("[data-carousel-to]")];
+  const count = carousel.querySelector("[data-carousel-count]");
+  let active = 0;
+  let startX = null;
+  const show = (index) => {
+    active = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("is-active", i === active);
+      slide.setAttribute("aria-hidden", String(i !== active));
+      const video = slide.querySelector("video");
+      if (video) {
+        if (i === active && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) video.play().catch(() => {});
+        else video.pause();
+      }
+    });
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === active);
+      dot.setAttribute("aria-current", String(i === active));
+    });
+    if (count) count.innerHTML = `${String(active + 1).padStart(2, "0")} <i>/ ${String(slides.length).padStart(2, "0")}</i>`;
+  };
+  carousel.querySelector("[data-carousel-prev]")?.addEventListener("click", () => show(active - 1));
+  carousel.querySelector("[data-carousel-next]")?.addEventListener("click", () => show(active + 1));
+  dots.forEach((dot) => dot.addEventListener("click", () => show(Number(dot.dataset.carouselTo))));
+  const stage = carousel.querySelector("[data-carousel-stage]");
+  stage?.addEventListener("pointerdown", (event) => { startX = event.clientX; });
+  stage?.addEventListener("pointerup", (event) => {
+    if (startX === null) return;
+    const delta = event.clientX - startX;
+    if (Math.abs(delta) > 45) show(active + (delta < 0 ? 1 : -1));
+    startX = null;
+  });
+  stage?.addEventListener("pointercancel", () => { startX = null; });
 }
 
 let projectFrameObserver;
