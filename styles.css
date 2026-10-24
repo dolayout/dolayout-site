@@ -1202,12 +1202,22 @@ body.light .symbol-light {
   line-height: 1.55;
 }
 
-.detail-actions-top {
+.detail-actions-top,
+.detail-actions-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.detail-actions-top {
   margin-bottom: 14px;
+}
+
+.detail-actions-bottom {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--soft-line);
 }
 
 .back-button,
@@ -1924,7 +1934,8 @@ body.light .symbol-light {
     border-radius: 10px;
   }
 
-  .detail-actions-top {
+  .detail-actions-top,
+  .detail-actions-bottom {
     align-items: center;
   }
 

@@ -1659,7 +1659,13 @@ function renderDetail(card) {
         ${projectHashtags.length ? `<div class="project-hashtags" aria-label="${state.language === "pt" ? "Tags do projeto" : "Project tags"}">${projectHashtags.map((tag) => `<span>#${tag.replace(/^#/, "")}</span>`).join("")}</div>` : ""}
         ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
       </header>
-      <div class="detail-actions-top">
+      <div class="project-image-stack">${projectMediaStack(card)}</div>
+
+      <h2 class="related-title">${t("related")}</h2>
+      <div class="masonry related-masonry">
+        ${related.map(cardTemplate).join("")}
+      </div>
+      <div class="detail-actions-bottom">
         <button class="back-button" type="button" data-back>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
           ${t("back")}
@@ -1669,13 +1675,6 @@ function renderDetail(card) {
           ${actionButton("share", t("share"), "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14", false)}
           ${actionButton("save", t("save"), "M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z", state.saved.has(card.id))}
         </div>
-      </div>
-
-      <div class="project-image-stack">${projectMediaStack(card)}</div>
-
-      <h2 class="related-title">${t("related")}</h2>
-      <div class="masonry related-masonry">
-        ${related.map(cardTemplate).join("")}
       </div>
     </div>
   `;
