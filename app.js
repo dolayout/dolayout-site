@@ -762,10 +762,12 @@ function shuffled(items) {
   return result;
 }
 
-const mobileFeedOrder = shuffled(cards).map((card) => card.id);
-const mobileWideCards = new Set(
-  shuffled(cards).slice(0, Math.max(2, Math.ceil(cards.length / 8))).map((card) => card.id)
-);
+const mobileFeedOrder = (() => {
+  const order = shuffled(cards);
+  const featureIndex = order.findIndex((card) => card.feedCarousel);
+  if (featureIndex > 0) order.unshift(order.splice(featureIndex, 1)[0]);
+  return order.map((card) => card.id);
+})();
 
 function uniqueCardsByImage(items) {
   const seenImages = new Set();
@@ -947,6 +949,7 @@ function init() {
   renderFeed();
   bindEvents();
   route();
+  document.fonts.ready.then(() => fitEditorialTitles(document));
 }
 
 function t(key) {
@@ -990,7 +993,6 @@ function applyLanguage() {
 function bindEvents() {
   const mobileLayoutQuery = window.matchMedia("(max-width: 760px)");
   mobileLayoutQuery.addEventListener("change", () => renderFeed());
-  window.addEventListener("resize", layoutMobileMasonry, { passive: true });
 
   searchInput.addEventListener("input", (event) => {
     state.query = event.target.value.trim().toLowerCase();
@@ -1004,13 +1006,6 @@ function bindEvents() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       searchInput.focus();
-    });
-  });
-
-  document.querySelectorAll(".add-button, [aria-label='Adicionar']").forEach((button) => {
-    button.addEventListener("click", () => {
-      window.location.hash = "/contato";
-      setTimeout(() => document.querySelector("#projectMessage")?.focus(), 120);
     });
   });
 
@@ -1031,6 +1026,7 @@ function bindEvents() {
   });
 
   window.addEventListener("hashchange", route);
+  window.addEventListener("resize", () => fitEditorialTitles(document));
   lightbox.querySelector(".lightbox-close").addEventListener("click", closeLightbox);
   lightbox.addEventListener("click", (event) => {
     if (event.target === lightbox) closeLightbox();
@@ -1187,16 +1183,6 @@ function renderFeed(items = filteredCards()) {
   }
 
   feed.innerHTML = items.map(cardTemplate).join("");
-  if (window.matchMedia("(max-width: 760px)").matches) {
-    feed.querySelectorAll(".pin-card").forEach((card) => {
-      card.classList.toggle("mobile-wide", mobileWideCards.has(card.dataset.id));
-    });
-    layoutMobileMasonry();
-    feed.querySelectorAll("img").forEach((image) => {
-      if (!image.complete) image.addEventListener("load", layoutMobileMasonry, { once: true });
-    });
-  }
-
   feed.querySelectorAll(".pin-card").forEach((card) => {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".portfolio-feed-control")) return;
@@ -1223,61 +1209,135 @@ function renderFeed(items = filteredCards()) {
       card.click();
     });
 
-    if (card.dataset.feedCarousel === "true") {
-      let startX = null;
-      let activeIndex = 0;
-      const slides = JSON.parse(card.dataset.slides);
-      const stage = card.querySelector(".portfolio-feed-stage");
-      const dots = card.querySelectorAll(".portfolio-feed-dot");
-      const showSlide = (direction) => {
-        activeIndex = (activeIndex + direction + slides.length) % slides.length;
-        stage.querySelector(".portfolio-feed-media").innerHTML = feedCarouselMedia(slides[activeIndex], cardTitle(cards.find((item) => item.id === card.dataset.id)));
-        stage.querySelector(".portfolio-feed-current").textContent = String(activeIndex + 1).padStart(2, "0");
-        dots.forEach((dot, index) => dot.classList.toggle("is-active", index === activeIndex));
-      };
-
-      card.querySelectorAll("[data-carousel-step]").forEach((control) => {
-        control.addEventListener("click", (event) => {
-          event.stopPropagation();
-          showSlide(Number(control.dataset.carouselStep));
-        });
-      });
-
-      const startDrag = (clientX) => { startX = clientX; };
-      const finishDrag = (clientX) => {
-        if (startX === null) return;
-        const delta = clientX - startX;
-        startX = null;
-        if (Math.abs(delta) < 36) return;
-        showSlide(delta < 0 ? 1 : -1);
-        card.dataset.swiped = "true";
-      };
-      stage.addEventListener("pointerdown", (event) => startDrag(event.clientX));
-      stage.addEventListener("mousedown", (event) => startDrag(event.clientX));
-      stage.addEventListener("touchstart", (event) => startDrag(event.changedTouches[0].clientX), { passive: true });
-      window.addEventListener("pointerup", (event) => finishDrag(event.clientX));
-      window.addEventListener("mouseup", (event) => finishDrag(event.clientX));
-      window.addEventListener("touchend", (event) => finishDrag(event.changedTouches[0].clientX), { passive: true });
-      stage.addEventListener("pointercancel", () => { startX = null; });
-    }
+    if (card.dataset.feedCarousel === "true") bindFeedCarousel(card);
   });
+  fitEditorialTitles(feed);
 }
 
-function layoutMobileMasonry() {
-  if (!feed || !window.matchMedia("(max-width: 760px)").matches) return;
-  const styles = getComputedStyle(feed);
-  const rowSize = parseFloat(styles.gridAutoRows) || 4;
-  const rowGap = parseFloat(styles.rowGap) || 8;
+function carouselTrackMarkup(slides, activeIndex, panelClass, renderMedia) {
+  return [-1, 0, 1].map((offset) => {
+    const slide = slides[(activeIndex + offset + slides.length) % slides.length];
+    return `<span class="swipe-panel ${panelClass}">${renderMedia(slide, offset === 0)}</span>`;
+  }).join("");
+}
 
-  feed.querySelectorAll(".pin-card").forEach((card) => {
-    card.style.gridRowEnd = "span 1";
+function createSwipeCarousel(stage, slides, panelClass, renderMedia, onChange, onSwipe) {
+  const track = stage.querySelector(".swipe-track");
+  let activeIndex = 0;
+  let start = null;
+  let dragging = false;
+  let animating = false;
+
+  const paint = () => {
+    track.innerHTML = carouselTrackMarkup(slides, activeIndex, panelClass, renderMedia);
+    track.style.transition = "none";
+    track.style.transform = "translate3d(-33.333333%, 0, 0)";
+    onChange?.(activeIndex);
+  };
+
+  const settle = (direction) => {
+    if (animating) return;
+    if (!direction || slides.length < 2) {
+      track.style.transition = "transform 280ms ease";
+      track.style.transform = "translate3d(-33.333333%, 0, 0)";
+      return;
+    }
+
+    animating = true;
+    let finished = false;
+    const finish = (event) => {
+      if (event && event.target !== track) return;
+      if (finished) return;
+      finished = true;
+      track.removeEventListener("transitionend", finish);
+      activeIndex = (activeIndex + direction + slides.length) % slides.length;
+      animating = false;
+      paint();
+    };
+    track.addEventListener("transitionend", finish);
+    requestAnimationFrame(() => {
+      track.style.transition = "transform 320ms cubic-bezier(.22,.68,0,1)";
+      track.style.transform = direction > 0 ? "translate3d(-66.666667%, 0, 0)" : "translate3d(0, 0, 0)";
+    });
+    window.setTimeout(finish, 380);
+  };
+
+  stage.addEventListener("pointerdown", (event) => {
+    if (animating || event.button !== 0 || event.target.closest("[data-carousel-step]")) return;
+    start = { x: event.clientX, y: event.clientY };
+    dragging = false;
+    stage.setPointerCapture?.(event.pointerId);
+  });
+  stage.addEventListener("pointermove", (event) => {
+    if (!start || animating || slides.length < 2) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (!dragging && Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+      start = null;
+      return;
+    }
+    if (Math.abs(dx) < 5) return;
+    dragging = true;
+    const offset = Math.max(-stage.clientWidth, Math.min(stage.clientWidth, dx));
+    track.style.transition = "none";
+    track.style.transform = `translate3d(calc(-33.333333% + ${offset}px), 0, 0)`;
+  });
+  stage.addEventListener("pointerup", (event) => {
+    if (!start) return;
+    const dx = event.clientX - start.x;
+    start = null;
+    if (dragging && Math.abs(dx) >= Math.min(64, stage.clientWidth * 0.18)) {
+      onSwipe?.();
+      settle(dx < 0 ? 1 : -1);
+    } else {
+      settle(0);
+    }
+    dragging = false;
+  });
+  stage.addEventListener("pointercancel", () => {
+    start = null;
+    dragging = false;
+    settle(0);
   });
 
-  requestAnimationFrame(() => {
-    feed.querySelectorAll(".pin-card").forEach((card) => {
-      const height = card.scrollHeight;
-      const span = Math.max(1, Math.ceil((height + rowGap) / (rowSize + rowGap)));
-      card.style.gridRowEnd = `span ${span}`;
+  paint();
+  return {
+    go: settle,
+    select(index) {
+      if (index === activeIndex) return;
+      if (index === (activeIndex + 1) % slides.length) settle(1);
+      else if (index === (activeIndex - 1 + slides.length) % slides.length) settle(-1);
+      else if (!animating) {
+        activeIndex = index;
+        paint();
+      }
+    }
+  };
+}
+
+function bindFeedCarousel(card) {
+  const slides = JSON.parse(card.dataset.slides);
+  const stage = card.querySelector(".portfolio-feed-stage");
+  const dots = card.querySelectorAll(".portfolio-feed-dot");
+  const title = cardTitle(cards.find((item) => item.id === card.dataset.id));
+  const controller = createSwipeCarousel(
+    stage,
+    slides,
+    "portfolio-feed-media",
+    (asset, active) => feedCarouselMedia(asset, title, active),
+    (index) => {
+      card.querySelector(".portfolio-feed-current").textContent = String(index + 1).padStart(2, "0");
+      dots.forEach((dot, dotIndex) => dot.classList.toggle("is-active", dotIndex === index));
+    },
+    () => {
+      card.dataset.swiped = "true";
+      window.setTimeout(() => { delete card.dataset.swiped; }, 700);
+    }
+  );
+  card.querySelectorAll("[data-carousel-step]").forEach((control) => {
+    control.addEventListener("click", (event) => {
+      event.stopPropagation();
+      controller.go(Number(control.dataset.carouselStep));
     });
   });
 }
@@ -1289,6 +1349,7 @@ function shouldOpenDetail(card) {
 }
 
 function cardTemplate(card) {
+  if (card.article) return editorialCardTemplate(card);
   if (card.feedCarousel) return feedCarouselCardTemplate(card);
   if (card.layout) return artDirectedCardTemplate(card);
 
@@ -1318,11 +1379,43 @@ function cardTemplate(card) {
   `;
 }
 
-function feedCarouselMedia(src, alt) {
+function editorialCardTemplate(card) {
+  const index = Math.max(0, editorialArticles.findIndex((article) => article.id === card.id));
+  const title = cardTitle(card);
+  const longWord = title.split(/\s+/).some((word) => word.length > 11);
+  return `
+    <button class="pin-card editorial-pin editorial-style-${index % 5}" type="button" data-id="${card.id}">
+      <span class="editorial-surface">
+        <span class="editorial-eyebrow">Dolayout / ${categoryLabel(card.category)}</span>
+        <strong class="editorial-title ${longWord ? "is-long" : ""}">${title}</strong>
+        <span class="editorial-index">D / ${String(index + 1).padStart(2, "0")}</span>
+      </span>
+    </button>
+  `;
+}
+
+function fitEditorialTitles(root) {
+  requestAnimationFrame(() => {
+    root.querySelectorAll(".editorial-title").forEach((title) => {
+      title.style.fontSize = "";
+      let size = parseFloat(getComputedStyle(title).fontSize);
+      const footer = title.nextElementSibling;
+      while (size > 12 && (
+        title.scrollWidth > title.clientWidth + 1
+        || title.getBoundingClientRect().bottom > footer.getBoundingClientRect().top - 3
+      )) {
+        size -= 1;
+        title.style.fontSize = `${size}px`;
+      }
+    });
+  });
+}
+
+function feedCarouselMedia(src, alt, active = true) {
   if (/\.(mp4|webm|ogg)(\?|$)/i.test(src)) {
-    return `<video class="portfolio-feed-video" src="${src}" autoplay muted playsinline loop preload="metadata" aria-label="${alt}"></video>`;
+    return `<video class="portfolio-feed-video" src="${src}" ${active ? "autoplay" : ""} muted playsinline loop preload="metadata" aria-label="${alt}"></video>`;
   }
-  return `<img class="portfolio-feed-image" src="${src}" alt="${alt}" loading="lazy">`;
+  return `<img class="portfolio-feed-image" src="${src}" alt="${alt}" loading="lazy" draggable="false">`;
 }
 
 function feedCarouselCardTemplate(card) {
@@ -1330,7 +1423,7 @@ function feedCarouselCardTemplate(card) {
   return `
     <div class="pin-card portfolio-feed-card" role="button" tabindex="0" data-id="${card.id}" data-tone="${card.tone}" data-feed-carousel="true" data-slides='${JSON.stringify(slides)}' style="--c1:${card.palette[0]}; --c2:${card.palette[1]};">
       <div class="portfolio-feed-stage">
-        <span class="portfolio-feed-media">${feedCarouselMedia(slides[0], cardTitle(card))}</span>
+        <div class="swipe-track portfolio-feed-track">${carouselTrackMarkup(slides, 0, "portfolio-feed-media", (asset, active) => feedCarouselMedia(asset, cardTitle(card), active))}</div>
         <span class="portfolio-feed-count"><b class="portfolio-feed-current">01</b> <i>/ ${String(slides.length).padStart(2, "0")}</i></span>
         <span class="portfolio-feed-dots" aria-hidden="true">${slides.map((_, index) => `<i class="portfolio-feed-dot ${index === 0 ? "is-active" : ""}"></i>`).join("")}</span>
         <button class="portfolio-feed-control is-previous" type="button" data-carousel-step="-1" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
@@ -1589,20 +1682,32 @@ function renderDetail(card) {
     button.addEventListener("click", () => handleAction(button.dataset.action, card, button));
   });
   detailView.querySelectorAll(".pin-card").forEach((item) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (event) => {
+      if (event.target.closest(".portfolio-feed-control")) return;
+      if (item.dataset.swiped === "true") {
+        delete item.dataset.swiped;
+        return;
+      }
       window.location.hash = `/card/${item.dataset.id}`;
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+    if (item.dataset.feedCarousel === "true") bindFeedCarousel(item);
   });
-  detailView.querySelectorAll("[data-gallery-image]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const main = detailView.querySelector("[data-gallery-main]");
-      if (!main) return;
-      main.innerHTML = galleryAssetMarkup(button.dataset.galleryImage, cardTitle(card));
-      detailView.querySelectorAll("[data-gallery-image]").forEach((thumb) => thumb.classList.remove("is-active"));
-      button.classList.add("is-active");
+  const galleryMain = detailView.querySelector("[data-gallery-main]");
+  if (galleryMain) {
+    const thumbs = [...detailView.querySelectorAll("[data-gallery-image]")];
+    const controller = createSwipeCarousel(
+      galleryMain,
+      card.gallery,
+      "gallery-slide",
+      (asset, active) => galleryAssetMarkup(asset, cardTitle(card), active),
+      (index) => thumbs.forEach((thumb, thumbIndex) => thumb.classList.toggle("is-active", thumbIndex === index))
+    );
+    thumbs.forEach((button, index) => {
+      button.addEventListener("click", () => controller.select(index));
     });
-  });
+  }
+  fitEditorialTitles(detailView);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -1666,6 +1771,7 @@ function renderArticleDetail(card) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
+  fitEditorialTitles(detailView);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -1674,7 +1780,7 @@ function heroVisual(card) {
     return `
       <div class="project-gallery" data-gallery>
         <div class="gallery-main" data-gallery-main>
-          ${galleryAssetMarkup(card.gallery[0], cardTitle(card))}
+          <div class="swipe-track gallery-track">${carouselTrackMarkup(card.gallery, 0, "gallery-slide", (asset, active) => galleryAssetMarkup(asset, cardTitle(card), active))}</div>
         </div>
         ${card.gallery.length > 1 ? `<div class="gallery-strip">${card.gallery.map((image, index) => `
           <button class="gallery-thumb ${index === 0 ? "is-active" : ""} ${isVideoAsset(image) ? "is-video" : ""}" type="button" data-gallery-image="${image}" aria-label="${isVideoAsset(image) ? "Reproduzir vídeo" : `Ver imagem ${index + 1}`}">
@@ -1713,11 +1819,11 @@ function isVideoAsset(asset) {
   return /\.(mp4|webm|ogg)(\?|$)/i.test(asset || "");
 }
 
-function galleryAssetMarkup(asset, title) {
+function galleryAssetMarkup(asset, title, active = true) {
   if (isVideoAsset(asset)) {
-    return `<video class="detail-image detail-video" src="${asset}" autoplay muted playsinline loop controls preload="metadata" aria-label="${title}"></video>`;
+    return `<video class="detail-image detail-video" src="${asset}" ${active ? "autoplay controls" : ""} muted playsinline loop preload="metadata" aria-label="${title}"></video>`;
   }
-  return `<img class="detail-image" src="${asset}" alt="${title}" loading="eager">`;
+  return `<img class="detail-image" src="${asset}" alt="${title}" loading="eager" draggable="false">`;
 }
 
 function actionButton(action, label, path, active, disabled = false) {

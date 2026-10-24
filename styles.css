@@ -246,10 +246,15 @@ body.light .symbol-light {
 }
 
 .language-toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
   min-height: 38px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 0 12px;
+  border-radius: 50%;
+  padding: 0;
   background: var(--surface);
   color: var(--text);
   font-size: 0.72rem;
@@ -354,6 +359,130 @@ body.light .symbol-light {
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
 }
 
+.editorial-pin {
+  aspect-ratio: 4 / 5;
+  background: var(--editorial-bg);
+  color: var(--editorial-ink);
+}
+
+.editorial-surface {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 18px;
+  overflow: hidden;
+  background: var(--editorial-bg);
+}
+
+.editorial-surface::before,
+.editorial-surface::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.editorial-eyebrow,
+.editorial-index {
+  position: relative;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.editorial-title {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  margin: auto 0;
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 0.98;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+.editorial-title.is-long {
+  font-size: 1.57rem;
+}
+
+.editorial-style-0 { --editorial-bg: #171912; --editorial-ink: #dcfa45; }
+.editorial-style-0 .editorial-surface::before {
+  inset: 29% -28% -20% 18%;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.3;
+  box-shadow: 0 0 0 34px #171912, 0 0 0 35px currentColor, 0 0 0 76px #171912, 0 0 0 77px currentColor;
+}
+
+.editorial-style-1 { --editorial-bg: #e7e6dd; --editorial-ink: #171711; }
+.editorial-style-1 .editorial-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.editorial-style-1 .editorial-surface::before {
+  inset: 12% 12% 12% auto;
+  width: 22%;
+  background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 13px);
+  opacity: 0.15;
+}
+
+.editorial-style-2 { --editorial-bg: #075563; --editorial-ink: #f6faf3; }
+.editorial-style-2 .editorial-title {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-weight: 400;
+  line-height: 0.97;
+  text-transform: none;
+}
+.editorial-style-2 .editorial-surface::before {
+  inset: 32% -35% -20% 25%;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.32;
+  box-shadow: 0 0 0 29px #075563, 0 0 0 30px currentColor, 0 0 0 63px #075563, 0 0 0 64px currentColor;
+}
+
+.editorial-style-3 { --editorial-bg: #ee684a; --editorial-ink: #16120f; }
+.editorial-style-3 .editorial-title {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.editorial-style-3 .editorial-surface::before {
+  inset: 14% -35% auto auto;
+  width: 80%;
+  aspect-ratio: 1;
+  border: 3px solid currentColor;
+  transform: rotate(18deg);
+  opacity: 0.21;
+}
+
+.editorial-style-4 { --editorial-bg: #281e3d; --editorial-ink: #f4e8f9; }
+.editorial-style-4 .editorial-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+}
+.editorial-style-4 .editorial-surface::before {
+  inset: 0;
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.14;
+}
+.editorial-style-4 .editorial-surface::after {
+  left: 13%;
+  bottom: 12%;
+  width: 70%;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-25deg);
+  opacity: 0.55;
+}
+
 .pin-card:hover .visual {
   transform: scale(1.018);
 }
@@ -448,6 +577,8 @@ body.light .symbol-light {
   aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #07003f;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .portfolio-feed-card > .label {
@@ -470,11 +601,27 @@ body.light .symbol-light {
   object-fit: cover;
 }
 
-.portfolio-feed-stage > .label {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 2;
+.swipe-track {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transform: translate3d(-33.333333%, 0, 0);
+  will-change: transform;
+}
+
+.swipe-track > .swipe-panel {
+  display: block;
+  flex: 0 0 33.333333%;
+  width: 33.333333%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.swipe-panel img,
+.swipe-panel video {
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .portfolio-feed-count {
@@ -1013,17 +1160,30 @@ body.light .symbol-light {
 
 .project-gallery {
   display: grid;
-  min-height: min(72vh, 760px);
+  height: min(72vh, 760px);
   grid-template-rows: minmax(0, 1fr) auto;
   background: var(--surface);
 }
 
 .gallery-main {
   min-height: 0;
-  display: grid;
-  place-items: center;
+  display: block;
   padding: 18px;
   overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.swipe-track > .gallery-slide {
+  display: grid;
+  place-items: center;
+}
+
+.gallery-slide .detail-image {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
 }
 
 .gallery-strip {
@@ -1490,7 +1650,7 @@ body.light .symbol-light {
   }
 
   .topbar {
-    grid-template-columns: auto auto 1fr auto;
+    grid-template-columns: minmax(0, 1fr) 36px 36px;
     gap: 8px;
     min-height: var(--topbar);
     padding: 8px 12px;
@@ -1498,7 +1658,14 @@ body.light .symbol-light {
   }
 
   .brand-name {
-    display: none;
+    display: inline;
+    min-width: 0;
+    font-size: 0.98rem;
+    letter-spacing: 0;
+  }
+
+  .brand {
+    gap: 8px;
   }
 
   .brand-fav {
@@ -1532,6 +1699,15 @@ body.light .symbol-light {
     justify-self: end;
   }
 
+  .language-toggle {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    line-height: 1;
+  }
+
   .mobile-theme {
     display: grid;
   }
@@ -1561,26 +1737,37 @@ body.light .symbol-light {
   }
 
   .masonry {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-flow: dense;
-    grid-auto-rows: 4px;
-    column-count: unset;
-    column-gap: 0;
-    gap: 8px;
+    display: block;
+    column-count: 2;
+    column-gap: 8px;
     padding: 12px 12px 24px;
   }
 
   .pin-card {
-    grid-column: span 1;
-    align-self: start;
     min-width: 0;
-    margin: 0;
+    margin: 0 0 8px;
     border-radius: 15px;
   }
 
-  .pin-card.mobile-wide {
-    grid-column: 1 / -1;
+  .masonry:not(.related-masonry) > .pin-card:first-child {
+    column-span: all;
+    display: block;
+  }
+
+  .editorial-surface {
+    padding: 14px;
+  }
+
+  .editorial-title {
+    font-size: 1.56rem;
+  }
+
+  .editorial-title.is-long {
+    font-size: 1.32rem;
+  }
+
+  .masonry:not(.related-masonry) > .editorial-pin:first-child .editorial-title {
+    font-size: 3.1rem;
   }
 
   .visual {
@@ -1617,25 +1804,28 @@ body.light .symbol-light {
   }
 
   .art-pin > .art-pin-label {
-    position: relative;
-    inset: auto;
+    position: absolute;
+    inset: 8px auto auto 8px;
+    z-index: 3;
     display: inline-flex;
     max-width: calc(100% - 16px);
     min-height: 22px;
-    margin: 7px 8px 8px;
+    margin: 0;
     padding: 5px 7px;
     font-size: 0.62rem;
     line-height: 1;
-    white-space: normal;
+    white-space: nowrap;
+    background: rgba(12, 12, 12, 0.76);
+    color: #fff;
   }
 
   .portfolio-feed-stage {
-    aspect-ratio: auto;
+    aspect-ratio: 4 / 5;
   }
 
   .portfolio-feed-image,
   .portfolio-feed-video {
-    height: auto;
+    height: 100%;
     object-fit: contain;
   }
 
@@ -1646,16 +1836,19 @@ body.light .symbol-light {
   }
 
   .portfolio-feed-card > .label {
-    position: relative;
-    inset: auto;
+    position: absolute;
+    inset: 8px auto auto 8px;
+    z-index: 3;
     display: inline-flex;
     max-width: calc(100% - 16px);
     min-height: 22px;
-    margin: 7px 8px 8px;
+    margin: 0;
     padding: 5px 7px;
     font-size: 0.62rem;
     line-height: 1;
-    white-space: normal;
+    white-space: nowrap;
+    background: rgba(12, 12, 12, 0.76);
+    color: #fff;
   }
 
   .pin-card:not(.art-pin) .media-visual .card-top {
@@ -1671,7 +1864,7 @@ body.light .symbol-light {
     inset: auto 10px 10px;
     z-index: 50;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 4px;
     min-height: 62px;
     padding: 7px;
@@ -1686,11 +1879,6 @@ body.light .symbol-light {
     width: 48px;
     height: 48px;
     justify-self: center;
-  }
-
-  .add-button {
-    background: var(--text);
-    color: var(--bg);
   }
 
   .detail-view {
@@ -1716,11 +1904,25 @@ body.light .symbol-light {
 
   .gallery-main {
     padding: 0;
+    aspect-ratio: 4 / 5;
   }
 
-  .detail-image {
+  .project-gallery {
     height: auto;
-    max-height: none;
+    grid-template-rows: auto auto;
+  }
+
+  .gallery-slide .detail-image {
+    height: 100%;
+  }
+
+  .related-masonry {
+    column-count: 2;
+    column-gap: 8px;
+  }
+
+  .related-masonry > .pin-card {
+    margin-bottom: 8px;
   }
 
   .bio-copy h1,
