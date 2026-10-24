@@ -19,7 +19,8 @@ window.dolayoutPortfolioProjects = [
       "Century21-Dolayout-01-02.webp",
       "Century21-Dolayout-01-03.webp",
       "Century21-Dolayout-01-04.webp",
-      "Century21-Dolayout-01-05.webp"
+      "Century21-Dolayout-01-05.webp",
+      "Century21-Dolayout-01-06.webp"
     ]
   },
   {
@@ -38,9 +39,13 @@ window.dolayoutPortfolioProjects = [
     country: "Brazil",
     palette: ["#111638", "#ed4771"],
     feedCarousel: [
-      "Andalafat-Dolayout-01-06.png",
+      "Andalafat-Dolayout-01-01.webp",
+      "Andalafat-Dolayout-01-02.webp",
+      "Andalafat-Dolayout-01-03.webp",
       "Andalafat-Dolayout-01-04.png",
-      "Andalafat-Dolayout-01-05.png"
+      "Andalafat-Dolayout-01-05.png",
+      "Andalafat-Dolayout-01-06.png",
+      "Andalafat-Dolayout-01-07.webp"
     ]
   },
   {
@@ -59,10 +64,13 @@ window.dolayoutPortfolioProjects = [
     country: "Portugal",
     palette: ["#071c20", "#e9d7c2"],
     feedCarousel: [
+      "Cello-Dolayout-01-01.webp",
+      "Cello-Dolayout-01-02.webp",
+      "Cello-Dolayout-01-03.png",
+      "Cello-Dolayout-01-04.png",
       "Cello-Dolayout-01-05.png",
       "Cello-Dolayout-01-06.png",
-      "Cello-Dolayout-01-03.png",
-      "Cello-Dolayout-01-04.png"
+      "Cello-Dolayout-01-07.webp"
     ]
   },
   {
@@ -81,10 +89,12 @@ window.dolayoutPortfolioProjects = [
     country: "Brazil",
     palette: ["#5420b7", "#f36c21"],
     feedCarousel: [
-      "Efetiva-Dolayout-01-05.webp",
       "Efetiva-Dolayout-01-01.webp",
       "Efetiva-Dolayout-01-02.webp",
-      "Efetiva-Dolayout-01-04.webp"
+      "Efetiva-Dolayout-01-03.webp",
+      "Efetiva-Dolayout-01-04.webp",
+      "Efetiva-Dolayout-01-05.webp",
+      "Efetiva-Dolayout-01-06.webp"
     ]
   },
   {
@@ -103,10 +113,12 @@ window.dolayoutPortfolioProjects = [
     country: "Brazil",
     palette: ["#100d18", "#7950e7"],
     feedCarousel: [
-      "Hise-Dolayout-01-05.webp",
-      "Hise-Dolayout-01-04.webp",
+      "Hise-Dolayout-01-01.webp",
+      "Hise-Dolayout-01-02.webp",
       "Hise-Dolayout-01-03.webp",
-      "Hise-Dolayout-01-02.webp"
+      "Hise-Dolayout-01-04.webp",
+      "Hise-Dolayout-01-05.webp",
+      "Hise-Dolayout-01-06.webp"
     ]
   },
   {
@@ -125,9 +137,13 @@ window.dolayoutPortfolioProjects = [
     country: "Portugal",
     palette: ["#0098a7", "#ffd447"],
     feedCarousel: [
+      "Jinn-Dolayout-01-01.webp",
+      "Jinn-Dolayout-01-02.webp",
+      "Jinn-Dolayout-01-03.webp",
+      "Jinn-Dolayout-01-04.png",
       "Jinn-Dolayout-01-05.png",
       "Jinn-Dolayout-01-06.png",
-      "Jinn-Dolayout-01-04.png"
+      "Jinn-Dolayout-01-07.webp"
     ]
   },
   {
@@ -147,9 +163,11 @@ window.dolayoutPortfolioProjects = [
     palette: ["#080808", "#f4f2ee"],
     feedCarousel: [
       "LightSquad-Dolayout-01-01.webp",
-      "LightSquad-Dolayout-01-05.webp",
+      "LightSquad-Dolayout-01-02.webp",
+      "LightSquad-Dolayout-01-03.webp",
       "LightSquad-Dolayout-01-04.webp",
-      "LightSquad-Dolayout-01-03.webp"
+      "LightSquad-Dolayout-01-05.webp",
+      "LightSquad-Dolayout-01-06.webp"
     ]
   },
   {
@@ -167,7 +185,7 @@ window.dolayoutPortfolioProjects = [
     creditPt: "Dolayout",
     country: "Ireland",
     palette: ["#009c9a", "#ed5a24"],
-    feedCarousel: ["Lotts-Beer-Dolayout-01-01.webp", "Lotts-Beer-Dolayout-01-02.webp"]
+    feedCarousel: ["Lotts-Beer-Dolayout-01-01.webp", "Lotts-Beer-Dolayout-01-02.webp", "Lotts-Beer-Dolayout-01-03.webp"]
   },
   {
     id: "portfolio-lotts-gift-card",
@@ -187,7 +205,8 @@ window.dolayoutPortfolioProjects = [
     feedCarousel: [
       "Lotts-Gift-Dolayout-01-01.webp",
       "Lotts-Gift-Dolayout-01-02.webp",
-      "Lotts-Gift-Dolayout-01-03.webp"
+      "Lotts-Gift-Dolayout-01-03.webp",
+      "Lotts-Gift-Dolayout-01-04.webp"
     ]
   },
   {
@@ -206,7 +225,9 @@ window.dolayoutPortfolioProjects = [
     country: "Brazil",
     palette: ["#183326", "#e8dfcf"],
     feedCarousel: [
+      "Noronha-Dolayout-01-01.webp",
       "Noronha-Dolayout-01-02.webp",
+      "Noronha-Dolayout-01-03.webp",
       "Noronha-Dolayout-01-04.webp",
       "Noronha-Dolayout-01-05.webp"
     ]
@@ -228,8 +249,9 @@ window.dolayoutPortfolioProjects = [
     palette: ["#c91f1f", "#07558e"],
     feedCarousel: [
       "Pan-Eile-Dolayout-01-01.webp",
+      "Pan-Eile-Dolayout-01-02.webp",
       "Pan-Eile-Dolayout-02-03.webp",
-      "Pan-Eile-Dolayout-01-02.webp"
+      "Pan-Eile-Dolayout-02-04.webp"
     ]
   },
   {
@@ -248,10 +270,14 @@ window.dolayoutPortfolioProjects = [
     country: "Portugal",
     palette: ["#100044", "#00d84f"],
     feedCarousel: [
+      "Partilha-Urbana-Dolayout-01-01.webp",
+      "Partilha-Urbana-Dolayout-01-02.webp",
+      "Partilha-Urbana-Dolayout-01-03.webp",
+      "Partilha-Urbana-Dolayout-01-04.webp",
       "Partilha-Urbana-Dolayout-01-05.webp",
       "Partilha-Urbana-Dolayout-01-06.webp",
       "Partilha-Urbana-Dolayout-01-07.webp",
-      "Partilha-Urbana-Dolayout-01-03.webp"
+      "Partilha-Urbana-Dolayout-01-08.webp"
     ]
   },
   {
@@ -272,7 +298,8 @@ window.dolayoutPortfolioProjects = [
     feedCarousel: [
       "Partilha-Urbana-Dolayout-02-01.webp",
       "Partilha-Urbana-Dolayout-02-02.webp",
-      "Partilha-Urbana-Dolayout-02-04.webp"
+      "Partilha-Urbana-Dolayout-02-04.webp",
+      "Partilha-Urbana-Dolayout-02-05.webp"
     ]
   },
   {
@@ -290,7 +317,7 @@ window.dolayoutPortfolioProjects = [
     creditPt: "Dolayout",
     country: "Ireland",
     palette: ["#f12c64", "#4f1452"],
-    feedCarousel: ["Taboo-Burguer-Dolayout-01-01.webp", "Taboo-Burguer-Dolayout-01-02.webp"]
+    feedCarousel: ["Taboo-Burguer-Dolayout-01-01.webp", "Taboo-Burguer-Dolayout-01-02.webp", "Taboo-Burguer-Dolayout-01-03.webp"]
   }
 ].map((project) => ({
   ...project,

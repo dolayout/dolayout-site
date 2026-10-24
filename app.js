@@ -1183,6 +1183,9 @@ function renderFeed(items = filteredCards()) {
   }
 
   feed.innerHTML = items.map(cardTemplate).join("");
+  if (window.matchMedia("(max-width: 760px)").matches && items.length > 2 && items.length % 2 === 0) {
+    feed.lastElementChild.classList.add("mobile-final-feature");
+  }
   feed.querySelectorAll(".pin-card").forEach((card) => {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".portfolio-feed-control")) return;
@@ -1381,16 +1384,22 @@ function cardTemplate(card) {
 
 function editorialCardTemplate(card) {
   const index = Math.max(0, editorialArticles.findIndex((article) => article.id === card.id));
+  return `
+    <button class="pin-card editorial-pin editorial-style-${index}" type="button" data-id="${card.id}">
+      ${editorialArtworkTemplate(card, index, "strong")}
+    </button>
+  `;
+}
+
+function editorialArtworkTemplate(card, index, headingTag) {
   const title = cardTitle(card);
   const longWord = title.split(/\s+/).some((word) => word.length > 11);
   return `
-    <button class="pin-card editorial-pin editorial-style-${index % 5}" type="button" data-id="${card.id}">
-      <span class="editorial-surface">
-        <span class="editorial-eyebrow">Dolayout / ${categoryLabel(card.category)}</span>
-        <strong class="editorial-title ${longWord ? "is-long" : ""}">${title}</strong>
-        <span class="editorial-index">D / ${String(index + 1).padStart(2, "0")}</span>
-      </span>
-    </button>
+    <span class="editorial-surface">
+      <span class="editorial-eyebrow">Dolayout / ${categoryLabel(card.category)}</span>
+      <${headingTag} class="editorial-title ${longWord ? "is-long" : ""}">${title}</${headingTag}>
+      <span class="editorial-index">D / ${String(index + 1).padStart(2, "0")}</span>
+    </span>
   `;
 }
 
@@ -1719,6 +1728,7 @@ function renderArticleDetail(card) {
     .filter((item) => item.id !== card.id && item.category === "Inspiração")
     .slice(0, 6);
   const paragraphs = articleBody(card);
+  const editorialIndex = Math.max(0, editorialArticles.findIndex((article) => article.id === card.id));
 
   detailView.innerHTML = `
     <article class="article-shell">
@@ -1734,15 +1744,11 @@ function renderArticleDetail(card) {
         </div>
       </div>
 
-      <header class="article-header">
-        <span class="label">${categoryLabel(card.category)}</span>
-        <h1>${cardTitle(card)}</h1>
-        <p>${cardDescription(card)}</p>
-      </header>
-
-      <figure class="article-hero">
-        <img src="${card.image}" alt="${cardTitle(card)}">
+      <figure class="article-hero editorial-pin editorial-style-${editorialIndex}">
+        ${editorialArtworkTemplate(card, editorialIndex, "h1")}
       </figure>
+
+      <header class="article-header"><p>${cardDescription(card)}</p></header>
 
       <div class="article-body">
         ${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}

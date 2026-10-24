@@ -483,6 +483,92 @@ body.light .symbol-light {
   opacity: 0.55;
 }
 
+.editorial-style-5 { --editorial-bg: #efc947; --editorial-ink: #191811; }
+.editorial-style-5 .editorial-title {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+}
+.editorial-style-5 .editorial-surface::before {
+  right: -22%;
+  top: 12%;
+  width: 85%;
+  aspect-ratio: 1;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.35;
+  box-shadow: 0 0 0 25px #efc947, 0 0 0 27px currentColor;
+}
+
+.editorial-style-6 { --editorial-bg: #17395f; --editorial-ink: #fff0d6; }
+.editorial-style-6 .editorial-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.editorial-style-6 .editorial-surface::before {
+  right: -15%;
+  bottom: -5%;
+  width: 70%;
+  height: 75%;
+  border: 2px solid currentColor;
+  transform: rotate(-24deg);
+  opacity: 0.18;
+  box-shadow: -24px -24px 0 -21px currentColor, -48px -48px 0 -45px currentColor;
+}
+
+.editorial-style-7 { --editorial-bg: #c9e8d6; --editorial-ink: #15392f; }
+.editorial-style-7 .editorial-title {
+  font-family: "DM Serif Display", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.04;
+  text-transform: none;
+}
+.editorial-style-7 .editorial-surface::before {
+  inset: 0 0 0 52%;
+  background: repeating-linear-gradient(140deg, currentColor 0 1px, transparent 1px 17px);
+  opacity: 0.16;
+}
+
+.editorial-style-8 { --editorial-bg: #b6353f; --editorial-ink: #fff5e8; }
+.editorial-style-8 .editorial-title {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.editorial-style-8 .editorial-surface::before {
+  content: "09";
+  right: -6%;
+  bottom: -22%;
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: 18rem;
+  line-height: 1;
+  opacity: 0.11;
+}
+
+.editorial-style-9 { --editorial-bg: #252820; --editorial-ink: #f8bca6; }
+.editorial-style-9 .editorial-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.editorial-style-9 .editorial-surface::before {
+  inset: 16% 11% 16% 11%;
+  border: 1px solid currentColor;
+  transform: rotate(12deg);
+  opacity: 0.34;
+}
+.editorial-style-9 .editorial-surface::after {
+  top: 21%;
+  right: -15%;
+  width: 75%;
+  height: 20%;
+  background: currentColor;
+  transform: rotate(-28deg);
+  opacity: 0.1;
+}
+
 .pin-card:hover .visual {
   transform: scale(1.018);
 }
@@ -1333,16 +1419,8 @@ body.light .symbol-light {
 }
 
 .article-header {
-  max-width: 920px;
-  margin: clamp(18px, 4vw, 48px) 0 clamp(18px, 4vw, 38px);
-}
-
-.article-header h1 {
-  margin: 18px 0;
-  font-size: clamp(3rem, 8vw, 8.2rem);
-  line-height: 0.88;
-  font-weight: 900;
-  letter-spacing: 0;
+  max-width: 760px;
+  margin: 36px auto 0;
 }
 
 .article-header p {
@@ -1366,6 +1444,32 @@ body.light .symbol-light {
   max-height: 78vh;
   display: block;
   object-fit: cover;
+}
+
+.article-hero.editorial-pin {
+  aspect-ratio: 16 / 9;
+  min-height: 520px;
+  background: var(--editorial-bg);
+}
+
+.article-hero .editorial-surface {
+  height: 100%;
+  min-height: 0;
+  padding: 48px;
+}
+
+.article-hero .editorial-title {
+  max-width: 850px;
+  font-size: 5rem;
+}
+
+.article-hero .editorial-title.is-long {
+  font-size: 4rem;
+}
+
+.article-hero .editorial-eyebrow,
+.article-hero .editorial-index {
+  font-size: 0.8rem;
 }
 
 .article-body {
@@ -1749,7 +1853,8 @@ body.light .symbol-light {
     border-radius: 15px;
   }
 
-  .masonry:not(.related-masonry) > .pin-card:first-child {
+  .masonry:not(.related-masonry) > .pin-card:first-child,
+  .masonry:not(.related-masonry) > .pin-card.mobile-final-feature {
     column-span: all;
     display: block;
   }
@@ -1925,6 +2030,24 @@ body.light .symbol-light {
 
   .related-masonry > .pin-card {
     margin-bottom: 8px;
+  }
+
+  .article-hero.editorial-pin {
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+    border-radius: 15px;
+  }
+
+  .article-hero .editorial-surface {
+    padding: 20px;
+  }
+
+  .article-hero .editorial-title {
+    font-size: 3.1rem;
+  }
+
+  .article-hero .editorial-title.is-long {
+    font-size: 2.7rem;
   }
 
   .bio-copy h1,
