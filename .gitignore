@@ -13,4 +13,5 @@ node_modules/
 # Local environment
 .env
 .env.*
+.dev.vars
 

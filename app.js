@@ -343,7 +343,7 @@ const editorialArticles = [
   }
 ];
 
-const cards = uniqueCardsByImage([
+let cards = uniqueCardsByImage([
   ...externalPortfolioPins,
   ...externalPortfolioCards,
   ...editorialArticles,
@@ -870,6 +870,12 @@ const copy = {
     empty: "No cards found. Try another search or category.",
     back: "Back",
     related: "Related",
+    comments: "Comments",
+    commentName: "Your name",
+    commentText: "Add to the conversation",
+    commentSubmit: "Send for review",
+    commentPending: "Thanks. Your comment is waiting for approval.",
+    commentEmpty: "No published comments yet.",
     like: "Like",
     share: "Share",
     save: "Save",
@@ -908,6 +914,12 @@ const copy = {
     empty: "Nenhum card encontrado. Tente outra busca ou categoria.",
     back: "Voltar",
     related: "Relacionados",
+    comments: "Comentários",
+    commentName: "Seu nome",
+    commentText: "Deixe seu comentário",
+    commentSubmit: "Enviar para moderação",
+    commentPending: "Obrigado. Seu comentário está aguardando aprovação.",
+    commentEmpty: "Ainda não há comentários publicados.",
     like: "Curtir",
     share: "Compartilhar",
     save: "Salvar",
@@ -950,6 +962,77 @@ function init() {
   bindEvents();
   route();
   document.fonts.ready.then(() => fitEditorialTitles(document));
+}
+
+async function loadRemoteContent() {
+  try {
+    const response = await fetch("/api/content", { headers: { Accept: "application/json" } });
+    if (!response.ok) {
+      window.dolayoutRemoteLoaded = true;
+      route();
+      return;
+    }
+    const content = await response.json();
+    if (!Array.isArray(content)) throw new Error("Invalid content response.");
+    window.dolayoutRemoteLoaded = true;
+    const customCategories = content.flatMap((item) => item.categories || [item.category]).filter(Boolean);
+    customCategories.forEach((category) => { if (!categories.includes(category)) categories.push(category); });
+    renderCategories();
+    if (!content.length) { route(); return; }
+    cards = uniqueCardsByImage([...content.map(prepareRemoteCard), ...cards]);
+    renderFeed();
+    route();
+  } catch {
+    window.dolayoutRemoteLoaded = true;
+    route();
+  }
+}
+
+function prepareRemoteCard(card) {
+  const text = (value) => escapeHtml(value || "");
+  return {
+    ...card,
+    _remote: true,
+    title: text(card.title),
+    titlePt: text(card.titlePt),
+    category: text(card.category),
+    categories: (card.categories || []).map(text),
+    type: text(card.type),
+    description: text(card.description),
+    descriptionPt: text(card.descriptionPt),
+    tags: (card.tags || []).map(text),
+    hashtags: (card.hashtags || []).map(text),
+    statement: text(card.statement),
+    statementPt: text(card.statementPt),
+    image: safeAssetUrl(card.image),
+    gallery: (card.gallery || []).map(safeAssetUrl).filter(Boolean),
+    images: (card.images || []).map(safeAssetUrl).filter(Boolean),
+    article: card.article ? { en: (card.article.en || []).map(text), pt: (card.article.pt || []).map(text) } : undefined,
+    externalLinks: (card.externalLinks || []).map((link) => ({ label: text(link.label), url: safeExternalLink(link.url) })).filter((link) => link.label && link.url),
+    palette: (card.palette || []).every((color) => /^#[\da-f]{3,8}$/i.test(color)) ? card.palette : ["#111111", "#4b4b4b"],
+    height: Math.max(280, Math.min(1000, Number(card.height) || 520)),
+    objectPosition: "center"
+  };
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[char]);
+}
+
+function safeAssetUrl(value) {
+  const asset = String(value || "");
+  if (/^(assets\/|\/assets\/|\/api\/media\?key=portfolio%2F|\/api\/media\?key=portfolio\/)/i.test(asset)) return escapeHtml(asset);
+  try {
+    const url = new URL(asset);
+    return url.protocol === "https:" ? escapeHtml(url.href) : "";
+  } catch { return ""; }
+}
+
+function safeExternalLink(value) {
+  try {
+    const url = new URL(String(value || ""));
+    return url.protocol === "https:" ? escapeHtml(url.href) : "";
+  } catch { return ""; }
 }
 
 function t(key) {
@@ -1139,8 +1222,8 @@ function isFeedReadyPortfolioImage(image) {
 
 function renderCategories() {
   categoryRail.innerHTML = categories.map((category) => `
-    <button class="category-button ${category === state.category ? "is-active" : ""}" type="button" data-category="${category}">
-      ${categoryLabel(category)}
+    <button class="category-button ${category === state.category ? "is-active" : ""}" type="button" data-category="${escapeHtml(category)}">
+      ${escapeHtml(categoryLabel(category))}
     </button>
   `).join("");
 
@@ -1389,6 +1472,17 @@ function cardTemplate(card) {
 }
 
 function editorialCardTemplate(card) {
+  if (card._remote && card.image) {
+    const editorialIndex = Math.abs([...card.id].reduce((total, char) => total + char.charCodeAt(0), 0)) % 10;
+    return `
+      <button class="pin-card editorial-photo-card editorial-style-${editorialIndex}" type="button" data-id="${escapeHtml(card.id)}">
+        <img src="${card.image}" alt="${cardTitle(card)}" loading="lazy" decoding="async">
+        <span class="editorial-photo-shade"></span>
+        <span class="editorial-photo-label">${categoryLabel(card.category)}</span>
+        <strong>${cardTitle(card)}</strong>
+      </button>
+    `;
+  }
   const index = Math.max(0, editorialArticles.findIndex((article) => article.id === card.id));
   return `
     <button class="pin-card editorial-pin editorial-style-${index}" type="button" data-id="${card.id}">
@@ -1510,6 +1604,7 @@ function route() {
 
   const card = cards.find((item) => item.id === match[1]);
   if (!card) {
+    if (!window.dolayoutRemoteLoaded) return;
     window.location.hash = "/";
     return;
   }
@@ -1661,6 +1756,8 @@ function renderDetail(card) {
       </header>
       <div class="project-image-stack">${projectMediaStack(card)}</div>
 
+      ${commentsSectionMarkup(card)}
+
       <h2 class="related-title">${t("related")}</h2>
       <div class="masonry related-masonry">
         ${related.map(cardTemplate).join("")}
@@ -1689,6 +1786,7 @@ function renderDetail(card) {
   detailView.querySelectorAll("[data-action]").forEach((button) => {
     button.addEventListener("click", () => handleAction(button.dataset.action, card, button));
   });
+  bindDetailComments(card);
   detailView.querySelectorAll(".pin-card").forEach((item) => {
     item.addEventListener("click", (event) => {
       if (event.target.closest(".portfolio-feed-control")) return;
@@ -1718,20 +1816,10 @@ function renderArticleDetail(card) {
 
   detailView.innerHTML = `
     <article class="article-shell">
-      <div class="detail-actions-top">
-        <button class="back-button" type="button" data-back>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-          ${t("back")}
-        </button>
-        <div class="detail-action-row">
-          ${actionButton("like", t("like"), "M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7Z", state.liked.has(card.id))}
-          ${actionButton("share", t("share"), "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14", false)}
-          ${actionButton("save", t("save"), "M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16Z", state.saved.has(card.id))}
-        </div>
-      </div>
-
-      <figure class="article-hero editorial-pin editorial-style-${editorialIndex}">
-        ${editorialArtworkTemplate(card, editorialIndex, "h1")}
+      <figure class="article-hero ${card._remote && card.image ? "article-image-hero" : `editorial-pin editorial-style-${editorialIndex}`} ">
+        ${card._remote && card.image
+          ? `<img src="${card.image}" alt="${cardTitle(card)}" loading="eager" decoding="async">`
+          : editorialArtworkTemplate(card, editorialIndex, "h1")}
       </figure>
 
       <header class="article-header"><p>${cardDescription(card)}</p></header>
@@ -1740,9 +1828,19 @@ function renderArticleDetail(card) {
         ${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
       </div>
 
+      ${commentsSectionMarkup(card)}
+
       <h2 class="related-title">${t("related")}</h2>
       <div class="masonry related-masonry">
         ${related.map(cardTemplate).join("")}
+      </div>
+      <div class="detail-actions-bottom">
+        <button class="back-button" type="button" data-back><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>${t("back")}</button>
+        <div class="detail-action-row">
+          ${actionButton("like", t("like"), "M20.8 4.6a5.4 5.4 0 0 0-7.7 0L12 5.7l-1.1-1.1a5.4 5.4 0 1 0-7.7 7.7L12 21l8.8-8.7a5.4 5.4 0 0 0 0-7.7Z", state.liked.has(card.id))}
+          ${actionButton("share", t("share"), "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14", false)}
+          ${actionButton("save", t("save"), "M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10v16Z", state.saved.has(card.id))}
+        </div>
       </div>
     </article>
   `;
@@ -1757,6 +1855,7 @@ function renderArticleDetail(card) {
   detailView.querySelectorAll("[data-action]").forEach((button) => {
     button.addEventListener("click", () => handleAction(button.dataset.action, card, button));
   });
+  bindDetailComments(card);
   detailView.querySelectorAll(".pin-card").forEach((item) => {
     item.addEventListener("click", () => {
       window.location.hash = `/card/${item.dataset.id}`;
@@ -1765,6 +1864,94 @@ function renderArticleDetail(card) {
   });
   fitEditorialTitles(detailView);
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function commentsSectionMarkup(card) {
+  return `
+    <section class="comments-panel" data-comments-panel data-item-id="${escapeHtml(card.id)}" aria-labelledby="commentsTitle">
+      <div class="comments-heading"><div><span class="comments-kicker">${state.language === "pt" ? "CONVERSA" : "THE CONVERSATION"}</span><h2 id="commentsTitle">${t("comments")}</h2></div><span class="comments-count" data-comments-count></span></div>
+      <div class="comments-list" data-comments-list><p class="comments-empty">${state.language === "pt" ? "Carregando comentários…" : "Loading comments…"}</p></div>
+      <form class="comment-form" data-comment-form>
+        <label>${t("commentName")}<input name="author" maxlength="80" autocomplete="name" required></label>
+        <label>${t("commentText")}<textarea name="body" rows="3" maxlength="1500" required></textarea></label>
+        <label class="comment-honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+        <div class="comment-submit-row"><button class="comment-submit" type="submit">${t("commentSubmit")}</button><p class="comment-status" data-comment-status role="status"></p></div>
+      </form>
+    </section>
+  `;
+}
+
+async function bindDetailComments(card) {
+  const panel = detailView.querySelector("[data-comments-panel]");
+  if (!panel) return;
+  const list = panel.querySelector("[data-comments-list]");
+  const count = panel.querySelector("[data-comments-count]");
+  const form = panel.querySelector("[data-comment-form]");
+  const status = panel.querySelector("[data-comment-status]");
+  const renderComments = (comments) => {
+    count.textContent = comments.length ? String(comments.length).padStart(2, "0") : "";
+    list.replaceChildren();
+    if (!comments.length) {
+      const empty = document.createElement("p");
+      empty.className = "comments-empty";
+      empty.textContent = t("commentEmpty");
+      list.append(empty);
+      return;
+    }
+    comments.forEach((comment) => {
+      const item = document.createElement("article");
+      item.className = "comment-item";
+      const head = document.createElement("div");
+      head.className = "comment-item-head";
+      const author = document.createElement("strong");
+      author.textContent = comment.author;
+      const date = document.createElement("time");
+      date.dateTime = comment.createdAt;
+      date.textContent = new Intl.DateTimeFormat(state.language === "pt" ? "pt-BR" : "en", { dateStyle: "medium" }).format(new Date(comment.createdAt));
+      const body = document.createElement("p");
+      body.textContent = comment.body;
+      head.append(author, date);
+      item.append(head, body);
+      list.append(item);
+    });
+  };
+
+  try {
+    const response = await fetch(`/api/comments?itemId=${encodeURIComponent(card.id)}`, { headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error("Comments are temporarily unavailable.");
+    renderComments(await response.json());
+  } catch {
+    list.replaceChildren();
+    const empty = document.createElement("p");
+    empty.className = "comments-empty";
+    empty.textContent = state.language === "pt" ? "Comentários estarão disponíveis em breve." : "Comments will be available soon.";
+    list.append(empty);
+    form.hidden = true;
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submit = form.querySelector("button[type=submit]");
+    const data = new FormData(form);
+    submit.disabled = true;
+    status.textContent = state.language === "pt" ? "Enviando…" : "Sending…";
+    status.classList.remove("is-error");
+    try {
+      const response = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ itemId: card.id, author: data.get("author"), body: data.get("body"), website: data.get("website") })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "Unable to send your comment.");
+      form.reset();
+      status.textContent = result.message || t("commentPending");
+    } catch (error) {
+      status.textContent = error.message;
+      status.classList.add("is-error");
+    } finally { submit.disabled = false; }
+  }, { once: true });
 }
 
 function projectMediaStack(card) {
@@ -1895,3 +2082,4 @@ async function shareCard(card) {
 }
 
 init();
+loadRemoteContent();

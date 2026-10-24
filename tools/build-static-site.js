@@ -45,6 +45,7 @@ fs.mkdirSync(outDir, { recursive: true });
 
 files.forEach(copyFile);
 copyDirectory("cliente/casa58");
+copyDirectory("adm");
 
 const referencedAssets = new Set();
 for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js"]) {
