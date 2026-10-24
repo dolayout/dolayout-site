@@ -1230,6 +1230,7 @@ function renderCategories() {
   categoryRail.querySelectorAll("[data-category]").forEach((button) => {
     button.addEventListener("click", () => {
       state.category = button.dataset.category;
+      if (!homeView.classList.contains("is-visible")) window.location.hash = "/";
       scrollToPageTop();
       renderCategories();
       renderFeed();
