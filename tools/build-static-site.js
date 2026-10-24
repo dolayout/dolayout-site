@@ -9,6 +9,7 @@ const files = [
   "styles.css",
   "app.js",
   "site-portfolio-data.js",
+  "manifest.webmanifest",
   "CNAME",
   ".nojekyll",
   "robots.txt",
@@ -52,6 +53,14 @@ for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js"
   const content = fs.readFileSync(source, "utf8");
   for (const match of content.matchAll(/assets\/[^"'`)>\s]+/g)) {
     referencedAssets.add(match[0]);
+  }
+}
+
+const manifestPath = path.join(root, "manifest.webmanifest");
+if (fs.existsSync(manifestPath)) {
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  for (const icon of manifest.icons || []) {
+    if (icon.src) referencedAssets.add(icon.src);
   }
 }
 

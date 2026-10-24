@@ -1183,6 +1183,12 @@ function renderFeed(items = filteredCards()) {
   }
 
   feed.innerHTML = items.map(cardTemplate).join("");
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    feed.animate([{ opacity: 0.72 }, { opacity: 1 }], {
+      duration: 360,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+    });
+  }
   if (window.matchMedia("(max-width: 760px)").matches && items.length > 2 && items.length % 2 === 0) {
     feed.lastElementChild.classList.add("mobile-final-feature");
   }
@@ -1642,10 +1648,17 @@ function renderDetail(card) {
   const related = cards
     .filter((item) => item.id !== card.id && (item.category === card.category || item.tags.some((tag) => card.tags.includes(tag))))
     .slice(0, 6);
-  const projectHashtags = (card.hashtags || []).slice(0, 7);
+  const projectHashtags = [...new Set([...(card.source === "LAF" ? ["LAF"] : []), ...(card.hashtags || [])])].slice(0, 8);
 
   detailView.innerHTML = `
     <div class="detail-shell">
+      <header class="project-intro">
+        <span class="label">${categoryLabel(card.category)}</span>
+        <h1>${cardTitle(card)}</h1>
+        <p>${cardDescription(card)}</p>
+        ${projectHashtags.length ? `<div class="project-hashtags" aria-label="${state.language === "pt" ? "Tags do projeto" : "Project tags"}">${projectHashtags.map((tag) => `<span>#${tag.replace(/^#/, "")}</span>`).join("")}</div>` : ""}
+        ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
+      </header>
       <div class="detail-actions-top">
         <button class="back-button" type="button" data-back>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
@@ -1658,20 +1671,7 @@ function renderDetail(card) {
         </div>
       </div>
 
-      <div class="detail-main">
-        <div class="hero-visual">
-          ${heroVisual(card)}
-        </div>
-        <aside class="detail-copy">
-          <span class="label">${categoryLabel(card.category)}</span>
-          ${card.source ? `<span class="credit-tag">${card.source === "LAF" ? "LAF" : "DO"}</span>` : ""}
-          <h1>${cardTitle(card)}</h1>
-          <p>${cardDescription(card)}</p>
-          <span class="credit">${t("credits")}: ${state.language === "pt" && card.creditPt ? card.creditPt : card.credit}</span>
-          ${projectHashtags.length ? `<div class="project-hashtags" aria-label="${state.language === "pt" ? "Tags do projeto" : "Project tags"}">${projectHashtags.map((tag) => `<span>#${tag}</span>`).join("")}</div>` : ""}
-          ${card.externalLinks?.length ? `<div class="external-links">${card.externalLinks.map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${link.label}</a>`).join("")}</div>` : ""}
-        </aside>
-      </div>
+      <div class="project-image-stack">${projectMediaStack(card)}</div>
 
       <h2 class="related-title">${t("related")}</h2>
       <div class="masonry related-masonry">
@@ -1702,20 +1702,7 @@ function renderDetail(card) {
     });
     if (item.dataset.feedCarousel === "true") bindFeedCarousel(item);
   });
-  const galleryMain = detailView.querySelector("[data-gallery-main]");
-  if (galleryMain) {
-    const thumbs = [...detailView.querySelectorAll("[data-gallery-image]")];
-    const controller = createSwipeCarousel(
-      galleryMain,
-      card.gallery,
-      "gallery-slide",
-      (asset, active) => galleryAssetMarkup(asset, cardTitle(card), active),
-      (index) => thumbs.forEach((thumb, thumbIndex) => thumb.classList.toggle("is-active", thumbIndex === index))
-    );
-    thumbs.forEach((button, index) => {
-      button.addEventListener("click", () => controller.select(index));
-    });
-  }
+  observeProjectFrames();
   fitEditorialTitles(detailView);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -1781,55 +1768,51 @@ function renderArticleDetail(card) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function heroVisual(card) {
-  if (card.gallery?.length) {
-    return `
-      <div class="project-gallery" data-gallery>
-        <div class="gallery-main" data-gallery-main>
-          <div class="swipe-track gallery-track">${carouselTrackMarkup(card.gallery, 0, "gallery-slide", (asset, active) => galleryAssetMarkup(asset, cardTitle(card), active))}</div>
-        </div>
-        ${card.gallery.length > 1 ? `<div class="gallery-strip">${card.gallery.map((image, index) => `
-          <button class="gallery-thumb ${index === 0 ? "is-active" : ""} ${isVideoAsset(image) ? "is-video" : ""}" type="button" data-gallery-image="${image}" aria-label="${isVideoAsset(image) ? "Reproduzir vídeo" : `Ver imagem ${index + 1}`}">
-            ${isVideoAsset(image) ? `<span class="gallery-video-mark" aria-hidden="true">▶</span>` : `<img src="${image}" alt="${cardTitle(card)} ${index + 1}" loading="lazy">`}
-          </button>
-        `).join("")}</div>` : ""}
-      </div>
-    `;
-  }
+function projectMediaStack(card) {
+  const assets = card.gallery?.length ? card.gallery : card.image ? [card.image] : [];
+  const autoplay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "" : "autoplay";
+  return assets.map((asset, index) => `
+    <figure class="project-frame">
+      ${isVideoAsset(asset)
+        ? `<video src="${asset}" ${autoplay} muted playsinline loop controls preload="metadata" aria-label="${cardTitle(card)} ${index + 1}"></video>`
+        : `<img src="${asset}" alt="${cardTitle(card)} ${index + 1}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async">`}
+    </figure>
+  `).join("");
+}
 
-  if (card.image) {
-    return `
-      <div class="hero-media">
-        <img class="detail-image" src="${card.image}" alt="${cardTitle(card)}">
-      </div>
-    `;
-  }
+let projectFrameObserver;
+let projectVideoObserver;
 
-  return `
-    <div class="visual ${card.category === "Nota do Dia" ? "visual-note" : ""}" style="--c1:${card.palette[0]}; --c2:${card.palette[1]}; --statement-color:${card.statementColor};">
-      <div class="card-top">
-        <span class="label">${card.type}</span>
-      </div>
-      <div class="statement">${cardStatement(card)}</div>
-      <div class="card-bottom">
-        <div>
-          <h2 class="card-title">${cardTitle(card)}</h2>
-          <p class="card-subtitle">${card.tags.join(" / ")}</p>
-        </div>
-      </div>
-    </div>
-  `;
+function observeProjectFrames() {
+  projectFrameObserver?.disconnect();
+  projectVideoObserver?.disconnect();
+  const frames = [...detailView.querySelectorAll(".project-frame")];
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const videos = [...detailView.querySelectorAll(".project-frame video")];
+  if (reducedMotion) videos.forEach((video) => video.pause());
+  if (videos.length && window.IntersectionObserver && !reducedMotion) {
+    projectVideoObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.play().catch(() => {});
+        else entry.target.pause();
+      });
+    }, { threshold: 0.25 });
+    videos.forEach((video) => projectVideoObserver.observe(video));
+  }
+  if (!frames.length || !window.IntersectionObserver || reducedMotion) return;
+  detailView.querySelector(".detail-shell").classList.add("has-frame-reveal");
+  projectFrameObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-revealed");
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -32px 0px", threshold: 0.04 });
+  frames.forEach((frame) => projectFrameObserver.observe(frame));
 }
 
 function isVideoAsset(asset) {
   return /\.(mp4|webm|ogg)(\?|$)/i.test(asset || "");
-}
-
-function galleryAssetMarkup(asset, title, active = true) {
-  if (isVideoAsset(asset)) {
-    return `<video class="detail-image detail-video" src="${asset}" ${active ? "autoplay controls" : ""} muted playsinline loop preload="metadata" aria-label="${title}"></video>`;
-  }
-  return `<img class="detail-image" src="${asset}" alt="${title}" loading="eager" draggable="false">`;
 }
 
 function actionButton(action, label, path, active, disabled = false) {
@@ -1852,7 +1835,7 @@ function openLightbox(card) {
   const meta = lightbox.querySelector(".lightbox-meta");
   image.src = card.image;
   image.alt = card.title;
-  meta.textContent = `${card.category}${card.source === "LAF" ? " / LAF" : ""}`;
+  meta.textContent = `${card.category}${card.source === "LAF" ? " / #LAF" : ""}`;
   lightbox.classList.add("is-open");
   lightbox.setAttribute("aria-hidden", "false");
   document.body.classList.add("has-lightbox");
