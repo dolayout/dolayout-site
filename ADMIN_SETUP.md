@@ -24,7 +24,7 @@ In the Pages project, open **Settings → Variables and Secrets** and add `ADMIN
 
 After the deployment, open `https://dolayout.co/adm/`, enter that setup token, confirm the admin email and choose a unique password of at least 12 characters. The token only works while the admin table is empty. Once setup is complete, the public setup endpoint is disabled. The token can then be removed from Pages settings.
 
-The admin password is salted and derived with PBKDF2-SHA-256. Sessions use random, hashed server-side tokens in `HttpOnly`, `Secure`, `SameSite=Strict` cookies. No password or session token is stored in browser local storage.
+The browser derives a salted PBKDF2-SHA-256 verifier (310,000 iterations); the password itself is never sent to the API. D1 stores only a SHA-256 digest of that verifier and its random salt. Sessions use random, hashed server-side tokens in `HttpOnly`, `Secure`, `SameSite=Strict` cookies. No password or session token is stored in browser local storage.
 
 ## Content and comments
 

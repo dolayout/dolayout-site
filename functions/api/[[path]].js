@@ -1,6 +1,5 @@
 const SESSION_COOKIE = "dolayout_admin_session";
 const SESSION_DAYS = 7;
-const PASSWORD_ITERATIONS = 310000;
 const MAX_JSON_BYTES = 350000;
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
@@ -17,6 +16,7 @@ export async function onRequest(context) {
 
   try {
     if (path === "session" && request.method === "GET") return getSession(request, env);
+    if (path === "session/challenge" && request.method === "POST") return getLoginChallenge(request, env);
     if (path === "setup" && request.method === "POST") return setupAdmin(request, env);
     if (path === "session" && request.method === "POST") return login(request, env);
     if (path === "session" && request.method === "DELETE") return logout(request, env);
@@ -61,23 +61,33 @@ async function setupAdmin(request, env) {
   if (existing) return json({ error: "Initial setup has already been completed." }, 409);
   const body = await readJson(request);
   const email = normalizeEmail(body.email);
-  const password = String(body.password || "");
   if (!constantTimeEqual(String(body.setupToken || ""), env.ADMIN_SETUP_TOKEN)) return json({ error: "Invalid setup code." }, 403);
   if (!validEmail(email)) return json({ error: "Enter a valid email address." }, 400);
-  if (password.length < 12 || password.length > 128) return json({ error: "Use a password between 12 and 128 characters." }, 400);
+  const passwordSalt = String(body.passwordSalt || "");
+  const passwordVerifier = String(body.passwordVerifier || "");
+  if (!Number.isInteger(body.passwordLength) || body.passwordLength < 12 || body.passwordLength > 128) return json({ error: "Use a password between 12 and 128 characters." }, 400);
+  if (!/^[\da-z_-]{22}$/i.test(passwordSalt) || !/^[\da-z_-]{43}$/i.test(passwordVerifier)) return json({ error: "The password could not be secured. Please try again." }, 400);
 
-  const salt = randomToken(16);
-  const passwordHash = await derivePassword(password, salt);
+  const passwordHash = await sha256(passwordVerifier);
   const id = crypto.randomUUID();
   try {
     await db.prepare("INSERT INTO admin_users (id, email, password_hash, password_salt, created_at) SELECT ?, ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM admin_users)")
-      .bind(id, email, passwordHash, salt, new Date().toISOString()).run();
+      .bind(id, email, passwordHash, passwordSalt, new Date().toISOString()).run();
   } catch {
     return json({ error: "An administrator has already been created." }, 409);
   }
   const admin = await db.prepare("SELECT id, email FROM admin_users WHERE id = ?").bind(id).first();
   if (!admin) return json({ error: "Initial setup has already been completed." }, 409);
   return createSession(db, admin, request);
+}
+
+async function getLoginChallenge(request, env) {
+  const body = await readJson(request);
+  const email = normalizeEmail(body.email);
+  const admin = validEmail(email)
+    ? await database(env).prepare("SELECT password_salt FROM admin_users WHERE email = ?").bind(email).first()
+    : null;
+  return json({ salt: admin?.password_salt || randomToken(16) });
 }
 
 async function login(request, env) {
@@ -93,7 +103,8 @@ async function login(request, env) {
   if ((failures?.total || 0) >= 10) return json({ error: "Too many attempts. Try again in 15 minutes." }, 429);
 
   const admin = await db.prepare("SELECT id, email, password_hash, password_salt FROM admin_users WHERE email = ?").bind(email).first();
-  const candidate = await derivePassword(String(body.password || ""), admin?.password_salt || "invalid-salt");
+  const verifier = String(body.passwordVerifier || "");
+  const candidate = /^[\da-z_-]{43}$/i.test(verifier) ? await sha256(verifier) : "invalid-verifier";
   if (!admin || !constantTimeEqual(candidate, admin.password_hash)) {
     await db.prepare("INSERT INTO auth_attempts (fingerprint, created_at) VALUES (?, ?)").bind(fingerprint, new Date(now).toISOString()).run();
     return json({ error: "Email or password is incorrect." }, 401);
@@ -397,22 +408,10 @@ async function sha256(value) {
   return toBase64Url(new Uint8Array(digest));
 }
 
-async function derivePassword(password, salt) {
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: fromBase64Url(salt), iterations: PASSWORD_ITERATIONS }, key, 256);
-  return toBase64Url(new Uint8Array(bits));
-}
-
 function toBase64Url(bytes) {
   let binary = "";
   bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function fromBase64Url(value) {
-  const normalized = String(value).replace(/-/g, "+").replace(/_/g, "/");
-  const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
-  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
 
 function constantTimeEqual(left, right) {

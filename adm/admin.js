@@ -232,28 +232,57 @@ async function submitLogin(event) {
   const form = event.currentTarget;
   const data = new FormData(form);
   const button = form.querySelector("button[type=submit]");
+  const message = form.querySelector(".message");
   button.disabled = true;
   try {
-    const response = await api("/api/session", { method: "POST", body: { email: data.get("email"), password: data.get("password") } });
+    const email = data.get("email");
+    const challenge = await api("/api/session/challenge", { method: "POST", body: { email } });
+    const passwordVerifier = await derivePasswordVerifier(data.get("password"), challenge.salt);
+    const response = await api("/api/session", { method: "POST", body: { email, passwordVerifier } });
     state.user = response.user;
     renderDashboard();
     await loadTab();
-  } catch (error) { renderLogin(error.message); }
+  } catch (error) { message.textContent = error.message; message.classList.add("is-error"); button.disabled = false; }
 }
 
 async function submitSetup(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const data = new FormData(form);
-  if (data.get("password") !== data.get("confirmPassword")) { renderSetup("The passwords do not match."); return; }
+  const message = form.querySelector(".message");
+  if (data.get("password") !== data.get("confirmPassword")) { message.textContent = "The passwords do not match."; message.classList.add("is-error"); return; }
   const button = form.querySelector("button[type=submit]");
   button.disabled = true;
   try {
-    const response = await api("/api/setup", { method: "POST", body: { setupToken: data.get("setupToken"), email: data.get("email"), password: data.get("password") } });
+    const passwordSalt = randomBase64Url(16);
+    const passwordVerifier = await derivePasswordVerifier(data.get("password"), passwordSalt);
+    const response = await api("/api/setup", { method: "POST", body: { setupToken: data.get("setupToken"), email: data.get("email"), passwordSalt, passwordVerifier, passwordLength: String(data.get("password")).length } });
     state.user = response.user;
     renderDashboard();
     await loadTab();
-  } catch (error) { renderSetup(error.message); }
+  } catch (error) { message.textContent = error.message; message.classList.add("is-error"); button.disabled = false; }
+}
+
+async function derivePasswordVerifier(password, salt) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(String(password)), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: fromBase64Url(salt), iterations: 310000 }, key, 256);
+  return toBase64Url(new Uint8Array(bits));
+}
+
+function randomBase64Url(length) {
+  return toBase64Url(crypto.getRandomValues(new Uint8Array(length)));
+}
+
+function toBase64Url(bytes) {
+  let binary = "";
+  bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function fromBase64Url(value) {
+  const normalized = String(value).replace(/-/g, "+").replace(/_/g, "/");
+  const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
 
 async function logout() { await api("/api/session", { method: "DELETE" }); state.user = null; renderLogin(); }
