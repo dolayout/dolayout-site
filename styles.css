@@ -1829,10 +1829,12 @@ body.light .symbol-light {
     object-fit: contain;
   }
 
-  .portfolio-feed-count,
-  .portfolio-feed-dots,
   .portfolio-feed-control {
     display: none;
+  }
+
+  .portfolio-feed-dots {
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
   }
 
   .portfolio-feed-card > .label {
