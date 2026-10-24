@@ -753,6 +753,20 @@ const cards = uniqueCardsByImage([
   }
 ].filter((card) => card.article || card.parentId));
 
+function shuffled(items) {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+  }
+  return result;
+}
+
+const mobileFeedOrder = shuffled(cards).map((card) => card.id);
+const mobileWideCards = new Set(
+  shuffled(cards).slice(0, Math.max(2, Math.ceil(cards.length / 8))).map((card) => card.id)
+);
+
 function uniqueCardsByImage(items) {
   const seenImages = new Set();
 
@@ -784,7 +798,6 @@ const languageToggle = document.querySelector("[data-language-toggle]");
 const feedMetaLabel = document.querySelector(".feed-meta p");
 
 const contact = {
-  name: "João Dolayout",
   email: "joaodolayout@gmail.com",
   phone: "11941992365",
   phoneDisplay: "(11) 94199-2365",
@@ -802,7 +815,7 @@ const servicesByLang = {
     "Editorial",
     "Art direction",
     "Portfolio / deck",
-    "Creative studio"
+    "Content systems"
   ],
   pt: [
     "Branding",
@@ -814,22 +827,9 @@ const servicesByLang = {
     "Editorial",
     "Direção de arte",
     "Portfólio / apresentação",
-    "Creative studio"
+    "Sistemas de conteúdo"
   ]
 };
-
-const services = [
-  "Branding",
-  "Identidade visual",
-  "Key visual",
-  "Website design",
-  "Social media",
-  "Campanha",
-  "Editorial",
-  "Direção de arte",
-  "Portfólio / apresentação",
-  "Creative studio"
-];
 
 const categoryLabels = {
   en: {
@@ -873,14 +873,14 @@ const copy = {
     save: "Save",
     credits: "Credits",
     copiedPrompt: "Card link",
-    profileLabel: "Dolayout / João",
-    profileTitle: "Before Dolayout was a studio, it was the name people called me at college.",
-    profileText: "I'm João Felipe Nogueira Buselli, a Brazilian designer and art director. Back in college, I became João do layout: the one who was always arranging, testing and turning rough ideas into something visible. The nickname stayed and became Dolayout, my independent studio and an open visual platform for brands, websites, campaigns and whatever else asks for a point of view.",
-    profileNote: "I believe everyone can make a layout. Not because design is easy, but because creating begins when an idea leaves your head and gains form. Mine starts with curiosity, gets sharper through direction and only stops when it can live in the real world.",
+    profileLabel: "Independent creative studio",
+    profileTitle: "Brands, digital experiences and direction for ideas with something to say.",
+    profileText: "Dolayout is an independent creative studio led by designer and art director João Buselli. The work brings brand strategy, visual identity, digital design and art direction together to build clear, distinctive systems — made to work across real touchpoints, not just look good in a presentation.",
+    profileNote: "Good design gives ideas a clear form and brands a consistent way to show up. The goal is work with purpose, character and enough flexibility to live beyond a single screen.",
     startProject: "Start a project",
     contactLabel: "Contact",
-    contactTitle: "Send me the idea, the mess, the brand, the almost-brief.",
-    contactText: "The more context, the better. This form turns your first message into a clean email brief.",
+    contactTitle: "Let's give the next idea a clear direction.",
+    contactText: "Share the context, goals, timing and the kind of support you need. It doesn't have to be a perfect brief.",
     whatsapp: "WhatsApp",
     name: "Name",
     email: "Email",
@@ -893,7 +893,7 @@ const copy = {
     budget: "Estimated investment",
     budgetOptions: ["Not defined yet", "Up to R$ 3k", "R$ 3k to R$ 8k", "R$ 8k to R$ 15k", "Above R$ 15k"],
     need: "What do you need?",
-    message: "Tell me a bit about the project",
+    message: "Tell us a bit about the project",
     messagePlaceholder: "Context, goal, references, links, timing, main doubt...",
     submit: "Send brief",
     status: "Opening your email with the brief ready.",
@@ -911,14 +911,14 @@ const copy = {
     save: "Salvar",
     credits: "Créditos",
     copiedPrompt: "Link do card",
-    profileLabel: "Dolayout / João",
-    profileTitle: "Antes de ser um estúdio, Dolayout era o jeito como me chamavam na faculdade.",
-    profileText: "Sou João Felipe Nogueira Buselli, designer e diretor de arte. Na faculdade, virei o João do layout: o cara que estava sempre organizando, testando e transformando ideia solta em alguma coisa visível. O apelido ficou e virou Dolayout, meu estúdio independente e uma plataforma aberta para marcas, sites, campanhas e tudo o que pede um ponto de vista.",
-    profileNote: "Acredito que todo mundo pode fazer layout. Não porque design seja fácil, mas porque criar começa quando uma ideia sai da cabeça e ganha forma. O meu processo começa na curiosidade, fica mais afiado com direção e só para quando consegue existir no mundo real.",
+    profileLabel: "Estúdio criativo independente",
+    profileTitle: "Marcas, experiências digitais e direção para ideias que têm algo a dizer.",
+    profileText: "A Dolayout é um estúdio criativo independente liderado pelo designer e diretor de arte João Buselli. O trabalho aproxima estratégia de marca, identidade visual, design digital e direção de arte para criar sistemas claros e com personalidade — pensados para funcionar nos pontos de contato reais, não só numa apresentação.",
+    profileNote: "Um bom design dá forma às ideias e consistência à maneira como as marcas aparecem no mundo. O objetivo é criar com intenção, personalidade e flexibilidade para ir além de uma única tela.",
     startProject: "Começar um projeto",
     contactLabel: "Contato",
-    contactTitle: "Me manda a ideia, a bagunça, a marca, o quase-briefing.",
-    contactText: "Quanto mais contexto, melhor. O formulário organiza sua primeira mensagem em um briefing por e-mail.",
+    contactTitle: "Vamos dar uma direção clara à próxima ideia.",
+    contactText: "Conte o contexto, os objetivos, o prazo e o tipo de apoio que procura. Não precisa chegar com tudo resolvido.",
     whatsapp: "WhatsApp",
     name: "Nome",
     email: "E-mail",
@@ -931,7 +931,7 @@ const copy = {
     budget: "Investimento estimado",
     budgetOptions: ["Ainda não defini", "Até R$ 3 mil", "R$ 3 mil a R$ 8 mil", "R$ 8 mil a R$ 15 mil", "Acima de R$ 15 mil"],
     need: "O que você precisa?",
-    message: "Conte um pouco do projeto",
+    message: "Conte um pouco sobre o projeto",
     messagePlaceholder: "Contexto, objetivo, referências, links, prazo, dúvida principal...",
     submit: "Enviar briefing",
     status: "Abrindo seu e-mail com o briefing pronto.",
@@ -988,13 +988,23 @@ function applyLanguage() {
 }
 
 function bindEvents() {
+  const mobileLayoutQuery = window.matchMedia("(max-width: 760px)");
+  mobileLayoutQuery.addEventListener("change", () => renderFeed());
+  window.addEventListener("resize", layoutMobileMasonry, { passive: true });
+
   searchInput.addEventListener("input", (event) => {
     state.query = event.target.value.trim().toLowerCase();
     renderFeed();
   });
 
   document.querySelectorAll("[data-focus-search]").forEach((button) => {
-    button.addEventListener("click", () => searchInput.focus());
+    button.addEventListener("click", () => {
+      if (window.matchMedia("(max-width: 760px)").matches) {
+        document.body.classList.add("search-open");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      searchInput.focus();
+    });
   });
 
   document.querySelectorAll(".add-button, [aria-label='Adicionar']").forEach((button) => {
@@ -1026,7 +1036,11 @@ function bindEvents() {
     if (event.target === lightbox) closeLightbox();
   });
   window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeLightbox();
+    if (event.key === "Escape") {
+      closeLightbox();
+      document.body.classList.remove("search-open");
+      searchInput.blur();
+    }
   });
 }
 
@@ -1160,6 +1174,11 @@ function filteredCards(excludeId) {
 }
 
 function renderFeed(items = filteredCards()) {
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    const order = new Map(mobileFeedOrder.map((id, index) => [id, index]));
+    items = [...items].sort((a, b) => order.get(a.id) - order.get(b.id));
+  }
+
   resultCount.textContent = `${items.length} ${t("cards")}`;
 
   if (!items.length) {
@@ -1168,6 +1187,16 @@ function renderFeed(items = filteredCards()) {
   }
 
   feed.innerHTML = items.map(cardTemplate).join("");
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    feed.querySelectorAll(".pin-card").forEach((card) => {
+      card.classList.toggle("mobile-wide", mobileWideCards.has(card.dataset.id));
+    });
+    layoutMobileMasonry();
+    feed.querySelectorAll("img").forEach((image) => {
+      if (!image.complete) image.addEventListener("load", layoutMobileMasonry, { once: true });
+    });
+  }
+
   feed.querySelectorAll(".pin-card").forEach((card) => {
     card.addEventListener("click", (event) => {
       if (event.target.closest(".portfolio-feed-control")) return;
@@ -1179,6 +1208,8 @@ function renderFeed(items = filteredCards()) {
       if (event.target.closest(".more-button")) return;
       const item = cards.find((entry) => entry.id === card.dataset.id);
       if (!item) return;
+      document.body.classList.remove("search-open");
+      searchInput.blur();
       if (shouldOpenDetail(item)) {
         window.location.hash = `/card/${item.id}`;
       } else {
@@ -1232,6 +1263,25 @@ function renderFeed(items = filteredCards()) {
   });
 }
 
+function layoutMobileMasonry() {
+  if (!feed || !window.matchMedia("(max-width: 760px)").matches) return;
+  const styles = getComputedStyle(feed);
+  const rowSize = parseFloat(styles.gridAutoRows) || 4;
+  const rowGap = parseFloat(styles.rowGap) || 8;
+
+  feed.querySelectorAll(".pin-card").forEach((card) => {
+    card.style.gridRowEnd = "span 1";
+  });
+
+  requestAnimationFrame(() => {
+    feed.querySelectorAll(".pin-card").forEach((card) => {
+      const height = card.scrollHeight;
+      const span = Math.max(1, Math.ceil((height + rowGap) / (rowSize + rowGap)));
+      card.style.gridRowEnd = `span ${span}`;
+    });
+  });
+}
+
 function shouldOpenDetail(card) {
   if (card.openMode === "lightbox") return false;
   const haystack = [card.type, card.category, ...(card.categories || []), ...(card.tags || [])].join(" ").toLowerCase();
@@ -1281,12 +1331,12 @@ function feedCarouselCardTemplate(card) {
     <div class="pin-card portfolio-feed-card" role="button" tabindex="0" data-id="${card.id}" data-tone="${card.tone}" data-feed-carousel="true" data-slides='${JSON.stringify(slides)}' style="--c1:${card.palette[0]}; --c2:${card.palette[1]};">
       <div class="portfolio-feed-stage">
         <span class="portfolio-feed-media">${feedCarouselMedia(slides[0], cardTitle(card))}</span>
-        <span class="label">${categoryLabel(card.category)}</span>
         <span class="portfolio-feed-count"><b class="portfolio-feed-current">01</b> <i>/ ${String(slides.length).padStart(2, "0")}</i></span>
         <span class="portfolio-feed-dots" aria-hidden="true">${slides.map((_, index) => `<i class="portfolio-feed-dot ${index === 0 ? "is-active" : ""}"></i>`).join("")}</span>
         <button class="portfolio-feed-control is-previous" type="button" data-carousel-step="-1" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
         <button class="portfolio-feed-control is-next" type="button" data-carousel-step="1" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
+      <span class="label">${categoryLabel(card.category)}</span>
     </div>
   `;
 }
@@ -1308,7 +1358,6 @@ function artDirectedCardTemplate(card) {
       <div class="visual mockup-visual">
         <div class="mock-bg-word">${card.category}</div>
         <div class="card-top">
-          <span class="label">${card.kicker || card.category}</span>
           <span class="more-button" aria-label="Mais opcoes">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM19 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM5 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
           </span>
@@ -1321,6 +1370,7 @@ function artDirectedCardTemplate(card) {
           ${card.showFeedTitle ? `<strong>${card.displayTitle || card.title}</strong>` : ""}
         </div>
       </div>
+      <span class="label art-pin-label">${card.kicker || card.category}</span>
     </button>
   `;
 }

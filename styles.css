@@ -450,6 +450,13 @@ body.light .symbol-light {
   background: #07003f;
 }
 
+.portfolio-feed-card > .label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 3;
+}
+
 .portfolio-feed-media,
 .portfolio-feed-image,
 .portfolio-feed-video {
@@ -560,6 +567,13 @@ body.light .symbol-light {
 
 .art-pin {
   background: var(--bg);
+}
+
+.art-pin > .art-pin-label {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 3;
 }
 
 .mockup-visual {
@@ -1459,12 +1473,12 @@ body.light .symbol-light {
 
 @media (max-width: 760px) {
   :root {
-    --topbar: 72px;
-    --radius: 18px;
+    --topbar: 58px;
+    --radius: 15px;
   }
 
   body {
-    padding-bottom: 82px;
+    padding-bottom: calc(82px + env(safe-area-inset-bottom));
   }
 
   .sidebar {
@@ -1476,9 +1490,11 @@ body.light .symbol-light {
   }
 
   .topbar {
-    grid-template-columns: auto 1fr auto auto;
-    gap: 10px;
-    padding: 12px 12px;
+    grid-template-columns: auto auto 1fr auto;
+    gap: 8px;
+    min-height: var(--topbar);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--soft-line);
   }
 
   .brand-name {
@@ -1486,17 +1502,34 @@ body.light .symbol-light {
   }
 
   .brand-fav {
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
   }
 
   .search-wrap {
-    height: 46px;
-    padding: 0 14px;
+    display: none;
   }
 
-  .search-wrap input::placeholder {
-    font-size: 0;
+  body.search-open .search-wrap {
+    position: fixed;
+    inset: calc(var(--topbar) + 8px) 10px auto;
+    z-index: 60;
+    display: flex;
+    height: 48px;
+    padding: 0 14px;
+    background: var(--surface-3);
+    box-shadow: var(--shadow);
+  }
+
+  body.search-open .search-wrap input::placeholder {
+    font-size: 0.9rem;
+  }
+
+  .mobile-theme,
+  .language-toggle {
+    width: 36px;
+    height: 36px;
+    justify-self: end;
   }
 
   .mobile-theme {
@@ -1504,23 +1537,50 @@ body.light .symbol-light {
   }
 
   .category-rail {
-    top: 71px;
-    padding: 12px;
+    top: var(--topbar);
+    gap: 8px;
+    padding: 9px 12px;
+  }
+
+  .category-button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
   }
 
   .feed-meta {
-    padding: 16px 12px 0;
+    padding: 13px 12px 0;
+  }
+
+  .feed-meta p {
+    font-size: 0.74rem;
+    letter-spacing: 0;
+  }
+
+  .feed-meta span {
+    font-size: 0.76rem;
   }
 
   .masonry {
-    column-count: 2;
-    column-gap: 12px;
-    padding: 14px 12px 28px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    grid-auto-rows: 4px;
+    column-count: unset;
+    column-gap: 0;
+    gap: 8px;
+    padding: 12px 12px 24px;
   }
 
   .pin-card {
-    margin-bottom: 12px;
-    border-radius: 18px;
+    grid-column: span 1;
+    align-self: start;
+    min-width: 0;
+    margin: 0;
+    border-radius: 15px;
+  }
+
+  .pin-card.mobile-wide {
+    grid-column: 1 / -1;
   }
 
   .visual {
@@ -1553,9 +1613,53 @@ body.light .symbol-light {
   }
 
   .more-button {
-    opacity: 1;
-    width: 30px;
-    height: 30px;
+    display: none;
+  }
+
+  .art-pin > .art-pin-label {
+    position: relative;
+    inset: auto;
+    display: inline-flex;
+    max-width: calc(100% - 16px);
+    min-height: 22px;
+    margin: 7px 8px 8px;
+    padding: 5px 7px;
+    font-size: 0.62rem;
+    line-height: 1;
+    white-space: normal;
+  }
+
+  .portfolio-feed-stage {
+    aspect-ratio: auto;
+  }
+
+  .portfolio-feed-image,
+  .portfolio-feed-video {
+    height: auto;
+    object-fit: contain;
+  }
+
+  .portfolio-feed-count,
+  .portfolio-feed-dots,
+  .portfolio-feed-control {
+    display: none;
+  }
+
+  .portfolio-feed-card > .label {
+    position: relative;
+    inset: auto;
+    display: inline-flex;
+    max-width: calc(100% - 16px);
+    min-height: 22px;
+    margin: 7px 8px 8px;
+    padding: 5px 7px;
+    font-size: 0.62rem;
+    line-height: 1;
+    white-space: normal;
+  }
+
+  .pin-card:not(.art-pin) .media-visual .card-top {
+    inset: 8px;
   }
 
   .card-title {
@@ -1590,7 +1694,7 @@ body.light .symbol-light {
   }
 
   .detail-view {
-    padding: 16px 12px 34px;
+    padding: 16px 12px calc(104px + env(safe-area-inset-bottom));
   }
 
   .detail-actions-top {
@@ -1642,18 +1746,12 @@ body.light .symbol-light {
 
 @media (max-width: 430px) {
   .masonry {
-    column-count: 2;
-    column-gap: 8px;
+    gap: 7px;
     padding-inline: 8px;
   }
 
   .pin-card {
-    margin-bottom: 8px;
-    border-radius: 14px;
-  }
-
-  .pin-card:not(.art-pin) .media-visual .card-top {
-    inset: 10px 10px auto;
+    border-radius: 13px;
   }
 
   .label {

@@ -23,6 +23,49 @@ window.dolayoutPortfolioProjects = [
     ]
   },
   {
+    id: "portfolio-andalafat",
+    title: "Andalafat",
+    titlePt: "Andalafat",
+    category: "Branding",
+    categories: ["Branding", "Identity", "Website Design", "Art Direction"],
+    description: "An identity built around forward movement. The Andalafat symbol folds the brand's initials into a vivid ribbon, while magenta and teal carry its energy into the digital experience.",
+    descriptionPt: "Uma identidade pensada para seguir em movimento. O símbolo dobra as iniciais da marca em uma fita vibrante; magenta e turquesa levam essa energia para a experiência digital.",
+    tags: ["financial services", "credit", "digital experience", "visual identity", "Brazil"],
+    hashtags: ["Andalafat", "BrandIdentity", "VisualIdentity", "WebsiteDesign", "ArtDirection", "Brazil"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Brazil",
+    palette: ["#111638", "#ed4771"],
+    feedCarousel: [
+      "Andalafat-Dolayout-01-06.png",
+      "Andalafat-Dolayout-01-04.png",
+      "Andalafat-Dolayout-01-05.png"
+    ]
+  },
+  {
+    id: "portfolio-cello",
+    title: "Cello",
+    titlePt: "Cello",
+    category: "Branding",
+    categories: ["Branding", "Identity", "Website Design", "Social Media", "Art Direction"],
+    description: "A calm, architectural identity for Cello. A modular mark, deep green and warm neutrals carry the brand across its website, team apparel and social content without losing its quiet confidence.",
+    descriptionPt: "Uma identidade de presença calma e arquitetônica para a Cello. O símbolo modular, o verde profundo e os tons quentes atravessam site, uniforme e redes sociais sem perder a sobriedade.",
+    tags: ["real estate", "architecture", "digital experience", "brand applications", "Portugal"],
+    hashtags: ["Cello", "BrandIdentity", "VisualIdentity", "WebsiteDesign", "SocialMedia", "Portugal"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Portugal",
+    palette: ["#071c20", "#e9d7c2"],
+    feedCarousel: [
+      "Cello-Dolayout-01-05.png",
+      "Cello-Dolayout-01-06.png",
+      "Cello-Dolayout-01-03.png",
+      "Cello-Dolayout-01-04.png"
+    ]
+  },
+  {
     id: "portfolio-efetiva",
     title: "Efetiva",
     titlePt: "Efetiva",
@@ -64,6 +107,27 @@ window.dolayoutPortfolioProjects = [
       "Hise-Dolayout-01-04.webp",
       "Hise-Dolayout-01-03.webp",
       "Hise-Dolayout-01-02.webp"
+    ]
+  },
+  {
+    id: "portfolio-jinn",
+    title: "Jinn",
+    titlePt: "Jinn",
+    category: "Branding",
+    categories: ["Branding", "Identity", "Key Visual", "Campaign", "Art Direction"],
+    description: "A visual identity built around the idea of making possibility tangible. A fluid symbol, bright yellow and turquoise give Jinn a distinctive presence across its identity system and campaign imagery.",
+    descriptionPt: "Uma identidade visual construída em torno da ideia de transformar possibilidades em realidade. O símbolo fluido, o amarelo vivo e o turquesa dão personalidade ao sistema visual e às peças de campanha da Jinn.",
+    tags: ["brand identity", "campaign", "visual system", "Portugal"],
+    hashtags: ["Jinn", "BrandIdentity", "VisualIdentity", "CampaignDesign", "ArtDirection", "Portugal"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Portugal",
+    palette: ["#0098a7", "#ffd447"],
+    feedCarousel: [
+      "Jinn-Dolayout-01-05.png",
+      "Jinn-Dolayout-01-06.png",
+      "Jinn-Dolayout-01-04.png"
     ]
   },
   {
