@@ -768,6 +768,7 @@ const mobileFeedOrder = (() => {
   if (featureIndex > 0) order.unshift(order.splice(featureIndex, 1)[0]);
   return order.map((card) => card.id);
 })();
+let desktopFeaturedId = null;
 
 function uniqueCardsByImage(items) {
   const seenImages = new Set();
@@ -1254,9 +1255,17 @@ function filteredCards(excludeId) {
 }
 
 function renderFeed(items = filteredCards()) {
-  if (window.matchMedia("(max-width: 760px)").matches) {
+  const isMobile = window.matchMedia("(max-width: 760px)").matches;
+  if (isMobile) {
     const order = new Map(mobileFeedOrder.map((id, index) => [id, index]));
     items = [...items].sort((a, b) => order.get(a.id) - order.get(b.id));
+  } else {
+    const eligibleFeatures = items.filter((card) => card.feedCarousel);
+    if (!eligibleFeatures.some((card) => card.id === desktopFeaturedId)) {
+      desktopFeaturedId = shuffled(eligibleFeatures)[0]?.id || null;
+    }
+    const featureIndex = items.findIndex((card) => card.id === desktopFeaturedId);
+    if (featureIndex > 0) items = [items[featureIndex], ...items.slice(0, featureIndex), ...items.slice(featureIndex + 1)];
   }
 
   resultCount.textContent = `${items.length} ${t("cards")}`;
@@ -1267,6 +1276,11 @@ function renderFeed(items = filteredCards()) {
   }
 
   feed.innerHTML = items.map(cardTemplate).join("");
+  if (!isMobile && desktopFeaturedId) {
+    [...feed.querySelectorAll(".portfolio-feed-card")]
+      .find((card) => card.dataset.id === desktopFeaturedId)
+      ?.classList.add("desktop-featured-card");
+  }
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     feed.animate([{ opacity: 0.72 }, { opacity: 1 }], {
       duration: 360,
@@ -1992,7 +2006,18 @@ function projectCarouselMarkup(card) {
         <button class="project-carousel-arrow is-next" type="button" data-carousel-next aria-label="${state.language === "pt" ? "Próxima imagem" : "Next image"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
       ` : ""}
     </div>
-    ${assets.length > 1 ? `<div class="project-carousel-footer"><div class="project-carousel-dots">${assets.map((_, index) => `<button class="project-carousel-dot${index === 0 ? " is-active" : ""}" type="button" data-carousel-to="${index}" aria-label="${state.language === "pt" ? `Ir para imagem ${index + 1}` : `Go to image ${index + 1}`}" aria-current="${index === 0 ? "true" : "false"}"></button>`).join("")}</div><span class="project-carousel-count" data-carousel-count>01 <i>/ ${String(assets.length).padStart(2, "0")}</i></span></div>` : ""}
+    ${assets.length > 1 ? `
+      <div class="project-carousel-footer">
+        <div class="project-carousel-thumbnails" aria-label="${state.language === "pt" ? "Miniaturas da galeria" : "Gallery thumbnails"}">
+          ${assets.map((asset, index) => `
+            <button class="project-carousel-thumb${index === 0 ? " is-active" : ""}" type="button" data-carousel-thumb="${index}" aria-label="${state.language === "pt" ? `Mostrar imagem ${index + 1}` : `Show image ${index + 1}`}" aria-current="${index === 0 ? "true" : "false"}">
+              ${isVideoAsset(asset) ? `<span class="project-carousel-video-thumb" aria-hidden="true">▶</span>` : `<img src="${asset}" alt="" loading="${index < 4 ? "eager" : "lazy"}" decoding="async">`}
+            </button>
+          `).join("")}
+        </div>
+        <span class="project-carousel-count" data-carousel-count>01 <i>/ ${String(assets.length).padStart(2, "0")}</i></span>
+      </div>
+    ` : ""}
   `;
 }
 
@@ -2000,7 +2025,7 @@ function bindProjectCarousel(carousel) {
   if (!carousel) return;
   const slides = [...carousel.querySelectorAll("[data-carousel-slide]")];
   if (slides.length < 2) return;
-  const dots = [...carousel.querySelectorAll("[data-carousel-to]")];
+  const thumbnails = [...carousel.querySelectorAll("[data-carousel-thumb]")];
   const count = carousel.querySelector("[data-carousel-count]");
   let active = 0;
   let startX = null;
@@ -2015,15 +2040,23 @@ function bindProjectCarousel(carousel) {
         else video.pause();
       }
     });
-    dots.forEach((dot, i) => {
-      dot.classList.toggle("is-active", i === active);
-      dot.setAttribute("aria-current", String(i === active));
+    thumbnails.forEach((thumbnail, i) => {
+      thumbnail.classList.toggle("is-active", i === active);
+      thumbnail.setAttribute("aria-current", String(i === active));
     });
+    const thumbnailStrip = carousel.querySelector(".project-carousel-thumbnails");
+    if (thumbnailStrip && thumbnails[active]) {
+      const stripBounds = thumbnailStrip.getBoundingClientRect();
+      const thumbBounds = thumbnails[active].getBoundingClientRect();
+      const scrollBehavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+      if (thumbBounds.left < stripBounds.left) thumbnailStrip.scrollBy({ left: thumbBounds.left - stripBounds.left, behavior: scrollBehavior });
+      else if (thumbBounds.right > stripBounds.right) thumbnailStrip.scrollBy({ left: thumbBounds.right - stripBounds.right, behavior: scrollBehavior });
+    }
     if (count) count.innerHTML = `${String(active + 1).padStart(2, "0")} <i>/ ${String(slides.length).padStart(2, "0")}</i>`;
   };
   carousel.querySelector("[data-carousel-prev]")?.addEventListener("click", () => show(active - 1));
   carousel.querySelector("[data-carousel-next]")?.addEventListener("click", () => show(active + 1));
-  dots.forEach((dot) => dot.addEventListener("click", () => show(Number(dot.dataset.carouselTo))));
+  thumbnails.forEach((thumbnail) => thumbnail.addEventListener("click", () => show(Number(thumbnail.dataset.carouselThumb))));
   const stage = carousel.querySelector("[data-carousel-stage]");
   stage?.addEventListener("pointerdown", (event) => { startX = event.clientX; });
   stage?.addEventListener("pointerup", (event) => {
