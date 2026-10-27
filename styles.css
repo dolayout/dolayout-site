@@ -2131,6 +2131,10 @@ body.light .symbol-light {
     object-fit: contain;
   }
 
+  .portfolio-feed-video {
+    object-fit: cover;
+  }
+
   .portfolio-feed-control {
     display: none;
   }

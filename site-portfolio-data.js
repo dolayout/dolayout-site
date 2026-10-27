@@ -441,7 +441,6 @@ window.dolayoutPortfolioProjects = [
     creditPt: "Dolayout",
     country: "Ireland",
     palette: ["#e41d43", "#f1e8e2"],
-    externalLinks: [{ label: "Paulies website", url: "https://www.paulies.ie/" }],
     feedCarousel: [
       "Paulies-Pizza-Labels-Dolayout-01-00.mp4",
       "Paulies-Pizza-Labels-Dolayout-01-01.webp"
