@@ -1478,6 +1478,15 @@ body.light .symbol-light {
 .editorial-photo-card > strong { position: absolute; right: 16px; bottom: 18px; left: 16px; max-width: 16ch; font-family: "Space Grotesk", Inter, sans-serif; font-size: clamp(1.35rem, 3vw, 2.2rem); line-height: .98; }
 .article-image-hero { width: 100%; margin: 0 0 22px; overflow: hidden; border-radius: 12px; background: var(--surface); }
 .article-image-hero img { display: block; width: 100%; height: auto; max-height: 80vh; object-fit: contain; }
+.article-image-hero figcaption { padding: 10px 14px 12px; color: var(--muted); font-size: 0.76rem; line-height: 1.5; }
+.article-header.has-image-title { margin-top: 30px; }
+.article-category { display: inline-flex; margin-bottom: 12px; color: var(--muted); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.article-header h1 { margin: 0 0 12px; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.02; }
+.article-sources { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--line); }
+.article-sources h2 { margin: 0 0 12px; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.article-sources ul { display: grid; gap: 8px; margin: 0; padding-left: 18px; }
+.article-sources a { color: var(--muted); text-underline-offset: 3px; }
+.article-sources a:hover { color: var(--text); }
 
 .comments-heading {
   display: flex;

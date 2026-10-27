@@ -340,6 +340,47 @@ const editorialArticles = [
         "Faça hoje. Não perfeito. Não definitivo. Só o suficiente para a ideia ficar real o bastante para melhorar."
       ]
     }
+  },
+  {
+    id: "article-claude-monet-rouen-series",
+    title: "The Same Stone, Another Light",
+    titlePt: "A Mesma Pedra, Outra Luz",
+    category: "Inspiração",
+    type: "article",
+    description: "Claude Monet painted Rouen Cathedral more than thirty times. The subject was a Gothic façade; the real experiment was seeing how light changed it.",
+    descriptionPt: "Claude Monet pintou a Catedral de Rouen mais de trinta vezes. O tema era uma fachada gótica; o experimento era observar como a luz a transformava.",
+    tags: ["Claude Monet", "art history", "impressionism", "light", "visual culture"],
+    credit: "Dolayout Editorial",
+    imageCredit: "Original AI-generated editorial interpretation. Not a Monet painting or a reconstruction of a specific artwork.",
+    imageCreditPt: "Interpretação editorial original gerada por IA. Não é uma pintura de Monet nem a reconstrução de uma obra específica.",
+    imageAlt: "Original AI-generated editorial painting of an imagined Gothic cathedral shifting from warm evening light to blue-violet dusk",
+    height: 560,
+    tone: "cool",
+    palette: ["#20212a", "#b5a4d6"],
+    image: "assets/dolayout/editorial/monet-rouen-light-original-ai.webp",
+    imageHero: true,
+    showFeedTitle: true,
+    article: {
+      en: [
+        "Claude Monet painted Rouen Cathedral more than thirty times. The subject was a Gothic façade; the real experiment was seeing how light changed it.",
+        "In 1892 and 1893, Monet rented rooms across from the cathedral’s western façade. He kept several canvases in progress and moved between them as the light shifted. Sun, shadow and weather gave the stone a different color and mood. The building became a constant against which change could be seen.",
+        "The series was not simply a record of fleeting moments. Monet later reworked the canvases in his studio at Giverny, completing them through 1894. The paintings combine observation with memory, revision and deliberate choices about color.",
+        "In 1895, Monet exhibited twenty of the cathedral paintings together at Galerie Durand-Ruel in Paris. Seen as a group, they ask viewers to compare more than buildings. The façade recedes; color, atmosphere and the act of looking come forward.",
+        "That is what makes the series feel modern. One subject can hold attention without repeating itself. A shift in light changes the image, and a shift in attention changes what the image means. The next time a familiar place looks different, the reason may be more than the place itself."
+      ],
+      pt: [
+        "Claude Monet pintou a Catedral de Rouen mais de trinta vezes. O tema era uma fachada gótica; o experimento era observar como a luz a transformava.",
+        "Em 1892 e 1893, Monet alugou quartos diante da fachada oeste da catedral. Mantinha várias telas em andamento e alternava entre elas conforme a luz mudava. Sol, sombra e clima davam outra cor e outra atmosfera à pedra. O edifício se tornou uma constante para tornar a mudança visível.",
+        "A série não era apenas um registro de instantes fugazes. Depois, Monet retrabalhou as telas em seu ateliê em Giverny e as finalizou até 1894. As pinturas combinam observação, memória, revisão e escolhas deliberadas de cor.",
+        "Em 1895, Monet expôs vinte pinturas da catedral juntas na Galerie Durand-Ruel, em Paris. Vistas em conjunto, elas convidam o público a comparar mais do que edifícios. A fachada recua; cor, atmosfera e o próprio ato de olhar ganham espaço.",
+        "É isso que faz a série parecer moderna. Um mesmo tema pode prender o olhar sem se repetir. Uma mudança de luz transforma a imagem; uma mudança de atenção transforma o que ela significa. Na próxima vez que um lugar conhecido parecer diferente, talvez não seja só o lugar que mudou."
+      ]
+    },
+    sources: [
+      { label: "National Gallery of Art — Rouen Cathedral, West Façade, Sunlight", url: "https://www.nga.gov/artworks/46654-rouen-cathedral-west-facade-sunlight" },
+      { label: "National Gallery of Art — Rouen Cathedral, West Façade", url: "https://www.nga.gov/artworks/46524-rouen-cathedral-west-facade" },
+      { label: "The Metropolitan Museum of Art — Claude Monet (1840–1926)", url: "https://www.metmuseum.org/it/essays/claude-monet-1840-1926" }
+    ]
   }
 ];
 
@@ -1489,11 +1530,11 @@ function cardTemplate(card) {
 }
 
 function editorialCardTemplate(card) {
-  if (card._remote && card.image) {
+  if ((card._remote || card.imageHero) && card.image) {
     const editorialIndex = Math.abs([...card.id].reduce((total, char) => total + char.charCodeAt(0), 0)) % 10;
     return `
       <button class="pin-card editorial-photo-card editorial-style-${editorialIndex}" type="button" data-id="${escapeHtml(card.id)}">
-        <img src="${card.image}" alt="${cardTitle(card)}" loading="lazy" decoding="async">
+        <img src="${card.image}" alt="${escapeHtml(card.imageAlt || cardTitle(card))}" loading="lazy" decoding="async">
         <span class="editorial-photo-shade"></span>
         <span class="editorial-photo-label">${categoryLabel(card.category)}</span>
         <strong>${cardTitle(card)}</strong>
@@ -1839,16 +1880,17 @@ function renderArticleDetail(card) {
 
   detailView.innerHTML = `
     <article class="article-shell">
-      <figure class="article-hero ${card._remote && card.image ? "article-image-hero" : `editorial-pin editorial-style-${editorialIndex}`} ">
-        ${card._remote && card.image
-          ? `<img src="${card.image}" alt="${cardTitle(card)}" loading="eager" decoding="async">`
+      <figure class="article-hero ${(card._remote || card.imageHero) && card.image ? "article-image-hero" : `editorial-pin editorial-style-${editorialIndex}`} ">
+        ${(card._remote || card.imageHero) && card.image
+          ? `<img src="${card.image}" alt="${escapeHtml(card.imageAlt || cardTitle(card))}" loading="eager" decoding="async">${card.imageCredit ? `<figcaption>${state.language === "pt" ? card.imageCreditPt || card.imageCredit : card.imageCredit}</figcaption>` : ""}`
           : editorialArtworkTemplate(card, editorialIndex, "h1")}
       </figure>
 
-      <header class="article-header"><p>${cardDescription(card)}</p></header>
+      <header class="article-header ${card.imageHero ? "has-image-title" : ""}">${card.imageHero ? `<span class="article-category">${categoryLabel(card.category)}</span><h1>${cardTitle(card)}</h1>` : ""}<p>${cardDescription(card)}</p></header>
 
       <div class="article-body">
         ${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+        ${card.sources?.length ? `<aside class="article-sources"><h2>${state.language === "pt" ? "Fontes" : "Sources"}</h2><ul>${card.sources.map((source) => `<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a></li>`).join("")}</ul></aside>` : ""}
       </div>
 
       ${commentsSectionMarkup(card)}
