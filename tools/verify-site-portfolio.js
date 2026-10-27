@@ -22,9 +22,9 @@ for (const project of projects) {
   for (const asset of project.gallery || []) {
     const filename = path.basename(asset);
     const number = Number(filename.match(/-(\d{2})\.[^.]+$/)?.[1]);
-    if (!Number.isInteger(number)) errors.push(`${project.id}: unnumbered slide ${filename}`);
+    if (!Number.isInteger(number) && !/\.(mp4|webm)$/i.test(filename)) errors.push(`${project.id}: unnumbered slide ${filename}`);
     else if (number <= previousNumber) errors.push(`${project.id}: slide out of order ${filename}`);
-    previousNumber = number;
+    if (Number.isInteger(number)) previousNumber = number;
 
     if (registered.has(key(filename))) errors.push(`${project.id}: duplicate slide ${filename}`);
     registered.add(key(filename));

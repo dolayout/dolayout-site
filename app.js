@@ -1336,7 +1336,9 @@ function createSwipeCarousel(stage, slides, panelClass, renderMedia, onChange, o
   let animating = false;
 
   const paint = () => {
+    track.querySelectorAll("video[data-feed-autoplay]").forEach((video) => feedVideoObserver?.unobserve(video));
     track.innerHTML = carouselTrackMarkup(slides, activeIndex, panelClass, renderMedia);
+    track.querySelectorAll("video[data-feed-autoplay]").forEach(observeFeedVideo);
     track.style.transition = "none";
     track.style.transform = "translate3d(-33.333333%, 0, 0)";
     onChange?.(activeIndex);
@@ -1537,7 +1539,7 @@ function fitEditorialTitles(root) {
 
 function feedCarouselMedia(src, alt, active = true) {
   if (/\.(mp4|webm|ogg)(\?|$)/i.test(src)) {
-    return `<video class="portfolio-feed-video" src="${src}" ${active ? "autoplay" : ""} muted playsinline loop preload="metadata" aria-label="${alt}"></video>`;
+    return `<video class="portfolio-feed-video" src="${src}" poster="${videoPosterUrl(src)}" ${active ? 'data-feed-autoplay="true"' : ""} muted playsinline loop preload="metadata" aria-label="${alt}"></video>`;
   }
   return `<img class="portfolio-feed-image" src="${src}" alt="${alt}" loading="lazy" draggable="false">`;
 }
@@ -1981,7 +1983,7 @@ function projectMediaStack(card) {
   return assets.map((asset, index) => `
     <figure class="project-frame">
       ${isVideoAsset(asset)
-        ? `<video src="${asset}" ${autoplay} muted playsinline loop controls preload="metadata" aria-label="${cardTitle(card)} ${index + 1}"></video>`
+        ? `<video src="${asset}" poster="${videoPosterUrl(asset)}" ${autoplay} muted playsinline loop controls preload="metadata" aria-label="${cardTitle(card)} ${index + 1}"></video>`
         : `<img src="${asset}" alt="${cardTitle(card)} ${index + 1}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async">`}
     </figure>
   `).join("");
@@ -1996,7 +1998,7 @@ function projectCarouselMarkup(card) {
         ${assets.map((asset, index) => `
           <figure class="project-carousel-slide${index === 0 ? " is-active" : ""}" data-carousel-slide aria-hidden="${index !== 0}">
             ${isVideoAsset(asset)
-              ? `<video src="${asset}" muted playsinline loop controls preload="metadata" aria-label="${cardTitle(card)} ${index + 1}"></video>`
+              ? `<video src="${asset}" poster="${videoPosterUrl(asset)}" muted playsinline loop controls preload="metadata" aria-label="${cardTitle(card)} ${index + 1}"></video>`
               : `<img src="${asset}" alt="${cardTitle(card)} ${index + 1}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async">`}
           </figure>
         `).join("")}
@@ -2066,10 +2068,27 @@ function bindProjectCarousel(carousel) {
     startX = null;
   });
   stage?.addEventListener("pointercancel", () => { startX = null; });
+  show(0);
 }
 
 let projectFrameObserver;
 let projectVideoObserver;
+let feedVideoObserver;
+
+function observeFeedVideo(video) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!window.IntersectionObserver) {
+    video.play().catch(() => {});
+    return;
+  }
+  feedVideoObserver ||= new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && entry.target.isConnected) entry.target.play().catch(() => {});
+      else entry.target.pause();
+    });
+  }, { threshold: 0.35 });
+  feedVideoObserver.observe(video);
+}
 
 function observeProjectFrames() {
   projectFrameObserver?.disconnect();
@@ -2101,6 +2120,10 @@ function observeProjectFrames() {
 
 function isVideoAsset(asset) {
   return /\.(mp4|webm|ogg)(\?|$)/i.test(asset || "");
+}
+
+function videoPosterUrl(asset) {
+  return String(asset || "").replace(/\.(mp4|webm|ogg)(\?|$)/i, ".poster.webp$2");
 }
 
 function actionButton(action, label, path, active, disabled = false) {

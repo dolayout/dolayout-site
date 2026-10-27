@@ -185,7 +185,12 @@ window.dolayoutPortfolioProjects = [
     creditPt: "Dolayout",
     country: "Ireland",
     palette: ["#009c9a", "#ed5a24"],
-    feedCarousel: ["Lotts-Beer-Dolayout-01-01.webp", "Lotts-Beer-Dolayout-01-02.webp", "Lotts-Beer-Dolayout-01-03.webp"]
+    feedCarousel: [
+      "Lotts-Beer-Dolayout-01-00.mp4",
+      "Lotts-Beer-Dolayout-01-01.webp",
+      "Lotts-Beer-Dolayout-01-02.webp",
+      "Lotts-Beer-Dolayout-01-03.webp"
+    ]
   },
   {
     id: "portfolio-lotts-gift-card",
@@ -203,10 +208,112 @@ window.dolayoutPortfolioProjects = [
     country: "Ireland",
     palette: ["#102a43", "#ef5e46"],
     feedCarousel: [
+      "Lotts-Gift-Dolayout-01-00.mp4",
       "Lotts-Gift-Dolayout-01-01.webp",
       "Lotts-Gift-Dolayout-01-02.webp",
       "Lotts-Gift-Dolayout-01-03.webp",
-      "Lotts-Gift-Dolayout-01-04.webp"
+      "Lotts-Gift-Dolayout-01-04.webp",
+      "snapinsta-1793055342612.mp4"
+    ]
+  },
+  {
+    id: "portfolio-lotts-hamper-box",
+    title: "Lotts & Co. — Hamper Packaging",
+    titlePt: "Lotts & Co. — Embalagem para Hampers",
+    category: "Packaging",
+    categories: ["Packaging", "Branding", "Art Direction"],
+    description: "Seasonal hamper packaging for Lotts & Co. The box brings a collection of food and drink gifts together, making the packaging part of the present and part of the year-end ritual.",
+    descriptionPt: "Embalagens sazonais para os hampers da Lotts & Co. A caixa reúne diferentes kits de comida e bebida, fazendo da embalagem parte do presente e do ritual de fim de ano.",
+    tags: ["gift packaging", "seasonal design", "food gifts", "Dublin", "Ireland"],
+    hashtags: ["LottsAndCo", "HamperPackaging", "GiftPackaging", "PackagingDesign", "Dublin", "Ireland"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Ireland",
+    palette: ["#a51b22", "#f15a24"],
+    feedCarousel: [
+      "Lotts-Hamper-Box-Dolayout-01-01.webp",
+      "Lotts-Hamper-Box-Dolayout-01-02.webp",
+      "Lotts-Hamper-Box-Dolayout-01-03.webp"
+    ]
+  },
+  {
+    id: "portfolio-lotts-social-design",
+    title: "Lotts & Co. — Social Design",
+    titlePt: "Lotts & Co. — Design para Redes Sociais",
+    category: "Social Media",
+    categories: ["Social Media", "Campaign", "Art Direction"],
+    description: "A refreshed social design system for Lotts & Co. Coffee, catering and seasonal offers each get their own visual moment while staying unmistakably part of the same feed.",
+    descriptionPt: "Um novo sistema visual para as redes da Lotts & Co. Café, catering e novidades sazonais ganham momentos próprios, sem deixar de pertencer ao mesmo universo.",
+    tags: ["social media", "content design", "grocery", "Dublin", "Ireland"],
+    hashtags: ["LottsAndCo", "SocialMediaDesign", "ContentDesign", "Dublin", "Ireland"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Ireland",
+    palette: ["#ef5849", "#f7c766"],
+    feedCarousel: [
+      "Lotts-Social-Design-Dolayout-01.mp4",
+      "Lotts-Social-Design-Dolayout-01-07.webp"
+    ]
+  },
+  {
+    id: "portfolio-lotts-filter-day",
+    title: "Lotts & Co. — Filter Day",
+    titlePt: "Lotts & Co. — Filter Day",
+    category: "Campaign",
+    categories: ["Campaign", "Poster", "Art Direction"],
+    description: "A coffee poster built around a small transformation: a person dives into a cup of filter coffee. A playful way to give the ritual, flavour and weekend offer a little more theatre.",
+    descriptionPt: "Um cartaz de café em torno de uma pequena transformação: alguém mergulha numa chávena de café filtrado. Um jeito divertido de dar mais cena ao ritual, ao sabor e à oferta de fim de semana.",
+    tags: ["poster design", "filter coffee", "coffee culture", "Dublin", "Ireland"],
+    hashtags: ["LottsAndCo", "FilterCoffee", "PosterDesign", "CoffeeCulture", "Dublin", "Ireland"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Ireland",
+    palette: ["#231b1a", "#df542f"],
+    feedCarousel: ["Lotts-Poster-Filterday-Dolayout-01-01.webp"]
+  },
+  {
+    id: "portfolio-lotts-catering-menu",
+    title: "Lotts & Co. — Catering Menu",
+    titlePt: "Lotts & Co. — Cardápio de Catering",
+    category: "Menu Design",
+    categories: ["Menu Design", "Editorial", "Art Direction"],
+    description: "A catering menu for shared tables and bigger occasions. Clear food photography and a bold, flexible layout help the range feel easy to browse and ready to serve.",
+    descriptionPt: "Um cardápio de catering para mesas cheias e ocasiões especiais. Fotografia apetitosa e uma diagramação marcante deixam as opções fáceis de percorrer e prontas para servir.",
+    tags: ["catering", "menu design", "food photography", "Dublin", "Ireland"],
+    hashtags: ["LottsAndCo", "CateringMenu", "MenuDesign", "FoodDesign", "Dublin", "Ireland"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Ireland",
+    palette: ["#00d64f", "#180047"],
+    feedCarousel: [
+      "Lotts-Catering-Menu-Dolayout-01-00.mp4",
+      "Lotts-Catering-Menu-Dolayout-01-01.webp",
+      "Lotts-Catering-Menu-Dolayout-01-02.webp"
+    ]
+  },
+  {
+    id: "portfolio-lotts-coffee-cup",
+    title: "Lotts & Co. — Coffee Cup",
+    titlePt: "Lotts & Co. — Copo de Café",
+    category: "Packaging",
+    categories: ["Packaging", "Branding", "Art Direction"],
+    description: "Takeaway cups that carry a little of Lotts & Co. out into the day. The route illustration turns a practical coffee-to-go item into a small reminder of the neighbourhood stores.",
+    descriptionPt: "Copos para levar que acompanham um pouco da Lotts & Co. pelo resto do dia. A ilustração do percurso transforma um item prático numa lembrança das lojas do bairro.",
+    tags: ["coffee packaging", "takeaway cup", "illustration", "Dublin", "Ireland"],
+    hashtags: ["LottsAndCo", "CoffeeCupDesign", "PackagingDesign", "Dublin", "Ireland"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Ireland",
+    palette: ["#f05a35", "#07304a"],
+    feedCarousel: [
+      "Lotts-Coffee-Cup-Dolayout-01-01.webp",
+      "Lotts-Coffee-Cup-Dolayout-01-02.webp",
+      "Lotts-Coffee-Cup-Dolayout-01-03.webp"
     ]
   },
   {
@@ -318,6 +425,27 @@ window.dolayoutPortfolioProjects = [
     country: "Ireland",
     palette: ["#f12c64", "#4f1452"],
     feedCarousel: ["Taboo-Burguer-Dolayout-01-01.webp", "Taboo-Burguer-Dolayout-01-02.webp", "Taboo-Burguer-Dolayout-01-03.webp"]
+  },
+  {
+    id: "portfolio-paulies-pizza-packaging",
+    title: "Paulies — Pizza Packaging",
+    titlePt: "Paulies — Embalagem para Pizza",
+    category: "Packaging",
+    categories: ["Packaging", "Branding", "Art Direction"],
+    description: "A takeaway wrap designed to make Paulies recognisable before the box is even opened. A bold red band carries the name, while a flavour label makes each pizza easy to spot.",
+    descriptionPt: "Uma embalagem para levar que faz a Paulies ser reconhecida antes mesmo de abrir a caixa. A faixa vermelha destaca o nome; o rótulo identifica cada sabor sem complicar.",
+    tags: ["pizza packaging", "takeaway", "food branding", "Dublin", "Ireland"],
+    hashtags: ["PauliesPizza", "PizzaPackaging", "TakeawayDesign", "Dublin", "Ireland"],
+    source: "DO",
+    credit: "Dolayout",
+    creditPt: "Dolayout",
+    country: "Ireland",
+    palette: ["#e41d43", "#f1e8e2"],
+    externalLinks: [{ label: "Paulies website", url: "https://www.paulies.ie/" }],
+    feedCarousel: [
+      "Paulies-Pizza-Labels-Dolayout-01-00.mp4",
+      "Paulies-Pizza-Labels-Dolayout-01-01.webp"
+    ]
   }
 ].map((project) => ({
   ...project,
