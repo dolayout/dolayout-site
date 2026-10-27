@@ -514,6 +514,126 @@ const editorialArticles = [
   }
 ];
 
+// Editorial standard: every article uses its cover image plus at least one contextual inline image.
+const articleImageContent = {
+  "article-make-something-today": {
+    src: "assets/dolayout/editorial/make-something-in-progress.webp",
+    alt: "A hand starts a geometric pencil sketch on a blank sheet beside red and yellow paper shapes",
+    altPt: "Uma mão começa um desenho geométrico a lápis em uma folha em branco, ao lado de formas de papel vermelha e amarela",
+    caption: "An idea takes shape through the first small act of making. Original AI-generated editorial image.",
+    captionPt: "Uma ideia começa a ganhar forma no primeiro gesto de criação. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-brand-before-feed": {
+    src: "assets/dolayout/editorial/brand-system-across-touchpoints.webp",
+    alt: "A coordinated identity system expressed across packaging, cards and abstract social tiles",
+    altPt: "Um sistema de identidade visual aplicado de forma coerente em embalagens, cartões e peças sociais abstratas",
+    caption: "One identity carries its visual logic across different formats. Original AI-generated editorial image.",
+    captionPt: "Uma identidade mantém sua lógica visual em diferentes formatos. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-creative-routine": {
+    src: "assets/dolayout/editorial/creative-routine-sequence.webp",
+    alt: "Three design thumbnails arranged in sequence on a sunlit wooden desk with an analog timer",
+    altPt: "Três estudos de composição em sequência sobre uma mesa de madeira iluminada, com um temporizador analógico",
+    caption: "A simple sequence gives creative work room to move. Original AI-generated editorial image.",
+    captionPt: "Uma sequência simples cria espaço para o trabalho criativo avançar. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-personal-growth": {
+    src: "assets/dolayout/editorial/growth-attention-seedling.webp",
+    alt: "Seedlings at different stages grow beside a mature plant in a quiet greenhouse",
+    altPt: "Mudas em diferentes estágios crescem ao lado de uma planta adulta em uma estufa tranquila",
+    caption: "Growth happens through attention, selection and care. Original AI-generated editorial image.",
+    captionPt: "Crescer também envolve atenção, escolha e cuidado. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-professional-presence": {
+    src: "assets/dolayout/editorial/professional-presence-presentation.webp",
+    alt: "A designer carefully aligns a printed portfolio and material samples before a presentation",
+    altPt: "Uma pessoa designer organiza com cuidado um portfólio impresso e amostras de materiais antes de uma apresentação",
+    caption: "Careful presentation makes the value of the work easier to see. Original AI-generated editorial image.",
+    captionPt: "Uma boa apresentação facilita perceber o valor do trabalho. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-visual-consistency": {
+    src: "assets/dolayout/editorial/visual-consistency-system.webp",
+    alt: "Packaging, a poster and printed cards repeat the same abstract blue, cream and vermilion motif",
+    altPt: "Embalagem, cartaz e cartões impressos repetem o mesmo motivo abstrato em azul, creme e vermelho",
+    caption: "Consistency connects varied pieces through a shared visual system. Original AI-generated editorial image.",
+    captionPt: "A consistência conecta peças diferentes por meio de um sistema visual comum. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-ideas-grow": {
+    src: "assets/dolayout/editorial/ideas-iteration-forms.webp",
+    alt: "Layered tracing sheets show a rough geometric idea developing into several refined compositions",
+    altPt: "Folhas translúcidas sobrepostas mostram uma ideia geométrica evoluindo para composições mais resolvidas",
+    caption: "Iteration turns an initial thought into new possibilities. Original AI-generated editorial image.",
+    captionPt: "A iteração transforma uma ideia inicial em novas possibilidades. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-attention-economy": {
+    src: "assets/dolayout/editorial/attention-economy-focus.webp",
+    alt: "An open sketchbook and one red card stay in sharp focus while colorful visual distractions blur around them",
+    altPt: "Um caderno aberto e um cartão vermelho permanecem em foco enquanto distrações coloridas se desfocam ao redor",
+    caption: "Choosing one signal can bring clarity to a crowded visual field. Original AI-generated editorial image.",
+    captionPt: "Escolher um sinal pode trazer clareza a um campo visual carregado. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-portfolio-as-platform": {
+    src: "assets/dolayout/editorial/portfolio-as-platform-gallery.webp",
+    alt: "A gallery corridor connects packaging, poster, architectural model and abstract digital artwork",
+    altPt: "Um corredor de galeria conecta embalagens, cartaz, maquete arquitetônica e arte digital abstrata",
+    caption: "A portfolio can guide people through a connected body of work. Original AI-generated editorial image.",
+    captionPt: "Um portfólio pode conduzir o público por um conjunto conectado de trabalhos. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-do-layout-today": {
+    src: "assets/dolayout/editorial/layout-in-action.webp",
+    alt: "Hands rearrange printed image blocks and colored paper on a layout grid",
+    altPt: "Mãos reorganizam blocos de imagem impressos e papéis coloridos sobre uma grade de layout",
+    caption: "A layout becomes clearer when ideas meet the page. Original AI-generated editorial image.",
+    captionPt: "O layout ganha clareza quando as ideias encontram a página. Imagem editorial original gerada por IA.",
+    afterParagraph: 2
+  },
+  "article-claude-monet-rouen-series": {
+    src: "assets/dolayout/editorial/monet-rouen-changing-light.webp",
+    alt: "A row of imagined Rouen Cathedral studies shifts from warm morning colors to blue-violet dusk",
+    altPt: "Uma sequência imaginada de estudos da Catedral de Rouen passa de tons quentes da manhã ao azul-violeta do entardecer",
+    caption: "An original AI-generated interpretation of changing light, not a Monet painting or a reconstruction of a specific work.",
+    captionPt: "Interpretação original gerada por IA sobre a mudança da luz; não é uma pintura de Monet nem a reconstrução de uma obra específica.",
+    afterParagraph: 2
+  },
+  "article-os-mutantes-studio-tropicalia": {
+    src: "assets/dolayout/editorial/mutantes-studio-experiment.webp",
+    alt: "An imagined late-1960s recording studio with electric guitar, tape reels, tambourine and an unlabeled metal can",
+    altPt: "Estúdio de gravação imaginado no fim dos anos 1960, com guitarra elétrica, fitas, pandeiro e uma lata metálica sem rótulo",
+    caption: "An original AI-generated scene about studio experimentation; it does not depict Os Mutantes or an actual recording session.",
+    captionPt: "Cena original gerada por IA sobre experimentação em estúdio; não retrata Os Mutantes nem uma gravação real.",
+    afterParagraph: 2
+  },
+  "article-bauhaus-dessau-building": {
+    src: "assets/dolayout/editorial/bauhaus-moving-through-space.webp",
+    alt: "An imagined modernist design school interior with a glass facade, bridge corridor and staircase",
+    altPt: "Interior imaginado de uma escola de design modernista, com fachada de vidro, passarela e escadaria",
+    caption: "An original AI-generated architectural interpretation, not a photograph or exact reconstruction of Bauhaus Dessau.",
+    captionPt: "Interpretação arquitetônica original gerada por IA; não é fotografia nem reconstrução exata da Bauhaus Dessau.",
+    afterParagraph: 2
+  },
+  "article-helvetica-name-history": {
+    src: "assets/dolayout/editorial/helvetica-type-study.webp",
+    alt: "Black abstract sans-serif paper forms, spacing strips and a ruler on an ivory typesetter's desk",
+    altPt: "Formas tipográficas abstratas em papel preto, tiras de espaçamento e uma régua sobre uma mesa marfim",
+    caption: "An original AI-generated study of typographic rhythm; it does not reproduce Helvetica glyphs or a specimen sheet.",
+    captionPt: "Estudo original gerado por IA sobre ritmo tipográfico; não reproduz letras da Helvetica nem uma prancha de espécimes.",
+    afterParagraph: 2
+  }
+};
+
+for (const article of editorialArticles) {
+  if (articleImageContent[article.id]) article.articleImages = [articleImageContent[article.id]];
+}
+
 let cards = uniqueCardsByImage([
   ...externalPortfolioPins,
   ...externalPortfolioCards,
@@ -1237,6 +1357,35 @@ function cardStatement(card) {
 
 function articleBody(card) {
   return card.article?.[state.language] || card.article?.en || [];
+}
+
+function normalizedArticleCopy(value) {
+  const text = String(value || "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'");
+  return text.replace(/\s+/g, " ").trim().toLocaleLowerCase();
+}
+
+function articleImageMarkup(image) {
+  const alt = state.language === "pt" ? image.altPt || image.alt : image.alt;
+  const caption = state.language === "pt" ? image.captionPt || image.caption : image.caption;
+  return `<figure class="article-inline-figure"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(alt || "")}" loading="lazy" decoding="async"><figcaption>${escapeHtml(caption || "")}</figcaption></figure>`;
+}
+
+function articleBodyMarkup(card, paragraphs) {
+  const description = normalizedArticleCopy(cardDescription(card));
+  const firstParagraph = normalizedArticleCopy(paragraphs[0]);
+  const omitDuplicateLead = Boolean(description && firstParagraph && description === firstParagraph);
+  const imagesAfter = new Map((card.articleImages || []).map((image) => [image.afterParagraph, image]));
+
+  return paragraphs.map((paragraph, index) => {
+    const paragraphMarkup = omitDuplicateLead && index === 0 ? "" : `<p>${paragraph}</p>`;
+    const image = imagesAfter.get(index + 1);
+    return `${paragraphMarkup}${image ? articleImageMarkup(image) : ""}`;
+  }).join("");
 }
 
 function applyLanguage() {
@@ -2023,7 +2172,7 @@ function renderArticleDetail(card) {
       <header class="article-header ${card.imageHero ? "has-image-title" : ""}">${card.imageHero ? `<span class="article-category">${categoryLabel(card.category)}</span><h1>${cardTitle(card)}</h1>` : ""}<p>${cardDescription(card)}</p></header>
 
       <div class="article-body">
-        ${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+        ${articleBodyMarkup(card, paragraphs)}
         ${card.sources?.length ? `<aside class="article-sources"><h2>${state.language === "pt" ? "Fontes" : "Sources"}</h2><ul>${card.sources.map((source) => `<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a></li>`).join("")}</ul></aside>` : ""}
       </div>
 

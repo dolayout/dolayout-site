@@ -1705,6 +1705,26 @@ body.light .symbol-light {
   line-height: 1.55;
 }
 
+.article-inline-figure {
+  margin: clamp(30px, 5vw, 54px) 0;
+}
+
+.article-inline-figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.article-inline-figure figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
 .bio-hero,
 .contact-page {
   display: grid;
