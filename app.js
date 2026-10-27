@@ -381,6 +381,136 @@ const editorialArticles = [
       { label: "National Gallery of Art — Rouen Cathedral, West Façade", url: "https://www.nga.gov/artworks/46524-rouen-cathedral-west-facade" },
       { label: "The Metropolitan Museum of Art — Claude Monet (1840–1926)", url: "https://www.metmuseum.org/it/essays/claude-monet-1840-1926" }
     ]
+  },
+  {
+    id: "article-os-mutantes-studio-tropicalia",
+    title: "When the Studio Became Part of the Band",
+    titlePt: "Quando o Estúdio Virou Parte da Banda",
+    category: "Inspiração",
+    type: "article",
+    description: "Os Mutantes brought musical contrasts and studio experiments into the Tropicália conversation.",
+    descriptionPt: "Os Mutantes levaram contrastes musicais e experimentação de estúdio para a conversa tropicalista.",
+    tags: ["Os Mutantes", "Tropicália", "Brazilian music", "studio culture", "music history"],
+    credit: "Dolayout Editorial",
+    imageCredit: "Original AI-generated editorial collage. It does not depict Os Mutantes or reproduce an album cover.",
+    imageCreditPt: "Colagem editorial original gerada por IA. Não retrata Os Mutantes nem reproduz capa de disco.",
+    imageAlt: "Original editorial collage with microphone, guitar, analogue tape and tropical shapes, created for a story about Os Mutantes",
+    imageAltPt: "Colagem editorial original com microfone, guitarra, fita analógica e formas tropicais, criada para uma pauta sobre Os Mutantes",
+    height: 580,
+    tone: "warm",
+    palette: ["#12221b", "#e74b34"],
+    image: "assets/dolayout/editorial/os-mutantes-tropicalia-original-ai.webp",
+    imageHero: true,
+    showFeedTitle: true,
+    article: {
+      en: [
+        "Os Mutantes emerged in São Paulo in the mid-1960s. Their television debut came in 1966, and by 1967 they were performing with Gilberto Gil at the Festival of Brazilian Popular Music. That performance placed their sound inside the emerging Tropicalist conversation.",
+        "Tropicália worked through contrast: Brazilian musical traditions met electric guitar, pop, avant-garde arrangements and mass culture. It was less a tidy genre than a way to make different references sit in the same room. The <a href=\"https://dicionariompb.com.br/termo/tropicalismo/\" target=\"_blank\" rel=\"noopener noreferrer\">Brazilian Popular Music Dictionary</a> records Os Mutantes among the movement’s participants and describes its mix of musical forms and electric instrumentation.",
+        "The band carried that curiosity into the recording studio. <a href=\"https://www.luakabop.com/artists/os-mutantes\" target=\"_blank\" rel=\"noopener noreferrer\">Luaka Bop’s account of the 1968 debut</a> describes Rita Lee bringing a Flit insect-spray can into a session and using it in place of a hi-hat on “Le Premier Bonheur du Jour.” The detail is small, but it reveals a larger attitude: a sound did not need to arrive from a conventional instrument to belong in the arrangement.",
+        "That approach makes the studio more than a place to capture a finished performance. It becomes a workshop where listening, testing and surprise are part of composition. The experiment is not a trick added after the song; it changes what the song can be.",
+        "Image note: the accompanying visual is an original AI-generated collage about studio experimentation. It does not depict Os Mutantes or reproduce an album cover."
+      ],
+      pt: [
+        "Os Mutantes surgiram em São Paulo em meados dos anos 1960. A estreia na televisão aconteceu em 1966 e, em 1967, o grupo acompanhou Gilberto Gil no Festival de Música Popular Brasileira. A apresentação colocou o som da banda dentro da conversa tropicalista que começava a ganhar forma.",
+        "A Tropicália trabalhava com contrastes: tradições musicais brasileiras encontravam guitarra elétrica, pop, arranjos de vanguarda e cultura de massa. Era menos um gênero fechado e mais um jeito de colocar referências diferentes na mesma sala. O <a href=\"https://dicionariompb.com.br/termo/tropicalismo/\" target=\"_blank\" rel=\"noopener noreferrer\">Dicionário Cravo Albin</a> registra Os Mutantes entre os participantes do movimento e descreve sua mistura de formas musicais e instrumentação elétrica.",
+        "A banda levou essa curiosidade ao estúdio. Segundo o relato da <a href=\"https://www.luakabop.com/artists/os-mutantes\" target=\"_blank\" rel=\"noopener noreferrer\">Luaka Bop sobre o álbum de estreia de 1968</a>, Rita Lee chegou a uma sessão com uma lata de inseticida Flit e a usou no lugar do hi-hat em “Le Premier Bonheur du Jour”. O detalhe é pequeno, mas revela uma atitude maior: um som não precisava vir de um instrumento convencional para fazer parte do arranjo.",
+        "Assim, o estúdio deixa de ser apenas o lugar onde uma interpretação pronta é registrada. Vira oficina: escuta, teste e surpresa também compõem. O experimento não é um truque acrescentado depois; ele muda o que a canção pode ser.",
+        "Nota da imagem: a colagem que acompanha a pauta é original, gerada por IA, e fala sobre experimentação em estúdio. Não retrata Os Mutantes nem reproduz capa de disco."
+      ]
+    },
+    sources: [
+      { label: "Dicionário Cravo Albin — Tropicalismo", url: "https://dicionariompb.com.br/termo/tropicalismo/" },
+      { label: "Luaka Bop — Os Mutantes", url: "https://www.luakabop.com/artists/os-mutantes" },
+      { label: "Memórias da Ditadura — Os Mutantes", url: "https://memoriasdaditadura.org.br/cultura/os-mutantes/" }
+    ]
+  },
+  {
+    id: "article-bauhaus-dessau-building",
+    title: "A Building That Asks You to Move",
+    titlePt: "Um Edifício que Pede Movimento",
+    category: "Inspiração",
+    type: "article",
+    description: "The Bauhaus Dessau building reveals its design through movement, light and the work inside.",
+    descriptionPt: "O edifício da Bauhaus Dessau revela seu projeto pelo movimento, pela luz e pelo trabalho em seu interior.",
+    tags: ["Bauhaus Dessau", "architecture", "Walter Gropius", "design history", "glass facade"],
+    credit: "Dolayout Editorial",
+    imageCredit: "Original AI-generated architectural interpretation, not a reconstruction or photograph of the historic Bauhaus building.",
+    imageCreditPt: "Interpretação arquitetônica original gerada por IA; não é reconstrução nem fotografia do edifício histórico da Bauhaus.",
+    imageAlt: "Original interpretation of a modern design school, with geometric volumes, a bridge and a glass facade",
+    imageAltPt: "Interpretação original de uma escola de design moderna, com volumes geométricos, ponte e fachada de vidro",
+    height: 580,
+    tone: "cool",
+    palette: ["#20252a", "#205bb9"],
+    image: "assets/dolayout/editorial/bauhaus-dessau-original-ai.webp",
+    imageHero: true,
+    showFeedTitle: true,
+    article: {
+      en: [
+        "When the Bauhaus moved from Weimar to Dessau, the school had the chance to build a new home. The <a href=\"https://bauhaus-dessau.de/en/venues/bauhaus-building/\" target=\"_blank\" rel=\"noopener noreferrer\">Bauhaus Dessau Foundation</a> describes the result as a set of distinct parts, each with a different function and scale: workshop wing, vocational school, administration, studios, auditorium and canteen.",
+        "The two-storey bridge served as the administration headquarters and connected the glazed workshop wing to the vocational school. A five-storey studio building held 28 compact living units for students and young masters. There is no single central view of the whole structure; its arrangement becomes clear by walking around it.",
+        "The workshop façade made the school’s activity part of the architecture. Steel and glass allowed views into the workshops and made the building’s structure visible from outside. The interiors extended the same idea: the school’s own workshops designed furniture, lamps and even door handles.",
+        "Colour was not an afterthought. Hinnerk Scheper’s mural-painting workshop developed a scheme that helps orient visitors, emphasizes parts of the structure and sometimes works against it. The building is not just a white geometric object; it is a system of movement, work and visual cues.",
+        "Opened on 4 December 1926, the building is still best understood as an experience in sequence. To read it, move through it.",
+        "Image note: the accompanying artwork is an original AI-generated interpretation of a modern design school. It is not a reconstruction of the Bauhaus Dessau building."
+      ],
+      pt: [
+        "Quando a Bauhaus se mudou de Weimar para Dessau, a escola teve a oportunidade de construir uma nova sede. A <a href=\"https://bauhaus-dessau.de/en/venues/bauhaus-building/\" target=\"_blank\" rel=\"noopener noreferrer\">Fundação Bauhaus Dessau</a> descreve o resultado como um conjunto de partes distintas, cada uma com função e escala próprias: ala de oficinas, escola profissional, administração, estúdios, auditório e refeitório.",
+        "A ponte de dois andares servia de sede administrativa e conectava a ala envidraçada das oficinas à escola profissional. Um edifício de estúdios com cinco pavimentos abrigava 28 moradias compactas para estudantes e jovens mestres. Não existe um único ponto de vista central para entender a construção inteira; seu arranjo se revela ao caminhar ao redor dela.",
+        "A fachada das oficinas transformava a atividade da escola em parte da arquitetura. Aço e vidro permitiam ver as oficinas e deixavam a estrutura aparente do lado de fora. Os interiores ampliavam a mesma ideia: as próprias oficinas da escola criaram móveis, luminárias e até maçanetas.",
+        "A cor também tinha função. O ateliê de pintura mural de Hinnerk Scheper desenvolveu um sistema que orienta, destaca partes da estrutura e, em alguns momentos, a atravessa. O edifício não é apenas um objeto geométrico branco; é um sistema de movimento, trabalho e sinais visuais.",
+        "Inaugurado em 4 de dezembro de 1926, o edifício ainda se entende melhor como uma experiência em sequência. Para lê-lo, é preciso percorrê-lo.",
+        "Nota da imagem: a arte que acompanha a pauta é uma interpretação original gerada por IA de uma escola de design moderna. Não reconstrói o edifício da Bauhaus Dessau."
+      ]
+    },
+    sources: [
+      { label: "Bauhaus Dessau Foundation — Bauhaus Building", url: "https://bauhaus-dessau.de/en/venues/bauhaus-building/" },
+      { label: "Bauhaus Dessau Foundation — Chronology", url: "https://bauhaus-dessau.de/en/institution/chronology/" }
+    ]
+  },
+  {
+    id: "article-helvetica-name-history",
+    title: "The Typeface That Began with Another Name",
+    titlePt: "A Fonte que Começou com Outro Nome",
+    category: "Inspiração",
+    type: "article",
+    description: "Before Helvetica, there was Neue Haas Grotesk. Its history shows how type choices shape tone.",
+    descriptionPt: "Antes da Helvetica, havia a Neue Haas Grotesk. Sua história mostra como escolhas tipográficas constroem um tom.",
+    tags: ["Helvetica", "typography", "Max Miedinger", "Eduard Hoffmann", "type history"],
+    credit: "Dolayout Editorial",
+    imageCredit: "Original AI-generated abstract study of typographic forms. It does not reproduce Helvetica letterforms or a specimen sheet.",
+    imageCreditPt: "Estudo abstrato original, gerado por IA, de formas tipográficas. Não reproduz letras da Helvetica nem uma prancha de espécimes.",
+    imageAlt: "Abstract study of black typographic forms on ivory paper, with a grid and small colour markers",
+    imageAltPt: "Estudo abstrato de formas tipográficas pretas sobre papel marfim, com grade e pequenos marcadores coloridos",
+    height: 580,
+    tone: "mono",
+    palette: ["#20201e", "#bc3428"],
+    image: "assets/dolayout/editorial/helvetica-abstract-type-original-ai.webp",
+    imageHero: true,
+    showFeedTitle: true,
+    article: {
+      en: [
+        "Helvetica began as Neue Haas Grotesk. The first sketches were developed from 1956 by Swiss type designer Max Miedinger in collaboration with Eduard Hoffmann of the Haas type foundry. Haas released the typeface in 1957; it was renamed Helvetica in 1961, according to <a href=\"https://www.htwk-leipzig.de/hochschule/aktuelles/newsdetail/artikel/font-stories-helvetica-neue\" target=\"_blank\" rel=\"noopener noreferrer\">HTWK Leipzig’s font history</a>.",
+        "The new name connected the typeface to Switzerland, but its growing success came from use. The font became widely adopted in advertising in the 1960s and 70s. Its familiar forms appeared clear and dependable across many settings, which helped it travel from print into daily visual culture. <a href=\"https://www.monotype.com/resources/articles/complicated-legacy-helvetica\" target=\"_blank\" rel=\"noopener noreferrer\">Monotype’s history of Helvetica</a> describes how that popularity became part of its cultural legacy.",
+        "That familiarity can make a typeface feel neutral, as if it were simply carrying the message. But typography always shapes tone. A bold headline feels different from a quiet caption; tight spacing feels different from an open one. Size, weight, language and context all change how the same family behaves.",
+        "Helvetica is useful when its straightforward rhythm supports the content. It is less useful when familiarity becomes a substitute for a decision. Choosing it well means choosing what should recede — and what should stand out.",
+        "For a licensed Helvetica family, see <a href=\"https://www.monotype.com/fonts/helvetica-now\" target=\"_blank\" rel=\"noopener noreferrer\">Monotype’s Helvetica Now</a> or <a href=\"https://fonts.adobe.com/search?query=helvetica\" target=\"_blank\" rel=\"noopener noreferrer\">Adobe Fonts’ Helvetica listing</a>. Licensing and availability depend on the version and intended use. For a free, open-source alternative, <a href=\"https://github.com/rsms/inter\" target=\"_blank\" rel=\"noopener noreferrer\">Inter</a> is available under the SIL Open Font License.",
+        "Image note: the accompanying image is an original abstract study of typographic forms. It does not reproduce Helvetica letterforms or a specimen sheet."
+      ],
+      pt: [
+        "A Helvetica começou como Neue Haas Grotesk. Os primeiros desenhos foram desenvolvidos a partir de 1956 pelo designer suíço Max Miedinger, em colaboração com Eduard Hoffmann, da fundição Haas. A Haas lançou a fonte em 1957; o nome mudou para Helvetica em 1961, segundo a <a href=\"https://www.htwk-leipzig.de/hochschule/aktuelles/newsdetail/artikel/font-stories-helvetica-neue\" target=\"_blank\" rel=\"noopener noreferrer\">história tipográfica da HTWK Leipzig</a>.",
+        "O novo nome aproximava a fonte da Suíça, mas sua popularidade cresceu pelo uso. Ela se espalhou pela publicidade nos anos 1960 e 1970. Suas formas familiares pareciam claras e confiáveis em diferentes situações, levando a fonte do impresso para a cultura visual cotidiana. A <a href=\"https://www.monotype.com/resources/articles/complicated-legacy-helvetica\" target=\"_blank\" rel=\"noopener noreferrer\">história da Helvetica pela Monotype</a> conta como essa popularidade passou a fazer parte de seu legado cultural.",
+        "Essa familiaridade pode fazer a tipografia parecer neutra, como se apenas carregasse a mensagem. Mas a tipografia sempre constrói um tom. Um título em negrito soa diferente de uma legenda discreta; um espaçamento fechado soa diferente de um aberto. Tamanho, peso, idioma e contexto mudam o comportamento da mesma família.",
+        "A Helvetica funciona quando seu ritmo direto ajuda o conteúdo. Funciona menos quando a familiaridade substitui uma decisão. Escolhê-la bem é decidir o que deve recuar — e o que deve ganhar destaque.",
+        "Para obter uma versão licenciada da Helvetica, veja <a href=\"https://www.monotype.com/fonts/helvetica-now\" target=\"_blank\" rel=\"noopener noreferrer\">Helvetica Now na Monotype</a> ou a <a href=\"https://fonts.adobe.com/search?query=helvetica\" target=\"_blank\" rel=\"noopener noreferrer\">listagem da Helvetica na Adobe Fonts</a>. Licença e disponibilidade variam conforme a versão e o uso. Como alternativa livre e de código aberto, <a href=\"https://github.com/rsms/inter\" target=\"_blank\" rel=\"noopener noreferrer\">Inter</a> está disponível sob a SIL Open Font License.",
+        "Nota da imagem: o visual que acompanha a pauta é um estudo abstrato original de formas tipográficas. Não reproduz letras da Helvetica nem uma folha de espécimes."
+      ]
+    },
+    sources: [
+      { label: "HTWK Leipzig — Font Stories: Helvetica Neue", url: "https://www.htwk-leipzig.de/hochschule/aktuelles/newsdetail/artikel/font-stories-helvetica-neue" },
+      { label: "Monotype — The Complicated Legacy of Helvetica", url: "https://www.monotype.com/resources/articles/complicated-legacy-helvetica" },
+      { label: "Monotype — Helvetica Now licensing", url: "https://www.monotype.com/fonts/helvetica-now" },
+      { label: "Inter — SIL Open Font License", url: "https://github.com/rsms/inter" }
+    ]
   }
 ];
 
@@ -1097,6 +1227,10 @@ function cardDescription(card) {
   return state.language === "pt" && card.descriptionPt ? card.descriptionPt : card.description;
 }
 
+function cardImageAlt(card) {
+  return state.language === "pt" && card.imageAltPt ? card.imageAltPt : card.imageAlt || cardTitle(card);
+}
+
 function cardStatement(card) {
   return state.language === "pt" && card.statementPt ? card.statementPt : card.statement;
 }
@@ -1534,7 +1668,7 @@ function editorialCardTemplate(card) {
     const editorialIndex = Math.abs([...card.id].reduce((total, char) => total + char.charCodeAt(0), 0)) % 10;
     return `
       <button class="pin-card editorial-photo-card editorial-style-${editorialIndex}" type="button" data-id="${escapeHtml(card.id)}">
-        <img src="${card.image}" alt="${escapeHtml(card.imageAlt || cardTitle(card))}" loading="lazy" decoding="async">
+        <img src="${card.image}" alt="${escapeHtml(cardImageAlt(card))}" loading="lazy" decoding="async">
         <span class="editorial-photo-shade"></span>
         <span class="editorial-photo-label">${categoryLabel(card.category)}</span>
         <strong>${cardTitle(card)}</strong>
@@ -1882,7 +2016,7 @@ function renderArticleDetail(card) {
     <article class="article-shell">
       <figure class="article-hero ${(card._remote || card.imageHero) && card.image ? "article-image-hero" : `editorial-pin editorial-style-${editorialIndex}`} ">
         ${(card._remote || card.imageHero) && card.image
-          ? `<img src="${card.image}" alt="${escapeHtml(card.imageAlt || cardTitle(card))}" loading="eager" decoding="async">${card.imageCredit ? `<figcaption>${state.language === "pt" ? card.imageCreditPt || card.imageCredit : card.imageCredit}</figcaption>` : ""}`
+          ? `<img src="${card.image}" alt="${escapeHtml(cardImageAlt(card))}" loading="eager" decoding="async">${card.imageCredit ? `<figcaption>${state.language === "pt" ? card.imageCreditPt || card.imageCredit : card.imageCredit}</figcaption>` : ""}`
           : editorialArtworkTemplate(card, editorialIndex, "h1")}
       </figure>
 
