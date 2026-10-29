@@ -1,0 +1,164 @@
+{
+  "brands": {
+    "title": "Dolayout for Brands | Independent Creative Studio",
+    "description": "Ongoing creative support for brands: identity, campaigns, social communication and digital design by Dolayout.",
+    "nav": ["Selected work", "Creative support", "How we work", "About", "Contact"],
+    "eyebrow": "Independent creative studio · Portugal / Ireland / Remote",
+    "headline": "Your brand. Our creative focus.",
+    "intro": "A steady creative partner for the things your brand needs next — from a sharper identity to the everyday work that keeps it alive.",
+    "cta": "Explore selected work",
+    "workTitle": "Good work, out in the world.",
+    "workIntro": "A selection of direct collaborations, built across packaging, campaigns and the everyday life of a brand.",
+    "work": [
+      { "projectId": "portfolio-lotts-hamper-box", "image": "assets/dolayout/portfolio/site/Lotts-Hamper-Box-Dolayout-01-01.webp", "shape": "portrait", "label": "Packaging / Seasonal" },
+      { "projectId": "portfolio-lotts-filter-day", "image": "assets/dolayout/portfolio/site/Lotts-Poster-Filterday-Dolayout-01-01.webp", "shape": "landscape", "label": "Campaign / Poster" },
+      { "projectId": "portfolio-lotts-social-design", "image": "assets/dolayout/portfolio/site/Lotts-Social-Design-Dolayout-01.poster.webp", "shape": "square", "label": "Social / Content system" },
+      { "projectId": "portfolio-paulies-pizza-packaging", "image": "assets/dolayout/portfolio/site/Paulies-Pizza-Labels-Dolayout-01-01.webp", "shape": "portrait", "label": "Packaging / Takeaway" },
+      { "projectId": "portfolio-lotts-coffee-cup", "image": "assets/dolayout/portfolio/site/Lotts-Coffee-Cup-Dolayout-01-02.webp", "shape": "portrait", "label": "Packaging / Coffee" },
+      { "projectId": "portfolio-cello", "image": "assets/dolayout/portfolio/site/Cello-Dolayout-01-04.png", "shape": "portrait", "label": "Digital / Website" }
+    ],
+    "supportTitle": "Creative support, where it matters.",
+    "supportIntro": "A brand is built in the details people meet every day. I can help keep those details clear, useful and recognisable.",
+    "support": [
+      { "number": "01", "title": "Brand foundations", "text": "Identity, visual systems and the practical rules that make a brand easier to recognise.", "projectId": "portfolio-lotts-hamper-box" },
+      { "number": "02", "title": "Campaigns & launches", "text": "A central idea translated into the pieces, formats and moments a campaign needs.", "projectId": "portfolio-lotts-filter-day" },
+      { "number": "03", "title": "Social communication", "text": "Content systems and individual pieces with a point of view, not just a full calendar.", "projectId": "portfolio-lotts-social-design" },
+      { "number": "04", "title": "Digital & websites", "text": "Websites and digital experiences designed to make the next step feel obvious.", "projectId": "portfolio-cello" }
+    ],
+    "workTogetherTitle": "A good rhythm for good work.",
+    "workTogetherIntro": "The collaboration can flex with the work. The scope stays clear; the conversation stays direct.",
+    "ways": [
+      { "title": "Ongoing monthly support", "text": "A reliable creative presence for planned work and the needs that appear along the way." },
+      { "title": "Defined scope", "text": "Each piece of work starts with an agreed brief, deliverables and timing." },
+      { "title": "Room to adjust", "text": "Priorities can shift as the brand moves, with a clear conversation about what changes." }
+    ],
+    "aboutTitle": "Small studio. Close collaboration.",
+    "about": "Dolayout is an independent creative studio led by João, working across brand identity, art direction, campaigns and digital design. One direct point of contact, from the first conversation to the finished piece.",
+    "contactTitle": "What does your brand need next?",
+    "contactText": "Tell me what you’re building, changing or trying to make clearer. We can start with a conversation.",
+    "contactCta": "Start a conversation",
+    "email": "joaodolayout@gmail.com",
+    "phone": "5511941992365",
+    "whatsappText": "Hi João, I found Dolayout through the For Brands page and would like to talk about creative support.",
+    "pt": {
+      "title": "Dolayout para Marcas | Estúdio Criativo Independente",
+      "description": "Apoio criativo contínuo para marcas: identidade, campanhas, redes sociais e design digital pela Dolayout.",
+      "nav": ["Trabalhos", "Apoio criativo", "Como funciona", "Sobre", "Contato"],
+      "eyebrow": "Estúdio criativo independente · Portugal / Irlanda / Remoto",
+      "headline": "Sua marca. Nosso foco criativo.",
+      "intro": "Um parceiro criativo para o que sua marca precisa agora — da identidade ao trabalho do dia a dia que mantém tudo vivo.",
+      "cta": "Ver trabalhos selecionados",
+      "workTitle": "Trabalho bom, no mundo real.",
+      "workIntro": "Uma seleção de colaborações diretas em embalagem, campanhas e no dia a dia de uma marca.",
+      "work": [
+        { "projectId": "portfolio-lotts-hamper-box", "image": "assets/dolayout/portfolio/site/Lotts-Hamper-Box-Dolayout-01-01.webp", "shape": "portrait", "label": "Embalagem / Sazonal" },
+        { "projectId": "portfolio-lotts-filter-day", "image": "assets/dolayout/portfolio/site/Lotts-Poster-Filterday-Dolayout-01-01.webp", "shape": "landscape", "label": "Campanha / Cartaz" },
+        { "projectId": "portfolio-lotts-social-design", "image": "assets/dolayout/portfolio/site/Lotts-Social-Design-Dolayout-01.poster.webp", "shape": "square", "label": "Social / Sistema de conteúdo" },
+        { "projectId": "portfolio-paulies-pizza-packaging", "image": "assets/dolayout/portfolio/site/Paulies-Pizza-Labels-Dolayout-01-01.webp", "shape": "portrait", "label": "Embalagem / Para levar" },
+        { "projectId": "portfolio-lotts-coffee-cup", "image": "assets/dolayout/portfolio/site/Lotts-Coffee-Cup-Dolayout-01-02.webp", "shape": "portrait", "label": "Embalagem / Café" },
+        { "projectId": "portfolio-cello", "image": "assets/dolayout/portfolio/site/Cello-Dolayout-01-04.png", "shape": "portrait", "label": "Digital / Website" }
+      ],
+      "supportTitle": "Apoio criativo onde faz diferença.",
+      "supportIntro": "Uma marca também se constrói nos detalhes de todo dia. Posso ajudar a mantê-los claros, úteis e reconhecíveis.",
+      "support": [
+        { "number": "01", "title": "Fundamentos de marca", "text": "Identidade, sistemas visuais e diretrizes práticas que ajudam a marca a ser reconhecida.", "projectId": "portfolio-lotts-hamper-box" },
+        { "number": "02", "title": "Campanhas e lançamentos", "text": "Uma ideia central desdobrada nas peças, formatos e momentos que a campanha pede.", "projectId": "portfolio-lotts-filter-day" },
+        { "number": "03", "title": "Comunicação nas redes", "text": "Sistemas de conteúdo e peças com intenção, não apenas um calendário cheio.", "projectId": "portfolio-lotts-social-design" },
+        { "number": "04", "title": "Digital e websites", "text": "Sites e experiências digitais que deixam o próximo passo mais claro.", "projectId": "portfolio-cello" }
+      ],
+      "workTogetherTitle": "Um bom ritmo para fazer bom trabalho.",
+      "workTogetherIntro": "A colaboração acompanha o trabalho. O escopo é claro; a conversa, direta.",
+      "ways": [
+        { "title": "Apoio mensal contínuo", "text": "Uma presença criativa confiável para o que foi planejado e para o que surge no caminho." },
+        { "title": "Escopo definido", "text": "Cada trabalho começa com briefing, entregas e prazos alinhados." },
+        { "title": "Espaço para ajustar", "text": "As prioridades podem mudar junto com a marca, sempre conversando com clareza." }
+      ],
+      "aboutTitle": "Estúdio enxuto. Colaboração próxima.",
+      "about": "A Dolayout é um estúdio criativo independente liderado por João, com atuação em identidade de marca, direção de arte, campanhas e design digital. Um contato direto, da primeira conversa à peça final.",
+      "contactTitle": "O que sua marca precisa agora?",
+      "contactText": "Conte o que está construindo, mudando ou tentando deixar mais claro. Podemos começar com uma conversa.",
+      "contactCta": "Vamos conversar",
+      "whatsappText": "Olá, João. Conheci a Dolayout pela página para marcas e gostaria de conversar sobre apoio criativo."
+    }
+  },
+  "agencies": {
+    "title": "Dolayout for Agencies | Independent Creative Partner",
+    "description": "Independent creative collaboration for agencies and studios across branding, art direction, campaigns and digital design.",
+    "nav": ["Selected work", "Expertise", "How we collaborate", "Experience", "Contact"],
+    "eyebrow": "Independent creative partner · Portugal / Ireland / Remote",
+    "headline": "Your team. One more creative mind.",
+    "intro": "A flexible creative collaborator for the projects that need another experienced eye, a strong idea or an extra pair of hands.",
+    "cta": "See the work",
+    "workTitle": "Selected work, different scales.",
+    "workIntro": "Identity systems, digital experiences and art direction — selected for the range of thinking and making behind them.",
+    "work": [
+      { "projectId": "portfolio-andalafat", "image": "assets/dolayout/portfolio/site/Andalafat-Dolayout-01-04.png", "shape": "landscape", "label": "Identity / Visual system" },
+      { "projectId": "portfolio-hise", "image": "assets/dolayout/portfolio/site/Hise-Dolayout-01-02.webp", "shape": "portrait", "label": "Identity / Art direction" },
+      { "projectId": "portfolio-jinn", "image": "assets/dolayout/portfolio/site/Jinn-Dolayout-01-05.png", "shape": "square", "label": "Brand / Campaign" },
+      { "projectId": "portfolio-realty-art", "image": "assets/dolayout/portfolio/site/Century21-Dolayout-01-03.webp", "shape": "landscape", "label": "Digital / LAF" },
+      { "projectId": "portfolio-lightsquad", "image": "assets/dolayout/portfolio/site/LightSquad-Dolayout-01-04.webp", "shape": "portrait", "label": "Identity / Production" }
+    ],
+    "supportTitle": "Bring me in where the idea needs shape.",
+    "supportIntro": "From early visual exploration to final artwork, I can join at the point that makes the most sense for your team.",
+    "support": [
+      { "number": "01", "title": "Branding & identity", "text": "Naming support, visual concepts, identity systems and brand applications.", "projectId": "portfolio-andalafat" },
+      { "number": "02", "title": "Art direction", "text": "A clear visual point of view for campaigns, content and client presentations.", "projectId": "portfolio-hise" },
+      { "number": "03", "title": "Campaign design", "text": "Key visuals and adaptable assets across print, social and digital placements.", "projectId": "portfolio-jinn" },
+      { "number": "04", "title": "Digital design", "text": "Websites and digital interfaces, from visual direction to production-ready design.", "projectId": "portfolio-realty-art" }
+    ],
+    "workTogetherTitle": "Easy to plug in. Clear to work with.",
+    "workTogetherIntro": "Remote by default, integrated with your process, and scoped around the actual project.",
+    "ways": [
+      { "title": "Project-based", "text": "A defined scope and handoff, shaped around the brief and your existing workflow." },
+      { "title": "Creative reinforcement", "text": "Extra capacity for a pitch, a busy stretch or a project with a lot of moving parts." },
+      { "title": "Team-aware", "text": "Direct communication, shared files and respect for the studio’s client relationship." }
+    ],
+    "aboutTitle": "Nearly a decade alongside LAF.",
+    "about": "João is an independent designer and art director behind Dolayout. Nearly 10 years of collaboration with LAF have brought experience across brand systems, campaigns and digital projects, alongside direct work for his own clients. LAF projects in this selection are credited individually.",
+    "contactTitle": "Need another creative mind on it?",
+    "contactText": "Share the brief, the timeline or the part that needs an extra point of view. I’ll get back to you directly.",
+    "contactCta": "Let's talk about the project",
+    "email": "joaodolayout@gmail.com",
+    "phone": "5511941992365",
+    "whatsappText": "Hi João, I found Dolayout through the For Agencies page and would like to talk about a project.",
+    "pt": {
+      "title": "Dolayout para Agências | Parceiro Criativo Independente",
+      "description": "Colaboração criativa independente para agências e estúdios em branding, direção de arte, campanhas e design digital.",
+      "nav": ["Trabalhos", "Especialidades", "Como colaboramos", "Experiência", "Contato"],
+      "eyebrow": "Parceiro criativo independente · Portugal / Irlanda / Remoto",
+      "headline": "Seu time. Mais uma mente criativa.",
+      "intro": "Um colaborador criativo flexível para projetos que pedem outro olhar experiente, uma ideia forte ou mais braços para fazer acontecer.",
+      "cta": "Ver os trabalhos",
+      "workTitle": "Trabalhos em diferentes escalas.",
+      "workIntro": "Identidades, experiências digitais e direção de arte — uma seleção que mostra diferentes formas de pensar e fazer.",
+      "work": [
+        { "projectId": "portfolio-andalafat", "image": "assets/dolayout/portfolio/site/Andalafat-Dolayout-01-04.png", "shape": "landscape", "label": "Identidade / Sistema visual" },
+        { "projectId": "portfolio-hise", "image": "assets/dolayout/portfolio/site/Hise-Dolayout-01-02.webp", "shape": "portrait", "label": "Identidade / Direção de arte" },
+        { "projectId": "portfolio-jinn", "image": "assets/dolayout/portfolio/site/Jinn-Dolayout-01-05.png", "shape": "square", "label": "Marca / Campanha" },
+        { "projectId": "portfolio-realty-art", "image": "assets/dolayout/portfolio/site/Century21-Dolayout-01-03.webp", "shape": "landscape", "label": "Digital / LAF" },
+        { "projectId": "portfolio-lightsquad", "image": "assets/dolayout/portfolio/site/LightSquad-Dolayout-01-04.webp", "shape": "portrait", "label": "Identidade / Produção" }
+      ],
+      "supportTitle": "Entro onde a ideia precisa ganhar forma.",
+      "supportIntro": "Da primeira exploração visual à arte-final, posso entrar no momento que fizer mais sentido para o time.",
+      "support": [
+      { "number": "01", "title": "Branding e identidade", "text": "Apoio em naming, conceitos visuais, sistemas de identidade e aplicações.", "projectId": "portfolio-andalafat" },
+      { "number": "02", "title": "Direção de arte", "text": "Um ponto de vista visual claro para campanhas, conteúdo e apresentações.", "projectId": "portfolio-hise" },
+      { "number": "03", "title": "Design de campanhas", "text": "Key visuals e peças adaptáveis para formatos impressos, sociais e digitais.", "projectId": "portfolio-jinn" },
+      { "number": "04", "title": "Design digital", "text": "Sites e interfaces, da direção visual ao design pronto para produção.", "projectId": "portfolio-realty-art" }
+      ],
+      "workTogetherTitle": "Fácil de integrar. Claro de tocar.",
+      "workTogetherIntro": "Remoto por padrão, integrado ao processo do estúdio e com escopo alinhado ao projeto real.",
+      "ways": [
+        { "title": "Por projeto", "text": "Escopo e entregas definidos a partir do briefing e do fluxo de trabalho existente." },
+        { "title": "Reforço criativo", "text": "Mais capacidade para uma concorrência, um período intenso ou um projeto complexo." },
+        { "title": "Em sintonia com o time", "text": "Comunicação direta, arquivos compartilhados e respeito à relação do estúdio com o cliente." }
+      ],
+      "aboutTitle": "Quase uma década ao lado da LAF.",
+      "about": "João é designer e diretor de arte independente, à frente da Dolayout. São quase 10 anos de colaboração com a LAF, em projetos de marca, campanhas e digital, além de trabalhos diretos para clientes próprios. Os projetos feitos pela LAF estão creditados individualmente.",
+      "contactTitle": "Precisa de mais uma mente criativa no projeto?",
+      "contactText": "Compartilhe o briefing, o prazo ou a parte que pede um olhar a mais. Eu respondo diretamente.",
+      "contactCta": "Vamos conversar sobre o projeto",
+      "whatsappText": "Olá, João. Encontrei a Dolayout pela página para agências e queria conversar sobre um projeto."
+    }
+  }
+}

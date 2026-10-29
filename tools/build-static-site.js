@@ -46,10 +46,12 @@ fs.mkdirSync(outDir, { recursive: true });
 files.forEach(copyFile);
 copyDirectory("cliente/casa58");
 copyDirectory("adm");
+copyDirectory("partnerships");
+copyDirectory("for-brands");
 
 copyDirectory("tools/dindin");
 const referencedAssets = new Set();
-for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js"]) {
+for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js", "partnerships/brands.js", "partnerships/brands.css", "partnerships/data.json"]) {
   const source = path.join(root, relativePath);
   if (!fs.existsSync(source)) continue;
   const content = fs.readFileSync(source, "utf8");
