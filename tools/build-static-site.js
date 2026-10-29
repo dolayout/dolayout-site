@@ -48,7 +48,7 @@ copyDirectory("cliente/casa58");
 copyDirectory("adm");
 copyDirectory("partnerships");
 copyDirectory("for-brands");
-copyDirectory("assets/partners/grupo-m/email");
+copyDirectory("assets/email");
 
 copyDirectory("tools/dindin");
 const referencedAssets = new Set();
