@@ -48,11 +48,12 @@ copyDirectory("cliente/casa58");
 copyDirectory("adm");
 copyDirectory("partnerships");
 copyDirectory("for-brands");
+copyDirectory("for-agencies");
 copyDirectory("assets/email");
 
 copyDirectory("tools/dindin");
 const referencedAssets = new Set();
-for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js", "partnerships/brands.js", "partnerships/brands.css", "partnerships/data.json"]) {
+for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js", "partnerships/brands.js", "partnerships/brands.css", "partnerships/agencies.js", "partnerships/data.json"]) {
   const source = path.join(root, relativePath);
   if (!fs.existsSync(source)) continue;
   const content = fs.readFileSync(source, "utf8");

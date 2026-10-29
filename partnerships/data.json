@@ -160,5 +160,205 @@
       "contactCta": "Vamos conversar sobre o projeto",
       "whatsappText": "Olá, João. Encontrei a Dolayout pela página para agências e queria conversar sobre um projeto."
     }
+  },
+  "agencies": {
+    "title": "Dolayout for Agencies | Independent Creative Partner",
+    "description": "Independent creative collaboration for agencies and studios across branding, art direction, campaigns and digital design.",
+    "nav": [
+      "Selected work",
+      "Expertise",
+      "How we collaborate",
+      "Experience",
+      "Contact"
+    ],
+    "eyebrow": "Independent creative partner · Portugal / Ireland / Remote",
+    "headline": "Your team. One more creative mind.",
+    "intro": "A flexible creative collaborator for the projects that need another experienced eye, a strong idea or an extra pair of hands.",
+    "cta": "See the work",
+    "workTitle": "Selected work, different scales.",
+    "workIntro": "Identity systems, digital experiences and art direction — selected for the range of thinking and making behind them.",
+    "work": [
+      {
+        "projectId": "portfolio-andalafat",
+        "image": "assets/dolayout/portfolio/site/Andalafat-Dolayout-01-04.png",
+        "shape": "landscape",
+        "label": "Identity / Visual system"
+      },
+      {
+        "projectId": "portfolio-hise",
+        "image": "assets/dolayout/portfolio/site/Hise-Dolayout-01-02.webp",
+        "shape": "portrait",
+        "label": "Identity / Art direction"
+      },
+      {
+        "projectId": "portfolio-jinn",
+        "image": "assets/dolayout/portfolio/site/Jinn-Dolayout-01-05.png",
+        "shape": "square",
+        "label": "Brand / Campaign"
+      },
+      {
+        "projectId": "portfolio-realty-art",
+        "image": "assets/dolayout/portfolio/site/Century21-Dolayout-01-03.webp",
+        "shape": "landscape",
+        "label": "Digital / LAF"
+      },
+      {
+        "projectId": "portfolio-lightsquad",
+        "image": "assets/dolayout/portfolio/site/LightSquad-Dolayout-01-04.webp",
+        "shape": "portrait",
+        "label": "Identity / Production"
+      }
+    ],
+    "supportTitle": "Bring me in where the idea needs shape.",
+    "supportIntro": "From early visual exploration to final artwork, I can join at the point that makes the most sense for your team.",
+    "support": [
+      {
+        "number": "01",
+        "title": "Branding & identity",
+        "text": "Naming support, visual concepts, identity systems and brand applications.",
+        "projectId": "portfolio-andalafat"
+      },
+      {
+        "number": "02",
+        "title": "Art direction",
+        "text": "A clear visual point of view for campaigns, content and client presentations.",
+        "projectId": "portfolio-hise"
+      },
+      {
+        "number": "03",
+        "title": "Campaign design",
+        "text": "Key visuals and adaptable assets across print, social and digital placements.",
+        "projectId": "portfolio-jinn"
+      },
+      {
+        "number": "04",
+        "title": "Digital design",
+        "text": "Websites and digital interfaces, from visual direction to production-ready design.",
+        "projectId": "portfolio-realty-art"
+      }
+    ],
+    "workTogetherTitle": "Easy to plug in. Clear to work with.",
+    "workTogetherIntro": "Remote by default, integrated with your process, and scoped around the actual project.",
+    "ways": [
+      {
+        "title": "Project-based",
+        "text": "A defined scope and handoff, shaped around the brief and your existing workflow."
+      },
+      {
+        "title": "Creative reinforcement",
+        "text": "Extra capacity for a pitch, a busy stretch or a project with a lot of moving parts."
+      },
+      {
+        "title": "Team-aware",
+        "text": "Direct communication, shared files and respect for the studio’s client relationship."
+      }
+    ],
+    "aboutTitle": "Nearly a decade alongside LAF.",
+    "about": "João is an independent designer and art director behind Dolayout. Nearly 10 years of collaboration with LAF have brought experience across brand systems, campaigns and digital projects, alongside direct work for his own clients. LAF projects in this selection are credited individually.",
+    "contactTitle": "Need another creative mind on it?",
+    "contactText": "Share the brief, the timeline or the part that needs an extra point of view. I’ll get back to you directly.",
+    "contactCta": "Let's talk about the project",
+    "email": "joaodolayout@gmail.com",
+    "phone": "5511941992365",
+    "whatsappText": "Hi João, I found Dolayout through the For Agencies page and would like to talk about a project.",
+    "pt": {
+      "title": "Dolayout para Agências | Parceiro Criativo Independente",
+      "description": "Colaboração criativa independente para agências e estúdios em branding, direção de arte, campanhas e design digital.",
+      "nav": [
+        "Trabalhos",
+        "Especialidades",
+        "Como colaboramos",
+        "Experiência",
+        "Contato"
+      ],
+      "eyebrow": "Parceiro criativo independente · Portugal / Irlanda / Remoto",
+      "headline": "Seu time. Mais uma mente criativa.",
+      "intro": "Um colaborador criativo flexível para projetos que pedem outro olhar experiente, uma ideia forte ou mais braços para fazer acontecer.",
+      "cta": "Ver os trabalhos",
+      "workTitle": "Trabalhos em diferentes escalas.",
+      "workIntro": "Identidades, experiências digitais e direção de arte — uma seleção que mostra diferentes formas de pensar e fazer.",
+      "work": [
+        {
+          "projectId": "portfolio-andalafat",
+          "image": "assets/dolayout/portfolio/site/Andalafat-Dolayout-01-04.png",
+          "shape": "landscape",
+          "label": "Identidade / Sistema visual"
+        },
+        {
+          "projectId": "portfolio-hise",
+          "image": "assets/dolayout/portfolio/site/Hise-Dolayout-01-02.webp",
+          "shape": "portrait",
+          "label": "Identidade / Direção de arte"
+        },
+        {
+          "projectId": "portfolio-jinn",
+          "image": "assets/dolayout/portfolio/site/Jinn-Dolayout-01-05.png",
+          "shape": "square",
+          "label": "Marca / Campanha"
+        },
+        {
+          "projectId": "portfolio-realty-art",
+          "image": "assets/dolayout/portfolio/site/Century21-Dolayout-01-03.webp",
+          "shape": "landscape",
+          "label": "Digital / LAF"
+        },
+        {
+          "projectId": "portfolio-lightsquad",
+          "image": "assets/dolayout/portfolio/site/LightSquad-Dolayout-01-04.webp",
+          "shape": "portrait",
+          "label": "Identidade / Produção"
+        }
+      ],
+      "supportTitle": "Entro onde a ideia precisa ganhar forma.",
+      "supportIntro": "Da primeira exploração visual à arte-final, posso entrar no momento que fizer mais sentido para o time.",
+      "support": [
+        {
+          "number": "01",
+          "title": "Branding e identidade",
+          "text": "Apoio em naming, conceitos visuais, sistemas de identidade e aplicações.",
+          "projectId": "portfolio-andalafat"
+        },
+        {
+          "number": "02",
+          "title": "Direção de arte",
+          "text": "Um ponto de vista visual claro para campanhas, conteúdo e apresentações.",
+          "projectId": "portfolio-hise"
+        },
+        {
+          "number": "03",
+          "title": "Design de campanhas",
+          "text": "Key visuals e peças adaptáveis para formatos impressos, sociais e digitais.",
+          "projectId": "portfolio-jinn"
+        },
+        {
+          "number": "04",
+          "title": "Design digital",
+          "text": "Sites e interfaces, da direção visual ao design pronto para produção.",
+          "projectId": "portfolio-realty-art"
+        }
+      ],
+      "workTogetherTitle": "Fácil de integrar. Claro de tocar.",
+      "workTogetherIntro": "Remoto por padrão, integrado ao processo do estúdio e com escopo alinhado ao projeto real.",
+      "ways": [
+        {
+          "title": "Por projeto",
+          "text": "Escopo e entregas definidos a partir do briefing e do fluxo de trabalho existente."
+        },
+        {
+          "title": "Reforço criativo",
+          "text": "Mais capacidade para uma concorrência, um período intenso ou um projeto complexo."
+        },
+        {
+          "title": "Em sintonia com o time",
+          "text": "Comunicação direta, arquivos compartilhados e respeito à relação do estúdio com o cliente."
+        }
+      ],
+      "aboutTitle": "Quase uma década ao lado da LAF.",
+      "about": "João é designer e diretor de arte independente, à frente da Dolayout. São quase 10 anos de colaboração com a LAF, em projetos de marca, campanhas e digital, além de trabalhos diretos para clientes próprios. Os projetos feitos pela LAF estão creditados individualmente.",
+      "contactTitle": "Precisa de mais uma mente criativa no projeto?",
+      "contactText": "Compartilhe o briefing, o prazo ou a parte que pede um olhar a mais. Eu respondo diretamente.",
+      "contactCta": "Vamos conversar sobre o projeto",
+      "whatsappText": "Olá, João. Encontrei a Dolayout pela página para agências e queria conversar sobre um projeto."
+    }
   }
 }
