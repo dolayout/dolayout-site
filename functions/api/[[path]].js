@@ -15,6 +15,7 @@ export async function onRequest(context) {
   }
 
   try {
+    if (path === "dindin/google-token" && request.method === "POST") return exchangeDindinGoogleCode(request, env);
     if (path === "session" && request.method === "GET") return getSession(request, env);
     if (path === "session/challenge" && request.method === "POST") return getLoginChallenge(request, env);
     if (path === "setup" && request.method === "POST") return setupAdmin(request, env);
@@ -37,6 +38,38 @@ export async function onRequest(context) {
     if (error?.status) return json({ error: error.message }, error.status);
     return json({ error: "The request could not be completed." }, 500);
   }
+}
+
+async function exchangeDindinGoogleCode(request, env) {
+  if (request.headers.get("X-Requested-With") !== "XmlHttpRequest") return json({ error: "Invalid OAuth request." }, 400);
+  if (!env.GOOGLE_OAUTH_CLIENT_SECRET) return json({ error: "Google Drive connection is not configured." }, 503);
+  const origin = new URL(request.url).origin;
+  const body = await readJson(request);
+  const code = typeof body.code === "string" ? body.code : "";
+  if (!code || code.length > 4096 || body.redirectUri !== origin) return json({ error: "Invalid OAuth code request." }, 400);
+
+  let googleResponse;
+  try {
+    googleResponse = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: "215401091425-3qec03kr78a1dl57frk8tab3bo7dgl4s.apps.googleusercontent.com",
+        client_secret: env.GOOGLE_OAUTH_CLIENT_SECRET,
+        redirect_uri: origin,
+        grant_type: "authorization_code",
+      }),
+    });
+  } catch {
+    return json({ error: "Google could not complete the authorization." }, 502);
+  }
+
+  let tokens;
+  try { tokens = await googleResponse.json(); } catch { return json({ error: "Google returned an invalid authorization response." }, 502); }
+  if (!googleResponse.ok || typeof tokens.access_token !== "string") return json({ error: "Google could not complete the authorization." }, 502);
+
+  return json({ access_token: tokens.access_token, expires_in: tokens.expires_in, token_type: tokens.token_type, scope: tokens.scope });
 }
 
 async function getSession(request, env) {

@@ -47,6 +47,7 @@ files.forEach(copyFile);
 copyDirectory("cliente/casa58");
 copyDirectory("adm");
 
+copyDirectory("tools/dindin");
 const referencedAssets = new Set();
 for (const relativePath of ["index.html", "styles.css", "site-portfolio-data.js"]) {
   const source = path.join(root, relativePath);

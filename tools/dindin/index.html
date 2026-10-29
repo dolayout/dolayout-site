@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Dindin">
+  <title>Dindin — finanças do dia a dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="./assets/brand/dindin-app.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/brand/dindin-app-180.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./theme.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <a class="brand" href="#inicio" aria-label="Dindin, início">
+        <span class="brand-mark" aria-hidden="true"><img class="symbol-dark" src="./assets/brand/dolayout-symbol-full-lime.svg" alt=""><img class="symbol-light" src="./assets/brand/dolayout-symbol-full-dark.svg" alt=""></span>
+        <span class="brand-name">dindin<span>.</span></span>
+      </a>
+      <div class="nav-caption">SEU ESPAÇO</div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/></svg></span><span>Visão geral</span></button>
+        <button class="nav-item" data-view="transactions"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13m0 0-4-4m4 4-4 4M17 17H4m0 0 4-4m-4 4 4 4"/></svg></span><span>Lançamentos</span><span class="nav-count" id="nav-count">6</span></button>
+        <button class="nav-item" data-view="categories"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3a9 9 0 1 0 9 10h-9V3Z"/><path d="M14 3.5a8.5 8.5 0 0 1 6.5 6.5H14V3.5Z"/></svg></span><span>Categorias</span></button>
+      </nav>
+      <div class="nav-caption tools-caption">FERRAMENTAS</div>
+      <nav class="nav-list">
+        <button class="nav-item" data-open-import="true"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span><span>Importar dados</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-spark">✳</span><strong>Um passo de cada vez.</strong><p>Organizar seu dinheiro pode ser simples.</p><button id="help-button">Como começar <span>→</span></button></div>
+        <button class="profile-button" data-open-data="true"><span class="avatar">DO</span><span class="profile-copy"><strong>Seus dados</strong><small>Neste dispositivo</small></span><span class="dots">···</span></button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark small"><img class="symbol-dark" src="./assets/brand/dolayout-symbol-full-lime.svg" alt=""><img class="symbol-light" src="./assets/brand/dolayout-symbol-full-dark.svg" alt=""></span>dindin<span>.</span></div>
+        <div class="breadcrumb"><span>Finanças</span><span class="crumb-slash">/</span><strong id="page-name">Visão geral</strong></div>
+        <div class="top-actions"><span class="demo-pill"><span></span> Comece por aqui</span><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Ativar tema claro" title="Ativar tema claro"><svg id="theme-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg><span id="theme-label">Claro</span></button><button class="icon-button" aria-label="Ajuda" id="top-help">?</button><button class="avatar top-avatar" aria-label="Seus dados e cópia de segurança" data-open-data="true">DO</button></div>
+      </header>
+
+      <section class="view active" id="view-overview">
+        <div class="page-intro"><div><p class="eyebrow" id="overview-date"></p><h1>Seu dinheiro, com mais clareza.</h1><p class="intro-copy">Um retrato simples do que entrou, do que saiu e do que ainda está disponível.</p></div><div class="month-select-wrap"><label for="month-select">Mês</label><select id="month-select"></select><span class="select-chevron">⌄</span></div></div>
+
+        <div class="welcome-strip"><div class="welcome-icon"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.2-5.5L4 8.5"/><path d="M4 4.5v4h4M12 8v4l3 2"/></svg></div><div class="welcome-text"><strong>Primeira vez por aqui?</strong><span>Comece com uma planilha, uma foto das suas anotações ou um lançamento simples.</span></div><button class="text-button" id="start-button">Escolher como começar <span>→</span></button><button class="strip-close" id="dismiss-welcome" aria-label="Fechar">×</button></div>
+
+        <div class="summary-grid">
+          <article class="summary-card balance-card"><div class="card-heading"><span>Disponível no período</span><span class="card-icon balance-icon">◎</span></div><div class="amount" id="available-total">R$ 0<span>,00</span></div><div class="card-foot"><span class="muted">Entradas menos gastos registrados</span></div><div class="balance-progress"><span id="income-progress" style="width:0%"></span></div><div class="progress-labels"><span id="spent-label">Ainda sem movimentação</span><span id="remaining-label"></span></div></article>
+          <article class="summary-card"><div class="card-heading"><span>Entrou</span><span class="card-icon income-icon">↙</span></div><div class="amount" id="income-total">R$ 0<span>,00</span></div><div class="card-foot"><span class="muted" id="income-count">0 entradas no período</span></div></article>
+          <article class="summary-card"><div class="card-heading"><span>Saiu</span><span class="card-icon expense-icon">↗</span></div><div class="amount" id="expense-total">R$ 0<span>,00</span></div><div class="card-foot"><span class="muted" id="expense-count">0 gastos no período</span></div></article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel flow-panel"><div class="panel-header"><div><h2>Como o dinheiro está indo</h2><p>Receitas e despesas nos últimos 6 meses</p></div><button class="period-button">Últimos 6 meses <span>⌄</span></button></div><div class="legend"><span><i class="legend-dot green"></i>Entrou</span><span><i class="legend-dot lilac"></i>Saiu</span></div><div class="chart-wrap"><div class="y-labels"><span>R$ 8 mil</span><span>R$ 6 mil</span><span>R$ 4 mil</span><span>R$ 2 mil</span><span>R$ 0</span></div><div class="bar-chart" id="monthly-chart"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div></div></div><div class="chart-insight"><span class="insight-icon">✦</span><span id="chart-insight-text">Até agora, entrou <strong>mais do que saiu</strong> neste mês.</span><button aria-label="Saiba mais">i</button></div></article>
+
+          <article class="panel category-panel"><div class="panel-header"><div><h2>Para onde foi</h2><p>Gastos por categoria</p></div><button class="more-button" aria-label="Mais opções">···</button></div><div class="donut-area"><div class="donut" id="expense-donut"><div class="donut-center"><strong id="donut-total">R$ 4.680</strong><span>total gasto</span></div></div><div class="category-legend" id="expense-legend"></div></div><button class="panel-link" data-view-link="categories">Ver todas as categorias <span>→</span></button></article>
+        </div>
+
+        <div class="bottom-grid"><article class="panel recent-panel"><div class="panel-header"><div><h2>Últimos lançamentos</h2><p>O que aconteceu recentemente</p></div><button class="panel-link compact" data-view-link="transactions">Ver todos <span>→</span></button></div><div class="transaction-list" id="recent-transactions"></div></article><article class="tip-card"><div class="tip-art"><span class="tip-orbit orbit-one"></span><span class="tip-orbit orbit-two"></span><span class="tip-coin">R$</span><span class="tip-spark spark-one">✦</span><span class="tip-spark spark-two">✧</span></div><div class="tip-copy"><span class="eyebrow">DICA SIMPLES</span><h3>Pequenos registros ajudam a ver o todo.</h3><p>Uma foto do papel ou da nota já pode ser um bom começo.</p><button id="tip-photo">Registrar com uma foto <span>→</span></button></div></article></div>
+      </section>
+
+      <section class="view" id="view-transactions"><div class="page-intro compact-intro"><div><p class="eyebrow">SEU HISTÓRICO</p><h1>Lançamentos</h1><p class="intro-copy">Receitas e despesas em um só lugar.</p></div><button class="primary-button" id="add-transaction"><span>＋</span> Novo lançamento</button></div><div class="panel transactions-page"><div class="filter-row"><div class="search-box"><span>⌕</span><input id="transaction-search" placeholder="Buscar lançamento" aria-label="Buscar lançamento"></div><select id="type-filter"><option value="all">Todos</option><option value="income">Entradas</option><option value="expense">Gastos</option></select><select id="category-filter"><option value="all">Todas as categorias</option></select></div><div class="full-transaction-list" id="all-transactions"></div></div></section>
+
+      <section class="view" id="view-categories"><div class="page-intro compact-intro"><div><p class="eyebrow">ORGANIZAÇÃO</p><h1>Categorias</h1><p class="intro-copy">Grupos simples para entender seus gastos.</p></div><button class="primary-button" id="add-category"><span>＋</span> Nova categoria</button></div><div class="category-cards" id="category-cards"></div></section>
+    </main>
+  </div>
+
+  <div class="mobile-nav"><button class="active" data-view="overview"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/></svg></span>Início</button><button data-view="transactions"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13m0 0-4-4m4 4-4 4M17 17H4m0 0 4-4m-4 4 4 4"/></svg></span>Lançamentos</button><button class="capture-mobile" id="mobile-capture" aria-label="Adicionar"><span>＋</span></button><button data-view="categories"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3a9 9 0 1 0 9 10h-9V3Z"/><path d="M14 3.5a8.5 8.5 0 0 1 6.5 6.5H14V3.5Z"/></svg></span>Categorias</button><button data-open-import="true"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span>Importar</button></div>
+
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Fechar">×</button>
+      <div id="modal-content"></div>
+    </section>
+  </div>
+  <input type="file" id="spreadsheet-file" accept=".xlsx,.xls,.csv" hidden>
+  <input type="file" id="backup-file" accept="application/json,.json" hidden>
+  <input type="file" id="paper-file" accept="image/*" capture="environment" hidden>
+  <input type="file" id="receipt-file" accept="image/*" capture="environment" hidden>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="./app.js"></script>
+</body>
+</html>
