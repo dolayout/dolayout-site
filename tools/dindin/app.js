@@ -4,6 +4,7 @@ const iconPaths = {
   paper: '<path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 12h7M8 16h7"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   income: '<path d="M7 17 17 7M8 7h9v9"/><path d="M4 20h16"/>',
+  camera: '<path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11H3V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/>',
   home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/>',
   market: '<path d="M4 9h16l-1.5 11h-13L4 9Z"/><path d="M8 9a4 4 0 0 1 8 0M8 13v3m4-3v3m4-3v3"/>',
   health: '<path d="M12 5v14M5 12h14"/>',
@@ -176,12 +177,44 @@ function renderTransactions() {
   renderRecent();
 }
 function renderCategories() {
-  const spent = Object.fromEntries(categories.map((cat) => [cat, monthTransactions().filter((t) => t.type === 'expense' && t.category === cat).reduce((sum,t) => sum + Number(t.amount),0)]));
-  document.querySelector('#category-cards').innerHTML = categories.map((cat) => {
-    const name = cat.toLowerCase();
-    const icon = name.includes('renda') ? 'income' : name.includes('mercado') ? 'market' : name.includes('saúde') ? 'health' : name.includes('casa') ? 'home' : 'receipt';
-    return `<article class="category-card"><div class="category-card-head"><span class="category-card-icon">${iconMarkup(icon)}</span><div><h3>${escapeHtml(cat)}</h3><p>Gastos no período</p></div></div><div class="category-card-foot"><strong>${money(spent[cat] || 0)}</strong><span>${spent[cat] ? 'com lançamentos' : 'sem lançamentos'}</span></div></article>`;
-  }).join('');
+  const current = monthTransactions();
+  const total = (type) => current.filter((item) => item.type === type).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const totals = { expense: total('expense'), income: total('income') };
+  const categoryColor = (category) => {
+    const key = normalizeImportText(category);
+    const colors = [
+      [/casa|moradia/, '#b69af6'], [/mercado|aliment/, '#f2aa4c'], [/saude|farm/, '#f17b91'],
+      [/transporte|carro/, '#51b7d7'], [/contas|internet|energia/, '#7195f4'], [/lazer/, '#d480df'],
+      [/renda|receita/, '#71c797'], [/outros/, '#b2bdc6'],
+    ];
+    const match = colors.find(([pattern]) => pattern.test(key));
+    if (match) return match[1];
+    let hash = 0;
+    for (const char of key) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+    return ['#7fc8b4', '#d39be4', '#f3a66b', '#76a9ef', '#c3a6f1'][hash % 5];
+  };
+  const categoryIcon = (category, type) => {
+    const name = normalizeImportText(category);
+    if (type === 'income') return 'income';
+    if (/mercado|aliment/.test(name)) return 'market';
+    if (/saude|farm/.test(name)) return 'health';
+    if (/casa|moradia/.test(name)) return 'home';
+    return 'receipt';
+  };
+  const card = (category, type) => {
+    const items = current.filter((item) => item.type === type && item.category === category);
+    const amount = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const share = totals[type] ? Math.round(amount / totals[type] * 100) : 0;
+    const color = categoryColor(category);
+    const kind = type === 'income' ? 'Entrada' : 'Gasto';
+    const countLabel = `${items.length} ${items.length === 1 ? 'lançamento' : 'lançamentos'}`;
+    return `<article class="category-card" style="--category-accent:${color}"><div class="category-card-head"><span class="category-card-icon">${iconMarkup(categoryIcon(category, type))}</span><div class="category-card-title"><h3>${escapeHtml(category)}</h3><p>${kind} no mês</p></div></div><div class="category-card-value"><strong>${money(amount)}</strong><span>${items.length ? countLabel : 'Sem lançamentos'}</span></div><div class="category-progress" role="progressbar" aria-label="${escapeHtml(category)}: ${share}% do total de ${kind.toLowerCase()}" aria-valuenow="${share}" aria-valuemin="0" aria-valuemax="100"><span style="width:${share}%"></span></div><div class="category-card-foot"><span>${items.length ? `${share}% do total no mês` : 'Ainda sem registros neste mês'}</span></div></article>`;
+  };
+  const expenseCategories = categories.filter((category) => !normalizeImportText(category).includes('renda'));
+  const incomeCategories = categories.filter((category) => normalizeImportText(category).includes('renda'));
+  const activeExpenses = expenseCategories.filter((category) => current.some((item) => item.type === 'expense' && item.category === category)).length;
+  const activeIncome = incomeCategories.filter((category) => current.some((item) => item.type === 'income' && item.category === category)).length;
+  document.querySelector('#category-dashboard').innerHTML = `<div class="category-overview"><article class="category-stat expense-stat"><span>Gastos no mês</span><strong>${money(totals.expense)}</strong><small>${activeExpenses} ${activeExpenses === 1 ? 'categoria com gastos' : 'categorias com gastos'}</small></article><article class="category-stat income-stat"><span>Entradas no mês</span><strong>${money(totals.income)}</strong><small>${activeIncome} ${activeIncome === 1 ? 'categoria com entrada' : 'categorias com entradas'}</small></article></div><section class="category-section"><div class="category-section-head"><h2>Gastos</h2><span>${expenseCategories.length} categorias</span></div><div class="category-cards">${expenseCategories.map((category) => card(category, 'expense')).join('')}</div></section><section class="category-section"><div class="category-section-head"><h2>Entradas</h2><span>${incomeCategories.length} categorias</span></div><div class="category-cards">${incomeCategories.map((category) => card(category, 'income')).join('')}</div></section>`;
 }
 function refresh() { setupMonthSelect(); renderTotals(); renderRecent(); renderTransactions(); renderCharts(); if (document.querySelector('#view-categories').classList.contains('active')) renderCategories(); }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (char) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[char])); }
@@ -555,7 +588,8 @@ function monthlyMatrixRows(rows, sheetName, fingerprint) {
   const sheetText = normalizeImportText(sheetName);
   const year = Number(sheetText.match(/20\d{2}/)?.[0] || '');
   if (!year) return [];
-  const labelColumn = (rows[0] || []).findIndex((_, columnIndex) => rows.some((row) => /^(saldo|despesas fixas|sobra quanto)/.test(normalizeImportText(row?.[columnIndex]))));
+  const columnCount = rows.reduce((maximum, row) => Math.max(maximum, row?.length || 0), 0);
+  const labelColumn = Array.from({ length: columnCount }, (_, columnIndex) => columnIndex).find((columnIndex) => rows.some((row) => /^(saldo|despesas fixas|sobra quanto)/.test(normalizeImportText(row?.[columnIndex]))));
   if (labelColumn < 0) return [];
   const labelAt = (row) => normalizeImportText(row?.[labelColumn]);
   const incomeEnd = rows.findIndex((row) => labelAt(row).startsWith('saldo'));
@@ -818,14 +852,20 @@ function showFileReview(file, kind) {
   processSpreadsheet(file).catch((error) => showFileError(file, error.message || 'Verifique se o arquivo está em formato Excel ou CSV.'));
 }
 function openTransactionForm(defaultType = 'expense') {
-  openModal(`<p class="modal-kicker">NOVO LANÇAMENTO</p><h2 id="modal-title">Anote em poucos passos.</h2><p class="modal-lead">Não precisa preencher tudo. Uma descrição, um valor e uma data já ajudam.</p><form id="transaction-form"><div class="field"><label for="tx-type">Tipo</label><select id="tx-type"><option value="expense" ${defaultType === 'expense' ? 'selected' : ''}>Gasto</option><option value="income" ${defaultType === 'income' ? 'selected' : ''}>Receita</option></select></div><div class="field"><label for="tx-name">Descrição</label><input id="tx-name" placeholder="Ex.: Conta de luz" required></div><div class="review-fields"><div class="field"><label for="tx-amount">Valor</label><input id="tx-amount" type="number" step="0.01" min="0" placeholder="0,00" required></div><div class="field"><label for="tx-date">Data</label><input id="tx-date" type="date" value="${new Date().toISOString().slice(0,10)}" required></div><div class="field full"><label for="tx-category">Categoria</label><select id="tx-category"></select></div></div><div class="modal-actions"><button type="button" class="secondary-button" id="tx-cancel">Cancelar</button><button class="primary-button small" type="submit">Salvar lançamento</button></div></form>`);
+  openModal(`<p class="modal-kicker">NOVO LANÇAMENTO</p><h2 id="modal-title">Anote em poucos passos.</h2><p class="modal-lead">Não precisa preencher tudo. Uma descrição, um valor e uma data já ajudam.</p><form id="transaction-form"><button class="photo-first-action" type="button" id="tx-photo-first" data-file-input="receipt-file"><span class="photo-first-icon">${iconMarkup('camera')}</span><span class="photo-first-copy"><strong>Fotografar nota ou recibo</strong><small>O app sugere valor e categoria para você conferir.</small></span><span class="photo-first-arrow" aria-hidden="true">→</span></button><p class="manual-entry-label">Ou preencha manualmente</p><div class="field"><label for="tx-type">Tipo</label><select id="tx-type"><option value="expense" ${defaultType === 'expense' ? 'selected' : ''}>Gasto</option><option value="income" ${defaultType === 'income' ? 'selected' : ''}>Receita</option></select></div><div class="field"><label for="tx-name">Descrição</label><input id="tx-name" placeholder="Ex.: Conta de luz" required></div><div class="review-fields"><div class="field"><label for="tx-amount">Valor</label><input id="tx-amount" type="number" step="0.01" min="0" placeholder="0,00" required></div><div class="field"><label for="tx-date">Data</label><input id="tx-date" type="date" value="${new Date().toISOString().slice(0,10)}" required></div><div class="field full"><label for="tx-category">Categoria</label><select id="tx-category"></select></div></div><div class="modal-actions"><button type="button" class="secondary-button" id="tx-cancel">Cancelar</button><button class="primary-button small" type="submit">Salvar lançamento</button></div></form>`);
   const updateCategoryOptions = () => {
     const type = modalContent.querySelector('#tx-type').value;
     const available = categories.filter((cat) => type === 'income' ? cat.toLowerCase().includes('renda') : !cat.toLowerCase().includes('renda'));
     modalContent.querySelector('#tx-category').innerHTML = available.map((cat) => `<option>${escapeHtml(cat)}</option>`).join('') || '<option>Outros</option>';
+    const photoAction = modalContent.querySelector('#tx-photo-first');
+    const copy = photoAction.querySelector('.photo-first-copy');
+    const isIncome = type === 'income';
+    photoAction.dataset.fileInput = isIncome ? 'paper-file' : 'receipt-file';
+    copy.innerHTML = `<strong>${isIncome ? 'Fotografar anotações no papel' : 'Fotografar nota ou recibo'}</strong><small>${isIncome ? 'O app sugere suas entradas para você conferir.' : 'O app sugere valor e categoria para você conferir.'}</small>`;
   };
   updateCategoryOptions();
   modalContent.querySelector('#tx-type').addEventListener('change', updateCategoryOptions);
+  modalContent.querySelector('#tx-photo-first').addEventListener('click', (event) => document.querySelector(`#${event.currentTarget.dataset.fileInput}`).click());
   modalContent.querySelector('#tx-cancel').addEventListener('click', closeModal);
   modalContent.querySelector('#transaction-form').addEventListener('submit', (event) => {
     event.preventDefault();

@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/brand/dindin-app-180.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css?v=20261029-ocr1">
-  <link rel="stylesheet" href="./theme.css?v=20261029-ocr1">
+  <link rel="stylesheet" href="./theme.css?v=20261029-categories2">
 </head>
 <body>
   <div class="app-shell">
@@ -70,7 +70,7 @@
 
       <section class="view" id="view-transactions"><div class="page-intro compact-intro"><div><p class="eyebrow">SEU HISTÓRICO</p><h1>Lançamentos</h1><p class="intro-copy">Receitas e despesas em um só lugar.</p></div><button class="primary-button" id="add-transaction"><span>＋</span> Novo lançamento</button></div><div class="panel transactions-page"><div class="filter-row"><div class="search-box"><span>⌕</span><input id="transaction-search" placeholder="Buscar lançamento" aria-label="Buscar lançamento"></div><select id="type-filter"><option value="all">Todos</option><option value="income">Entradas</option><option value="expense">Gastos</option></select><select id="category-filter"><option value="all">Todas as categorias</option></select></div><div class="full-transaction-list" id="all-transactions"></div></div></section>
 
-      <section class="view" id="view-categories"><div class="page-intro compact-intro"><div><p class="eyebrow">ORGANIZAÇÃO</p><h1>Categorias</h1><p class="intro-copy">Grupos simples para entender seus gastos.</p></div><button class="primary-button" id="add-category"><span>＋</span> Nova categoria</button></div><div class="category-cards" id="category-cards"></div></section>
+      <section class="view" id="view-categories"><div class="page-intro compact-intro"><div><p class="eyebrow">ORGANIZAÇÃO</p><h1>Categorias</h1><p class="intro-copy">Veja para onde o dinheiro está indo e de onde ele vem.</p></div><button class="primary-button" id="add-category"><span>＋</span> Nova categoria</button></div><div class="category-dashboard" id="category-dashboard"></div></section>
     </main>
   </div>
 
@@ -87,8 +87,8 @@
   <input type="file" id="paper-file" accept="image/*" capture="environment" hidden>
   <input type="file" id="receipt-file" accept="image/*" capture="environment" hidden>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="./vendor/xlsx.full.min.js?v=20261029-ocr1"></script>
-  <script src="./vendor/ocr/tesseract.min.js?v=20261029-ocr1"></script>
-  <script src="./app.js?v=20261029-ocr1"></script>
+  <script src="./vendor/xlsx.full.min.js?v=20261029-categories2"></script>
+  <script src="./vendor/ocr/tesseract.min.js?v=20261029-categories2"></script>
+  <script src="./app.js?v=20261029-categories2"></script>
 </body>
 </html>
