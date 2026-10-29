@@ -105,7 +105,8 @@ function renderTotals() {
 function transactionMarkup(item) {
   const iconClass = item.category.toLowerCase().includes('mercado') ? 'food' : item.category.toLowerCase().includes('saúde') ? 'care' : item.category.toLowerCase().includes('casa') ? 'home' : '';
   const iconName = item.type === 'income' ? 'income' : iconClass === 'food' ? 'market' : iconClass === 'care' ? 'health' : iconClass === 'home' ? 'home' : 'receipt';
-  return `<div class="transaction-row"><span class="transaction-icon ${iconClass}">${iconMarkup(iconName)}</span><span class="transaction-main"><strong>${escapeHtml(item.name)}</strong><small>${dateLabel(item.date)} · ${escapeHtml(item.category)}</small></span><span class="transaction-category">${escapeHtml(item.category)}</span><span class="transaction-amount ${item.type === 'income' ? 'in' : 'out'}">${item.type === 'income' ? '+' : '−'} ${money(item.amount)}</span></div>`;
+  const dateText = item.monthlyAggregate ? new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : dateLabel(item.date);
+  return `<div class="transaction-row"><span class="transaction-icon ${iconClass}">${iconMarkup(iconName)}</span><span class="transaction-main"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(dateText)} · ${escapeHtml(item.category)}</small></span><span class="transaction-category">${escapeHtml(item.category)}</span><span class="transaction-amount ${item.type === 'income' ? 'in' : 'out'}">${item.type === 'income' ? '+' : '−'} ${money(item.amount)}</span></div>`;
 }
 function renderRecent() {
   const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
@@ -183,7 +184,7 @@ function renderCategories() {
 function refresh() { setupMonthSelect(); renderTotals(); renderRecent(); renderTransactions(); renderCharts(); if (document.querySelector('#view-categories').classList.contains('active')) renderCategories(); }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (char) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[char])); }
 function openOnboarding() {
-  openModal(`<p class="modal-kicker">UM COMEÇO LEVE</p><h2 id="modal-title">Como prefere começar?</h2><p class="modal-lead">Escolha o jeito mais fácil para você. Antes de salvar, vamos mostrar tudo para conferir.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Tenho uma planilha</strong><small>A importação automática de planilhas ainda está sendo preparada.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Anoto no papel</strong><small>Fotografe para usar como referência e revise os dados manualmente.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="blank"><span class="choice-icon">${iconMarkup('plus')}</span><span class="choice-copy"><strong>Quero começar do zero</strong><small>Adicione seu primeiro gasto ou sua primeira receita.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">Os lançamentos são salvos neste aparelho. Qualquer futura importação ficará em rascunho para conferência antes de salvar.</p>`);
+  openModal(`<p class="modal-kicker">UM COMEÇO LEVE</p><h2 id="modal-title">Como prefere começar?</h2><p class="modal-lead">Escolha o jeito mais fácil para você. Antes de salvar, vamos mostrar tudo para conferir.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Tenho uma planilha</strong><small>Importe Excel ou CSV e confira os lançamentos antes de salvar.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Anoto no papel</strong><small>Fotografe para usar como referência e revise os dados manualmente.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="blank"><span class="choice-icon">${iconMarkup('plus')}</span><span class="choice-copy"><strong>Quero começar do zero</strong><small>Adicione seu primeiro gasto ou sua primeira receita.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">Os lançamentos ficam neste aparelho. Planilhas são lidas aqui mesmo e só entram nos registros depois da sua confirmação.</p>`);
   modalContent.querySelectorAll('[data-method]').forEach((button) => button.addEventListener('click', () => {
     const method = button.dataset.method;
     if (method === 'spreadsheet') document.querySelector('#spreadsheet-file').click();
@@ -192,7 +193,7 @@ function openOnboarding() {
   }));
 }
 function openImport() {
-  openModal(`<p class="modal-kicker">IMPORTAR DADOS</p><h2 id="modal-title">Traga o que você já anotou.</h2><p class="modal-lead">Pode ser uma planilha, uma nota ou uma folha do seu caderno. Tudo deve ser conferido antes de entrar nos seus registros.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Selecionar uma planilha</strong><small>Excel e CSV: o importador automático ainda está sendo preparado.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Fotografar uma página</strong><small>A foto fica como referência; preencha e confira os dados manualmente.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">Nenhum arquivo será enviado à Dolayout. Nesta etapa, planilhas ainda não são importadas automaticamente.</p>`);
+  openModal(`<p class="modal-kicker">IMPORTAR DADOS</p><h2 id="modal-title">Traga o que você já anotou.</h2><p class="modal-lead">Pode ser uma planilha, uma nota ou uma folha do seu caderno. Confira tudo antes de adicionar aos seus registros.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Selecionar uma planilha</strong><small>Excel e CSV são lidos no seu aparelho, sem enviar o arquivo.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Fotografar uma página</strong><small>A foto fica como referência; preencha e confira os dados manualmente.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">A importação automática de fotos ainda não está ativa. Planilhas e CSV podem ser conferidos antes de salvar.</p>`);
   modalContent.querySelectorAll('[data-method]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.method === 'spreadsheet' ? '#spreadsheet-file' : '#paper-file').click()));
 }
 function openDataSettings() {
@@ -474,6 +475,204 @@ function eraseData() {
   closeModal();
   toast('Os dados deste aparelho foram apagados.');
 }
+function normalizeImportText(value) { return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, ' '); }
+function importCategory(label, type) {
+  const text = normalizeImportText(label);
+  if (type === 'income') return /freela|extra|providencia|renda 3|renda 4/.test(text) ? 'Renda extra' : 'Renda';
+  if (/mercado|supermercado|feira|acougue|padaria|alimentacao/.test(text)) return 'Mercado';
+  if (/saude|farmacia|tratamento|medic|hospital|dent/.test(text)) return 'Saúde';
+  if (/aluguel|condominio|moradia|casa/.test(text)) return 'Casa';
+  if (/carro|combustivel|pedagio|transporte|ipva/.test(text)) return 'Transporte';
+  if (/academia|salao|lazer|cinema|viagem/.test(text)) return 'Lazer';
+  if (/internet|energia|agua|seguro|mei|das|emprestimo|consorcio|cartao|bank|banco|acordo|assinatura|conta/.test(text)) return 'Contas';
+  return 'Outros';
+}
+function parseImportAmount(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  let text = String(value ?? '').trim().replace(/[R$\s]/g, '');
+  if (!text) return NaN;
+  if (text.includes(',') && text.lastIndexOf(',') > text.lastIndexOf('.')) text = text.replace(/\./g, '').replace(',', '.');
+  else text = text.replace(/,/g, '');
+  return Number(text);
+}
+function parseImportDate(value) {
+  if (value instanceof Date && !Number.isNaN(value.valueOf())) return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
+  if (typeof value === 'number' && window.XLSX?.SSF) {
+    const parts = XLSX.SSF.parse_date_code(value);
+    if (parts?.y && parts?.m && parts?.d) return `${parts.y}-${String(parts.m).padStart(2, '0')}-${String(parts.d).padStart(2, '0')}`;
+  }
+  const text = String(value ?? '').trim();
+  let match = text.match(/^(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{2,4})$/);
+  if (match) {
+    let year = Number(match[3]);
+    if (year < 100) year += year < 50 ? 2000 : 1900;
+    return `${year}-${String(Number(match[2])).padStart(2, '0')}-${String(Number(match[1])).padStart(2, '0')}`;
+  }
+  match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  return match ? `${match[1]}-${String(Number(match[2])).padStart(2, '0')}-${String(Number(match[3])).padStart(2, '0')}` : '';
+}
+async function importFingerprint(bytes) {
+  if (window.crypto?.subtle) {
+    const digest = new Uint8Array(await window.crypto.subtle.digest('SHA-256', bytes));
+    return Array.from(digest, (value) => value.toString(16).padStart(2, '0')).join('');
+  }
+  let hash = 2166136261;
+  for (let index = 0; index < bytes.length; index++) hash = Math.imul(hash ^ bytes[index], 16777619);
+  return `${(hash >>> 0).toString(16)}-${bytes.length}`;
+}
+function transactionFromRow({ name, amountValue, dateValue, typeValue, categoryValue, batchId, monthlyAggregate = false }) {
+  const amount = parseImportAmount(amountValue);
+  const date = parseImportDate(dateValue);
+  if (!name || !date || !Number.isFinite(amount) || amount === 0) return null;
+  const typeText = normalizeImportText(typeValue || categoryValue || name);
+  const type = /renda|receita|entrada|income|credito/.test(typeText) ? 'income' : /gasto|despesa|saida|expense|debito/.test(typeText) ? 'expense' : amount < 0 ? 'income' : 'expense';
+  return { id: `import-${batchId}-${Math.random().toString(36).slice(2, 8)}`, name: String(name).trim(), category: String(categoryValue || importCategory(name, type)).trim(), date, amount: Math.abs(amount), type, icon: type === 'income' ? '↙' : '•', importBatchId: batchId, monthlyAggregate };
+}
+const headerAliases = {
+  date: ['data', 'data do lancamento', 'date'],
+  name: ['descricao', 'nome', 'lancamento', 'estabelecimento', 'description'],
+  amount: ['valor', 'valor total', 'quantia', 'amount', 'total'],
+  type: ['tipo', 'tipo de lancamento', 'movimento', 'natureza'],
+  category: ['categoria', 'grupo', 'category'],
+};
+function tableRowsToTransactions(rows, batchId) {
+  const headerIndex = rows.slice(0, 25).findIndex((row) => {
+    const text = row.map(normalizeImportText);
+    return headerAliases.date.some((alias) => text.includes(alias)) && headerAliases.name.some((alias) => text.includes(alias)) && headerAliases.amount.some((alias) => text.includes(alias));
+  });
+  if (headerIndex < 0) return [];
+  const header = rows[headerIndex].map(normalizeImportText);
+  const column = (key) => header.findIndex((value) => headerAliases[key].includes(value));
+  const dateCol = column('date'), nameCol = column('name'), amountCol = column('amount'), typeCol = column('type'), categoryCol = column('category');
+  return rows.slice(headerIndex + 1).map((row, rowIndex) => transactionFromRow({
+    name: row[nameCol], amountValue: row[amountCol], dateValue: row[dateCol], typeValue: typeCol >= 0 ? row[typeCol] : '', categoryValue: categoryCol >= 0 ? row[categoryCol] : '', batchId: `${batchId}:${rowIndex}`,
+  })).filter(Boolean);
+}
+function monthlyMatrixRows(rows, sheetName, fingerprint) {
+  const sheetText = normalizeImportText(sheetName);
+  const year = Number(sheetText.match(/20\d{2}/)?.[0] || '');
+  if (!year) return [];
+  const labelColumn = (rows[0] || []).findIndex((_, columnIndex) => rows.some((row) => /^(saldo|despesas fixas|sobra quanto)/.test(normalizeImportText(row?.[columnIndex]))));
+  if (labelColumn < 0) return [];
+  const labelAt = (row) => normalizeImportText(row?.[labelColumn]);
+  const incomeEnd = rows.findIndex((row) => labelAt(row).startsWith('saldo'));
+  const expenseStart = rows.findIndex((row) => labelAt(row).startsWith('despesas fixas'));
+  const expenseEnd = rows.findIndex((row) => labelAt(row).startsWith('sobra quanto'));
+  if (incomeEnd < 0 || expenseStart <= incomeEnd || expenseEnd <= expenseStart) return [];
+  const monthHeaderRow = rows.findIndex((row) => row.slice(labelColumn + 1, labelColumn + 13).filter((value) => value instanceof Date || (typeof value === 'number' && value > 30000 && value < 60000)).length >= 8);
+  if (monthHeaderRow < 0) return [];
+  const result = [];
+  result.excludedFuture = 0;
+  rows.forEach((row, rowIndex) => {
+    const label = String(row?.[labelColumn] ?? '').trim();
+    const type = rowIndex > monthHeaderRow && rowIndex < incomeEnd ? 'income' : rowIndex > expenseStart && rowIndex < expenseEnd ? 'expense' : '';
+    if (!label || !type || /^(saldo|despesas fixas|sobra quanto)/i.test(normalizeImportText(label))) return;
+    for (let month = 0; month < 12; month++) {
+      const amount = parseImportAmount(row[month + labelColumn + 1]);
+      if (!Number.isFinite(amount) || amount <= 0) continue;
+      const date = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+      if (date.slice(0, 7) > monthKey(new Date())) { result.excludedFuture++; continue; }
+      const batchId = `${fingerprint}:${sheetText}:${rowIndex}:${month}`;
+      result.push({
+        id: `import-${batchId}-${rowIndex}-${month}`,
+        name: label,
+        category: importCategory(label, type),
+        date,
+        amount,
+        type,
+        icon: type === 'income' ? '↙' : '•',
+        importBatchId: batchId,
+        monthlyAggregate: true,
+      });
+    }
+  });
+  return result;
+}
+function parseCsvRows(text) {
+  const firstLine = text.split(/\r?\n/, 1)[0] || '';
+  const delimiter = [',', ';', '\t'].sort((a, b) => firstLine.split(b).length - firstLine.split(a).length)[0];
+  const rows = [];
+  let row = [], cell = '', quoted = false;
+  for (let index = 0; index < text.length; index++) {
+    const character = text[index];
+    if (character === '"' && quoted && text[index + 1] === '"') { cell += '"'; index++; }
+    else if (character === '"') quoted = !quoted;
+    else if (character === delimiter && !quoted) { row.push(cell); cell = ''; }
+    else if ((character === '\n' || character === '\r') && !quoted) {
+      if (character === '\r' && text[index + 1] === '\n') index++;
+      row.push(cell); rows.push(row); row = []; cell = '';
+    } else cell += character;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows.filter((values) => values.some((value) => String(value).trim()));
+}
+function summarizeImport(rows) {
+  const groups = new Map();
+  rows.forEach((item) => {
+    const key = item.date.slice(0, 4);
+    const group = groups.get(key) || { year: key, count: 0, income: 0, expense: 0 };
+    group.count++;
+    group[item.type] += item.amount;
+    groups.set(key, group);
+  });
+  return [...groups.values()].sort((a, b) => a.year.localeCompare(b.year));
+}
+function showSpreadsheetPreview(file, rows, alreadyImported = 0, excludedFuture = 0) {
+  const years = summarizeImport(rows);
+  const totalIncome = rows.filter((item) => item.type === 'income').reduce((sum, item) => sum + item.amount, 0);
+  const totalExpense = rows.filter((item) => item.type === 'expense').reduce((sum, item) => sum + item.amount, 0);
+  const importRows = rows.map((item) => `<div class="import-preview-row"><span class="import-preview-copy"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }))} · ${escapeHtml(item.category)} · ${item.type === 'income' ? 'Entrada' : 'Gasto'}</small></span><strong class="import-preview-amount ${item.type === 'income' ? 'in' : 'out'}">${item.type === 'income' ? '+' : '−'} ${money(item.amount)}</strong></div>`).join('');
+  const yearSummary = years.map((group) => `<div class="import-year-card"><strong>${escapeHtml(group.year)}</strong><span>${group.count} registros</span><small>Entradas ${money(group.income)} · Gastos ${money(group.expense)}</small></div>`).join('');
+  const duplicateNote = alreadyImported ? `<div class="review-note">${alreadyImported} registros de uma planilha já importada foram identificados e ficaram de fora para evitar duplicação.</div>` : '';
+  const futureNote = excludedFuture ? `<div class="review-note">${excludedFuture} valores de meses futuros ficaram de fora para não aparecerem como movimentações já realizadas. Você pode importar esses meses quando chegarem.</div>` : '';
+  const noRows = !rows.length;
+  const noRowsTitle = alreadyImported ? 'Esta planilha já foi importada' : excludedFuture ? 'Só encontrei valores de meses futuros' : 'Não encontrei lançamentos';
+  const noRowsMessage = alreadyImported
+    ? `${alreadyImported} lançamentos já estão neste aparelho. Eles ficaram de fora para não duplicar seus registros.${excludedFuture ? ` ${excludedFuture} valores futuros também foram deixados de fora.` : ''}`
+    : excludedFuture
+      ? `${excludedFuture} valores são de meses futuros e foram deixados de fora para não aparecerem como movimentações realizadas. Tente novamente quando esses meses chegarem.`
+      : 'Não encontrei uma tabela de lançamentos reconhecível. Use colunas como Data, Descrição e Valor, ou uma planilha mensal com receitas antes de “Saldo” e gastos entre “Despesas fixas” e “Sobra Quanto?”.';
+  openModal(`<p class="modal-kicker">REVISÃO DA PLANILHA</p><h2 id="modal-title">${noRows ? noRowsTitle : 'Confira antes de importar.'}</h2><p class="modal-lead">${escapeHtml(file.name)} · lida neste aparelho. O arquivo não foi enviado à Dolayout.</p>${noRows ? `<div class="review-note">${escapeHtml(noRowsMessage)}</div>` : `<div class="import-summary"><strong>${rows.length} lançamentos prontos para revisão</strong><span>${money(totalIncome)} em entradas · ${money(totalExpense)} em gastos</span></div><div class="import-years">${yearSummary}</div><div class="review-note">Planilhas mensais entram como valores consolidados por categoria e mês, sem detalhes de compras individuais. Categorias são sugestões automáticas; você poderá ajustar os lançamentos depois.</div>${futureNote}${duplicateNote}<div class="import-preview" role="region" aria-label="Prévia de todos os lançamentos que serão importados" tabindex="0"><div class="import-preview-head"><span>Descrição · mês · categoria</span><span>Valor</span></div>${importRows}</div>`}<div class="modal-actions"><button class="secondary-button" id="file-cancel">${noRows ? 'Fechar' : 'Voltar'}</button>${noRows ? '' : `<button class="primary-button small" id="confirm-import">Importar ${rows.length} lançamentos</button>`}</div>`);
+  modalContent.querySelector('#file-cancel').addEventListener('click', closeModal);
+  if (!noRows) modalContent.querySelector('#confirm-import').addEventListener('click', () => {
+    transactions.push(...rows);
+    const mostRecent = rows.map((item) => item.date).sort().at(-1);
+    save();
+    if (mostRecent) document.querySelector('#month-select').value = mostRecent.slice(0, 7);
+    refresh(); closeModal(); toast(`${rows.length} lançamentos importados. Confira o resumo e ajuste as categorias quando precisar.`);
+  });
+}
+async function processSpreadsheet(file) {
+  const extension = file.name.split('.').pop().toLowerCase();
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const fingerprint = await importFingerprint(bytes);
+  let parsed = [];
+  let excludedFuture = 0;
+  if (extension === 'csv') {
+    const text = new TextDecoder('utf-8').decode(bytes).replace(/^\uFEFF/, '');
+    parsed = tableRowsToTransactions(parseCsvRows(text), `csv:${fingerprint}`);
+  } else if (window.XLSX) {
+    const workbook = XLSX.read(bytes, { cellDates: true, dense: true });
+    workbook.SheetNames.forEach((sheetName) => {
+      const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, raw: true, defval: null });
+      const sheetBatch = `${fingerprint}:${normalizeImportText(sheetName)}`;
+      const tableRows = tableRowsToTransactions(rows, sheetBatch);
+      if (tableRows.length) parsed.push(...tableRows);
+      else {
+        const matrixRows = monthlyMatrixRows(rows, sheetName, fingerprint);
+        excludedFuture += matrixRows.excludedFuture || 0;
+        parsed.push(...matrixRows);
+      }
+    });
+  }
+  const importedBatches = new Set(transactions.map((item) => item.importBatchId).filter(Boolean));
+  const newRows = parsed.filter((item) => !importedBatches.has(item.importBatchId));
+  showSpreadsheetPreview(file, newRows, parsed.length - newRows.length, excludedFuture);
+}
+function showFileError(file, message) {
+  openModal(`<p class="modal-kicker">REVISÃO DA PLANILHA</p><h2 id="modal-title">Não consegui ler o arquivo.</h2><p class="modal-lead">${escapeHtml(file.name)} continua apenas no seu aparelho.</p><div class="review-note">${escapeHtml(message)}</div><div class="modal-actions"><button class="primary-button small" id="file-cancel">Fechar</button></div>`);
+  modalContent.querySelector('#file-cancel').addEventListener('click', closeModal);
+}
 function showFileReview(file, kind) {
   closeModal();
   if (kind === 'paper' || kind === 'receipt') {
@@ -484,15 +683,12 @@ function showFileReview(file, kind) {
       event.preventDefault();
       const amount = Number(modalContent.querySelector('#review-amount').value);
       transactions.push({ id: Date.now(), name: modalContent.querySelector('#review-name').value, category: modalContent.querySelector('#review-category').value, date: modalContent.querySelector('#review-date').value, amount, type: 'expense', icon: '▧' });
-      save(); refresh(); closeModal(); toast('Rascunho adicionado. Você pode editar em Lançamentos.');
+      save(); refresh(); closeModal(); toast('Lançamento salvo.');
     });
     return;
   }
-  const isCsv = file.name.toLowerCase().endsWith('.csv');
-  openModal(`<p class="modal-kicker">REVISÃO DA PLANILHA</p><h2 id="modal-title">Arquivo recebido.</h2><p class="modal-lead">${escapeHtml(file.name)} foi selecionado. Seus dados não foram enviados para a Dolayout.</p><div class="review-note">A importação automática de Excel e CSV ainda não está ativa. Nenhum dado desse arquivo foi adicionado ao app.</div>${isCsv ? '<div class="field"><label for="csv-preview">Prévia do arquivo CSV</label><textarea id="csv-preview" rows="5" readonly></textarea></div>' : ''}<div class="modal-actions"><button class="secondary-button" id="file-cancel">Fechar</button><button class="primary-button small" id="demo-import">Entendi</button></div>`);
-  if (isCsv) file.text().then((text) => { const preview = modalContent.querySelector('#csv-preview'); if (preview) preview.value = text.split(/\r?\n/).slice(0,6).join('\n'); });
-  modalContent.querySelector('#file-cancel').addEventListener('click', closeModal);
-  modalContent.querySelector('#demo-import').addEventListener('click', closeModal);
+  openModal(`<p class="modal-kicker">IMPORTAÇÃO LOCAL</p><h2 id="modal-title">Lendo sua planilha…</h2><p class="modal-lead">${escapeHtml(file.name)} está sendo processada neste aparelho.</p><div class="review-note">O arquivo e os dados não são enviados à Dolayout. Nada será salvo antes da sua confirmação.</div>`);
+  processSpreadsheet(file).catch((error) => showFileError(file, error.message || 'Verifique se o arquivo está em formato Excel ou CSV.'));
 }
 function openTransactionForm(defaultType = 'expense') {
   openModal(`<p class="modal-kicker">NOVO LANÇAMENTO</p><h2 id="modal-title">Anote em poucos passos.</h2><p class="modal-lead">Não precisa preencher tudo. Uma descrição, um valor e uma data já ajudam.</p><form id="transaction-form"><div class="field"><label for="tx-type">Tipo</label><select id="tx-type"><option value="expense" ${defaultType === 'expense' ? 'selected' : ''}>Gasto</option><option value="income" ${defaultType === 'income' ? 'selected' : ''}>Receita</option></select></div><div class="field"><label for="tx-name">Descrição</label><input id="tx-name" placeholder="Ex.: Conta de luz" required></div><div class="review-fields"><div class="field"><label for="tx-amount">Valor</label><input id="tx-amount" type="number" step="0.01" min="0" placeholder="0,00" required></div><div class="field"><label for="tx-date">Data</label><input id="tx-date" type="date" value="${new Date().toISOString().slice(0,10)}" required></div><div class="field full"><label for="tx-category">Categoria</label><select id="tx-category"></select></div></div><div class="modal-actions"><button type="button" class="secondary-button" id="tx-cancel">Cancelar</button><button class="primary-button small" type="submit">Salvar lançamento</button></div></form>`);
