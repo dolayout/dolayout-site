@@ -215,3 +215,50 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--site-accent); o
   .modal-actions:not(.privacy-actions) { align-items: stretch; flex-direction: column-reverse; }
   .modal-actions:not(.privacy-actions) button { width: 100%; }
 }
+
+/* Larger reading sizes across the dashboard and every capture/import dialog. */
+body { font-size: 15px; line-height: 1.5; }
+p, label, input, select, textarea { font-size: 14px !important; line-height: 1.5; }
+small, .nav-caption, .eyebrow, .modal-kicker, .demo-pill, .month-select-wrap,
+.profile-copy strong, .profile-copy small, .card-foot, .progress-labels,
+.panel-header p, .legend, .y-labels, .bar-group small, .donut-center span,
+.category-legend > div, .category-legend strong, .transaction-main small,
+.transaction-category, .category-card p, .category-card-foot span,
+.modal-footnote, .review-note, .choice-copy small, .empty-state {
+  font-size: 12px !important;
+  line-height: 1.5;
+}
+.nav-item, .theme-toggle, .period-button, .more-button, .primary-button,
+.secondary-button, .panel-link, .text-button, .file-button,
+.help-card button, .tip-copy button, .toast { font-size: 13px !important; }
+.nav-count, .import-summary span, .import-year-card span, .import-year-card small,
+.import-preview-head, .import-preview-copy strong, .import-preview-copy small,
+.import-preview-amount, .privacy-backup-meta, .drive-kicker, .drive-description,
+.drive-privacy, .drive-sync-meta, .drive-status, .drive-conflict-list > div {
+  font-size: 12px !important;
+}
+.page-intro h1 { font-size: clamp(28px, 3vw, 32px); }
+.modal h2 { font-size: clamp(21px, 5vw, 25px); }
+.ocr-photo { display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr); align-items: center; gap: 12px; }
+.ocr-photo .photo-preview { max-height: 150px; margin: 0 auto; }
+.ocr-row { position: relative; min-width: 0; margin: 12px 0; padding: 12px; border: 1px solid var(--site-line); border-radius: 12px; background: var(--site-surface-2); }
+.ocr-row legend { padding: 0 6px; color: var(--site-accent); font-size: 13px; font-weight: 700; }
+.ocr-remove { position: absolute; top: 7px; right: 8px; width: 32px; height: 32px; border: 1px solid var(--site-line); border-radius: 50%; background: var(--site-surface); color: var(--site-muted); font-size: 20px; }
+.ocr-row-fields { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(110px, .7fr) minmax(135px, .9fr); gap: 0 10px; padding-top: 7px; }
+.ocr-row-fields .field { min-width: 0; }
+.ocr-row-fields .field:last-child { grid-column: 1 / -1; }
+.ocr-add { margin-top: 2px; }
+.ocr-text { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--site-line); border-radius: 9px; color: var(--site-muted); }
+.ocr-text summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+.ocr-text pre { max-height: 180px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.5 ui-monospace, monospace; }
+.ocr-status { margin: 8px 0; color: var(--site-text); font-weight: 600; }
+#ocr-progress { width: 100%; height: 9px; accent-color: var(--site-accent); }
+@media (max-width: 620px) {
+  .mobile-nav button { font-size: 10px !important; }
+  .mobile-nav button span { font-size: 20px; }
+  .page-intro h1 { font-size: 28px; }
+  .ocr-photo { grid-template-columns: 1fr; }
+  .ocr-photo .photo-preview { max-height: 130px; }
+  .ocr-row-fields { grid-template-columns: 1fr 1fr; gap: 0 9px; }
+  .ocr-row-fields .field:first-child, .ocr-row-fields .field:last-child { grid-column: 1 / -1; }
+}

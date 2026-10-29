@@ -19,6 +19,8 @@ const driveSession = { accessToken: null, fileId: null, syncTimer: null, syncing
 let transactions = JSON.parse(localStorage.getItem('dindin.transactions') || '[]');
 let categories = JSON.parse(localStorage.getItem('dindin.categories') || 'null') || defaultCategories;
 let photoUrl = '';
+let ocrWorkerPromise = null;
+let photoRowCounter = 0;
 const backdrop = document.querySelector('#modal-backdrop');
 const modalContent = document.querySelector('#modal-content');
 
@@ -184,17 +186,18 @@ function renderCategories() {
 function refresh() { setupMonthSelect(); renderTotals(); renderRecent(); renderTransactions(); renderCharts(); if (document.querySelector('#view-categories').classList.contains('active')) renderCategories(); }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, (char) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[char])); }
 function openOnboarding() {
-  openModal(`<p class="modal-kicker">UM COMEÇO LEVE</p><h2 id="modal-title">Como prefere começar?</h2><p class="modal-lead">Escolha o jeito mais fácil para você. Antes de salvar, vamos mostrar tudo para conferir.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Tenho uma planilha</strong><small>Importe Excel ou CSV e confira os lançamentos antes de salvar.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Anoto no papel</strong><small>Fotografe para usar como referência e revise os dados manualmente.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="blank"><span class="choice-icon">${iconMarkup('plus')}</span><span class="choice-copy"><strong>Quero começar do zero</strong><small>Adicione seu primeiro gasto ou sua primeira receita.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">Os lançamentos ficam neste aparelho. Planilhas são lidas aqui mesmo e só entram nos registros depois da sua confirmação.</p>`);
+  openModal(`<p class="modal-kicker">UM COMEÇO LEVE</p><h2 id="modal-title">Como prefere começar?</h2><p class="modal-lead">Escolha o jeito mais fácil para você. Antes de salvar, vamos mostrar tudo para conferir.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Tenho uma planilha</strong><small>Importe Excel ou CSV e confira os lançamentos antes de salvar.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="receipt"><span class="choice-icon">${iconMarkup('receipt')}</span><span class="choice-copy"><strong>Tenho uma nota ou recibo</strong><small>Fotografe e confira valor, data e categoria sugeridos.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Anoto no papel</strong><small>Fotografe a página para tentar reconhecer cada anotação.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="blank"><span class="choice-icon">${iconMarkup('plus')}</span><span class="choice-copy"><strong>Quero começar do zero</strong><small>Adicione seu primeiro gasto ou sua primeira receita.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">Os lançamentos ficam neste aparelho. Planilhas e fotos são lidas localmente; confira tudo antes de salvar.</p>`);
   modalContent.querySelectorAll('[data-method]').forEach((button) => button.addEventListener('click', () => {
     const method = button.dataset.method;
     if (method === 'spreadsheet') document.querySelector('#spreadsheet-file').click();
     if (method === 'paper') document.querySelector('#paper-file').click();
+    if (method === 'receipt') document.querySelector('#receipt-file').click();
     if (method === 'blank') { closeModal(); openTransactionForm(); }
   }));
 }
 function openImport() {
-  openModal(`<p class="modal-kicker">IMPORTAR DADOS</p><h2 id="modal-title">Traga o que você já anotou.</h2><p class="modal-lead">Pode ser uma planilha, uma nota ou uma folha do seu caderno. Confira tudo antes de adicionar aos seus registros.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Selecionar uma planilha</strong><small>Excel e CSV são lidos no seu aparelho, sem enviar o arquivo.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Fotografar uma página</strong><small>A foto fica como referência; preencha e confira os dados manualmente.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">A importação automática de fotos ainda não está ativa. Planilhas e CSV podem ser conferidos antes de salvar.</p>`);
-  modalContent.querySelectorAll('[data-method]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.method === 'spreadsheet' ? '#spreadsheet-file' : '#paper-file').click()));
+  openModal(`<p class="modal-kicker">IMPORTAR DADOS</p><h2 id="modal-title">Traga o que você já anotou.</h2><p class="modal-lead">Pode ser uma planilha, uma nota ou uma folha do seu caderno. Confira tudo antes de adicionar aos seus registros.</p><div class="choice-grid"><button class="choice-card" data-method="spreadsheet"><span class="choice-icon">${iconMarkup('sheet')}</span><span class="choice-copy"><strong>Selecionar uma planilha</strong><small>Excel e CSV são lidos neste aparelho, sem enviar o arquivo.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="receipt"><span class="choice-icon">${iconMarkup('receipt')}</span><span class="choice-copy"><strong>Fotografar nota ou recibo</strong><small>O app tenta encontrar estabelecimento, valor e data.</small></span><span class="choice-arrow">→</span></button><button class="choice-card" data-method="paper"><span class="choice-icon">${iconMarkup('paper')}</span><span class="choice-copy"><strong>Fotografar anotações no papel</strong><small>O app tenta separar os valores anotados na página.</small></span><span class="choice-arrow">→</span></button></div><p class="modal-footnote">A foto e os dados reconhecidos ficam neste aparelho. Nada será salvo antes de você revisar e confirmar.</p>`);
+  modalContent.querySelectorAll('[data-method]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.method === 'spreadsheet' ? '#spreadsheet-file' : button.dataset.method === 'receipt' ? '#receipt-file' : '#paper-file').click()));
 }
 function openDataSettings() {
   const count = transactions.length;
@@ -642,6 +645,135 @@ function showSpreadsheetPreview(file, rows, alreadyImported = 0, excludedFuture 
     refresh(); closeModal(); toast(`${rows.length} lançamentos importados. Confira o resumo e ajuste as categorias quando precisar.`);
   });
 }
+function currentIsoDate() { return new Date().toISOString().slice(0, 10); }
+function createOcrWorker() {
+  if (ocrWorkerPromise) return ocrWorkerPromise;
+  if (!window.Tesseract?.createWorker) throw new Error('O leitor de fotos não carregou. Atualize o Dindin e tente novamente.');
+  const localUrl = (path) => new URL(path, window.location.href).href;
+  ocrWorkerPromise = window.Tesseract.createWorker('por', 1, {
+    workerPath: localUrl('./vendor/ocr/worker.min.js'),
+    corePath: localUrl('./vendor/ocr/core/'),
+    langPath: localUrl('./vendor/ocr/lang'),
+    cachePath: 'dindin-ocr-por-v1',
+    workerBlobURL: false,
+    logger: (event) => {
+      const status = document.querySelector('#ocr-status');
+      const progress = document.querySelector('#ocr-progress');
+      if (!status || backdrop.hidden) return;
+      const labels = { loadLanguage: 'Carregando português…', initialize: 'Preparando a leitura…', recognize: 'Lendo a foto…' };
+      status.textContent = labels[event.status] || 'Preparando o reconhecimento…';
+      if (progress && Number.isFinite(event.progress)) progress.value = Math.round(event.progress * 100);
+    },
+  });
+  ocrWorkerPromise.catch(() => { ocrWorkerPromise = null; });
+  return ocrWorkerPromise;
+}
+function imageCanvas(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.min(1, 2200 / Math.max(image.naturalWidth, image.naturalHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      context.filter = 'grayscale(1) contrast(1.12)';
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(image.src);
+      resolve(canvas);
+    };
+    image.onerror = () => { URL.revokeObjectURL(image.src); reject(new Error('Não consegui abrir essa imagem. Tente outra foto.')); };
+    image.src = URL.createObjectURL(file);
+  });
+}
+function ocrDate(text) {
+  const match = String(text).match(/\b\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4}\b/);
+  if (!match) return currentIsoDate();
+  const date = parseImportDate(match[0]);
+  if (!date) return currentIsoDate();
+  const year = Number(date.slice(0, 4));
+  return year >= 1990 && year <= new Date().getFullYear() + 1 ? date : currentIsoDate();
+}
+function ocrMoneyValues(line) {
+  const matches = String(line).match(/(?:R\$\s*)?(?:\d{1,3}(?:[. ]\d{3})+|\d+)(?:[,.]\d{2})/gi) || [];
+  return matches.map((value) => parseImportAmount(value.replace(/\s/g, ''))).filter((value) => Number.isFinite(value) && value > 0 && value < 100000000);
+}
+function parsePhotoCandidates(text, kind) {
+  const lines = String(text).split(/\r?\n/).map((line) => line.trim().replace(/\s{2,}/g, ' ')).filter(Boolean);
+  const date = ocrDate(text);
+  if (kind === 'receipt') {
+    const totalLine = lines.find((line) => /total|a pagar|valor pago|valor final/i.test(normalizeImportText(line)) && ocrMoneyValues(line).length);
+    const amount = totalLine ? ocrMoneyValues(totalLine).at(-1) : Math.max(0, ...lines.flatMap(ocrMoneyValues));
+    const merchant = lines.find((line) => /[A-Za-zÀ-ÿ]{3}/.test(line) && !/cnpj|cpf|inscri|documento|consumidor|cupom|fiscal|endereco|telefone|operador|venda|caixa|data|hora/i.test(normalizeImportText(line))) || 'Compra no mercado';
+    return [{ name: merchant.slice(0, 70), amount: amount || '', date, category: importCategory(`${merchant} ${text.slice(0, 500)}`, 'expense'), type: 'expense' }];
+  }
+  const amountPattern = /(?:R\$\s*)?(?:\d{1,3}(?:[. ]\d{3})+|\d+)(?:[,.]\d{2})/i;
+  const ignored = /^(total|subtotal|saldo|sobra|troco|valor|despesas|receitas|anotacoes|observacoes)\b/i;
+  const candidates = [];
+  lines.forEach((line) => {
+    if (ignored.test(normalizeImportText(line))) return;
+    const amountMatch = line.match(amountPattern);
+    if (!amountMatch) return;
+    const amount = parseImportAmount(amountMatch[0].replace(/\s/g, ''));
+    if (!Number.isFinite(amount) || amount <= 0 || amount >= 100000000) return;
+    const label = line.replace(amountMatch[0], ' ').replace(/\b\d{1,2}[/.\-]\d{1,2}[/.\-]\d{2,4}\b/g, ' ').replace(/[|•·:;\-]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (label.length < 2 || !/[A-Za-zÀ-ÿ]/.test(label)) return;
+    const type = /salario|recebi|recebido|renda|freela|entrada/.test(normalizeImportText(label)) ? 'income' : 'expense';
+    candidates.push({ name: label.slice(0, 70), amount, date: ocrDate(line) || date, category: importCategory(label, type), type });
+  });
+  const unique = new Map();
+  candidates.forEach((item) => unique.set(`${normalizeImportText(item.name)}|${item.amount}|${item.date}`, item));
+  return [...unique.values()].slice(0, 30);
+}
+function photoCandidateMarkup(item = {}, index = 0) {
+  const rowKey = `photo-entry-${++photoRowCounter}`;
+  const expenseCategories = categories.filter((category) => !category.toLowerCase().includes('renda'));
+  const options = [...new Set([...expenseCategories, ...(item.category && !expenseCategories.includes(item.category) ? [item.category] : [])])];
+  return `<fieldset class="ocr-row" data-ocr-row><legend>Anotação ${index + 1}</legend><button class="ocr-remove" type="button" data-remove-ocr aria-label="Remover anotação ${index + 1}">×</button><div class="ocr-row-fields"><div class="field"><label for="${rowKey}-name">O que foi?</label><input id="${rowKey}-name" name="name" value="${escapeHtml(item.name || '')}" placeholder="Ex.: Mercado" required></div><div class="field"><label for="${rowKey}-amount">Valor (R$)</label><input id="${rowKey}-amount" name="amount" type="number" min="0.01" step="0.01" value="${item.amount || ''}" placeholder="0,00" required></div><div class="field"><label for="${rowKey}-date">Data</label><input id="${rowKey}-date" name="date" type="date" value="${item.date || currentIsoDate()}" required></div><div class="field"><label for="${rowKey}-type">Tipo</label><select id="${rowKey}-type" name="type"><option value="expense" ${item.type !== 'income' ? 'selected' : ''}>Gasto</option><option value="income" ${item.type === 'income' ? 'selected' : ''}>Entrada</option></select></div><div class="field"><label for="${rowKey}-category">Categoria</label><select id="${rowKey}-category" name="category">${options.map((category) => `<option ${category === (item.category || 'Outros') ? 'selected' : ''}>${escapeHtml(category)}</option>`).join('')}</select></div></div></fieldset>`;
+}
+function showPhotoCandidates(file, kind, text, confidence, candidates, warning = '') {
+  const label = kind === 'receipt' ? 'nota ou recibo' : 'anotações';
+  const confidenceLabel = Number.isFinite(confidence) ? ` · leitura ${Math.round(confidence)}%` : '';
+  const initialRows = candidates.length ? candidates : [{ name: '', amount: '', date: currentIsoDate(), category: 'Outros', type: 'expense' }];
+  const htmlRows = initialRows.map(photoCandidateMarkup).join('');
+  openModal(`<p class="modal-kicker">REVISÃO DA FOTO</p><h2 id="modal-title">Confira o que encontramos.</h2><p class="modal-lead">${escapeHtml(file.name)} · imagem lida neste aparelho${confidenceLabel}.</p><div class="ocr-photo"><img class="photo-preview" src="${photoUrl}" alt="Prévia da foto"><div class="review-note">${warning ? `${escapeHtml(warning)} ` : ''}O reconhecimento pode errar, principalmente em escrita à mão. Confira cada campo. A foto não foi enviada à Dolayout.</div></div><form id="photo-form"><div id="ocr-rows">${htmlRows}</div><button class="secondary-button ocr-add" id="add-ocr-row" type="button">＋ Adicionar anotação</button><p class="modal-footnote">${candidates.length ? `${candidates.length} ${candidates.length === 1 ? 'lançamento sugerido' : 'lançamentos sugeridos'} a partir da foto de ${label}.` : 'Não consegui reconhecer os dados com segurança. Você pode preencher os campos abaixo.'}</p><details class="ocr-text"><summary>Ver texto reconhecido</summary><pre>${escapeHtml(text || 'Nenhum texto reconhecido.')}</pre></details><div class="modal-actions"><button type="button" class="secondary-button" id="review-cancel">Voltar</button><button class="primary-button small" type="submit">Salvar lançamentos</button></div></form>`);
+  const rows = modalContent.querySelector('#ocr-rows');
+  modalContent.querySelector('#add-ocr-row').addEventListener('click', () => rows.insertAdjacentHTML('beforeend', photoCandidateMarkup({ date: currentIsoDate(), category: 'Outros', type: 'expense' }, rows.children.length)));
+  modalContent.querySelectorAll('[data-remove-ocr]').forEach((button) => button.addEventListener('click', () => {
+    if (rows.children.length === 1) { rows.querySelectorAll('input').forEach((input) => { input.value = input.name === 'date' ? currentIsoDate() : ''; }); return; }
+    button.closest('[data-ocr-row]').remove();
+  }));
+  modalContent.querySelector('#review-cancel').addEventListener('click', openImport);
+  modalContent.querySelector('#photo-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const entries = [...rows.querySelectorAll('[data-ocr-row]')].map((row) => ({
+      name: row.querySelector('[name="name"]').value.trim(),
+      amount: Number(row.querySelector('[name="amount"]').value),
+      date: row.querySelector('[name="date"]').value,
+      type: row.querySelector('[name="type"]').value,
+      category: row.querySelector('[name="category"]').value,
+    })).filter((item) => item.name && item.date && Number.isFinite(item.amount) && item.amount > 0);
+    if (!entries.length) { toast('Preencha ao menos uma anotação antes de salvar.'); return; }
+    transactions.push(...entries.map((item) => ({ ...item, id: `photo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, icon: item.type === 'income' ? '↙' : '•' })));
+    save(); refresh(); closeModal(); toast(`${entries.length} ${entries.length === 1 ? 'lançamento salvo' : 'lançamentos salvos'}.`);
+  });
+}
+async function reviewPhoto(file, kind) {
+  const activePhotoUrl = photoUrl;
+  openModal(`<p class="modal-kicker">LEITURA NO APARELHO</p><h2 id="modal-title">Preparando a foto…</h2><p class="modal-lead">A primeira leitura pode demorar alguns segundos enquanto o leitor de português é preparado.</p><img class="photo-preview" src="${photoUrl}" alt="Prévia da foto"><progress id="ocr-progress" max="100" value="0"></progress><p class="ocr-status" id="ocr-status" role="status" aria-live="polite">Carregando o leitor. A imagem não sai deste aparelho.</p><div class="review-note">O reconhecimento roda no celular/computador. Nenhuma foto ou lançamento é enviado à Dolayout.</div>`);
+  try {
+    const worker = await createOcrWorker();
+    const canvas = await imageCanvas(file);
+    if (photoUrl !== activePhotoUrl || backdrop.hidden) return;
+    const result = await worker.recognize(canvas);
+    if (photoUrl !== activePhotoUrl || backdrop.hidden) return;
+    const text = result.data?.text || '';
+    showPhotoCandidates(file, kind, text, result.data?.confidence, parsePhotoCandidates(text, kind));
+  } catch (error) {
+    if (photoUrl !== activePhotoUrl || backdrop.hidden) return;
+    showPhotoCandidates(file, kind, '', NaN, [], `Não consegui ler automaticamente (${error.message || 'leitura indisponível'}).`);
+  }
+}
 async function processSpreadsheet(file) {
   const extension = file.name.split('.').pop().toLowerCase();
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -651,7 +783,9 @@ async function processSpreadsheet(file) {
   if (extension === 'csv') {
     const text = new TextDecoder('utf-8').decode(bytes).replace(/^\uFEFF/, '');
     parsed = tableRowsToTransactions(parseCsvRows(text), `csv:${fingerprint}`);
-  } else if (window.XLSX) {
+  } else if (!window.XLSX?.read) {
+    throw new Error('O leitor de Excel não carregou. Atualize o Dindin; sua planilha não foi enviada nem alterada.');
+  } else {
     const workbook = XLSX.read(bytes, { cellDates: true, dense: true });
     workbook.SheetNames.forEach((sheetName) => {
       const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, raw: true, defval: null });
@@ -677,14 +811,7 @@ function showFileReview(file, kind) {
   closeModal();
   if (kind === 'paper' || kind === 'receipt') {
     photoUrl = URL.createObjectURL(file);
-    openModal(`<p class="modal-kicker">REVISÃO DA FOTO</p><h2 id="modal-title">Vamos registrar com calma.</h2><p class="modal-lead">A imagem fica no aparelho e serve como referência. Nesta versão, preencha os dados manualmente antes de salvar.</p><img class="photo-preview" src="${photoUrl}" alt="Prévia da imagem selecionada"><div class="review-note">O reconhecimento automático da nota ou da escrita à mão ainda não está ativo. Confira data, valor e categoria antes de salvar.</div><form id="review-form"><div class="review-fields"><div class="field"><label for="review-date">Data</label><input id="review-date" type="date" value="${new Date().toISOString().slice(0,10)}" required></div><div class="field"><label for="review-amount">Valor total</label><input id="review-amount" type="number" min="0" step="0.01" placeholder="0,00" required></div><div class="field full"><label for="review-name">O que foi?</label><input id="review-name" placeholder="Ex.: Mercado da semana" required></div><div class="field full"><label for="review-category">Categoria</label><select id="review-category">${categories.filter((c) => c !== 'Renda' && c !== 'Renda extra').map((c) => `<option>${escapeHtml(c)}</option>`).join('')}</select></div></div><div class="modal-actions"><button type="button" class="secondary-button" id="review-cancel">Voltar</button><button class="primary-button small" type="submit">Salvar lançamento</button></div></form>`);
-    modalContent.querySelector('#review-cancel').addEventListener('click', openImport);
-    modalContent.querySelector('#review-form').addEventListener('submit', (event) => {
-      event.preventDefault();
-      const amount = Number(modalContent.querySelector('#review-amount').value);
-      transactions.push({ id: Date.now(), name: modalContent.querySelector('#review-name').value, category: modalContent.querySelector('#review-category').value, date: modalContent.querySelector('#review-date').value, amount, type: 'expense', icon: '▧' });
-      save(); refresh(); closeModal(); toast('Lançamento salvo.');
-    });
+    reviewPhoto(file, kind);
     return;
   }
   openModal(`<p class="modal-kicker">IMPORTAÇÃO LOCAL</p><h2 id="modal-title">Lendo sua planilha…</h2><p class="modal-lead">${escapeHtml(file.name)} está sendo processada neste aparelho.</p><div class="review-note">O arquivo e os dados não são enviados à Dolayout. Nada será salvo antes da sua confirmação.</div>`);
