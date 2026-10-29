@@ -19,6 +19,9 @@ const GOOGLE_DRIVE_BACKUP_QUERY = "appProperties has { key='dindinBackup' and va
 const driveSession = { accessToken: null, fileId: null, syncTimer: null, syncing: false, queued: false };
 let transactions = JSON.parse(localStorage.getItem('dindin.transactions') || '[]');
 let categories = JSON.parse(localStorage.getItem('dindin.categories') || 'null') || defaultCategories;
+let sharedDriveFiles = JSON.parse(localStorage.getItem('dindin.sharedDriveFiles') || '[]');
+let sharedTransactions = JSON.parse(localStorage.getItem('dindin.sharedTransactions') || '[]');
+let pickerConfigPromise = null;
 let photoUrl = '';
 let ocrWorkerPromise = null;
 let photoRowCounter = 0;
@@ -30,6 +33,8 @@ function save(syncDrive = true) {
   localStorage.setItem('dindin.categories', JSON.stringify(categories));
   if (syncDrive) scheduleDriveBackup();
 }
+function allTransactions() { return [...transactions, ...sharedTransactions]; }
+function allCategories() { return [...new Set([...categories, ...sharedTransactions.map((item) => item.category).filter(Boolean)])]; }
 function money(value) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
@@ -68,11 +73,11 @@ function navigate(view) {
 }
 function monthKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; }
 function selectedMonth() { return document.querySelector('#month-select').value || monthKey(new Date()); }
-function monthTransactions(key = selectedMonth()) { return transactions.filter((item) => item.date.startsWith(key)); }
+function monthTransactions(key = selectedMonth()) { return allTransactions().filter((item) => item.date.startsWith(key)); }
 function setupMonthSelect() {
   const select = document.querySelector('#month-select');
   const current = new Date();
-  const dates = transactions.map((item) => new Date(`${item.date}T12:00:00`)).filter((date) => !Number.isNaN(date.valueOf()));
+  const dates = allTransactions().map((item) => new Date(`${item.date}T12:00:00`)).filter((date) => !Number.isNaN(date.valueOf()));
   const earliest = dates.length ? new Date(Math.min(...dates.map((date) => new Date(date.getFullYear(), date.getMonth(), 1).valueOf()))) : new Date(current.getFullYear(), current.getMonth() - 11, 1);
   const start = earliest < new Date(current.getFullYear(), current.getMonth() - 11, 1) ? earliest : new Date(current.getFullYear(), current.getMonth() - 11, 1);
   const months = [];
@@ -98,21 +103,22 @@ function renderTotals() {
   const expenseCount = currentRows.filter((item) => item.type === 'expense').length;
   document.querySelector('#income-count').textContent = `${incomeCount} ${incomeCount === 1 ? 'entrada' : 'entradas'} no período`;
   document.querySelector('#expense-count').textContent = `${expenseCount} ${expenseCount === 1 ? 'gasto' : 'gastos'} no período`;
-  document.querySelector('#nav-count').textContent = transactions.length;
+  document.querySelector('#nav-count').textContent = allTransactions().length;
   const spentPercent = totalsNow.income > 0 ? Math.min(100, totalsNow.expense / totalsNow.income * 100) : 0;
   document.querySelector('#income-progress').style.width = `${spentPercent}%`;
   document.querySelector('#spent-label').textContent = totalsNow.income > 0 ? `${Math.round(spentPercent)}% das entradas usadas` : totalsNow.expense > 0 ? 'Ainda sem entradas no período' : 'Ainda sem movimentação';
   document.querySelector('#remaining-label').textContent = totalsNow.income > 0 ? `${Math.max(0, 100 - Math.round(spentPercent))}% restante` : '';
-  document.querySelector('.demo-pill').innerHTML = `<span></span> ${transactions.length ? 'Salvo neste dispositivo' : 'Comece por aqui'}`;
+  document.querySelector('.demo-pill').innerHTML = `<span></span> ${sharedTransactions.length ? 'Visão compartilhada' : transactions.length ? 'Salvo neste dispositivo' : 'Comece por aqui'}`;
 }
 function transactionMarkup(item) {
   const iconClass = item.category.toLowerCase().includes('mercado') ? 'food' : item.category.toLowerCase().includes('saúde') ? 'care' : item.category.toLowerCase().includes('casa') ? 'home' : '';
   const iconName = item.type === 'income' ? 'income' : iconClass === 'food' ? 'market' : iconClass === 'care' ? 'health' : iconClass === 'home' ? 'home' : 'receipt';
   const dateText = item.monthlyAggregate ? new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : dateLabel(item.date);
-  return `<div class="transaction-row"><span class="transaction-icon ${iconClass}">${iconMarkup(iconName)}</span><span class="transaction-main"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(dateText)} · ${escapeHtml(item.category)}</small></span><span class="transaction-category">${escapeHtml(item.category)}</span><span class="transaction-amount ${item.type === 'income' ? 'in' : 'out'}">${item.type === 'income' ? '+' : '−'} ${money(item.amount)}</span></div>`;
+  const sharedLabel = item.sharedSourceName ? ` · compartilhado por ${escapeHtml(item.sharedSourceName)}` : '';
+  return `<div class="transaction-row"><span class="transaction-icon ${iconClass}">${iconMarkup(iconName)}</span><span class="transaction-main"><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(dateText)} · ${escapeHtml(item.category)}${sharedLabel}</small></span><span class="transaction-category">${escapeHtml(item.category)}</span><span class="transaction-amount ${item.type === 'income' ? 'in' : 'out'}">${item.type === 'income' ? '+' : '−'} ${money(item.amount)}</span></div>`;
 }
 function renderRecent() {
-  const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
+  const sorted = [...allTransactions()].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
   document.querySelector('#recent-transactions').innerHTML = sorted.length ? sorted.map(transactionMarkup).join('') : '<div class="empty-state"><strong>Seus lançamentos vão aparecer aqui.</strong>Experimente adicionar um gasto ou uma receita.</div>';
 }
 function renderCharts() {
@@ -121,7 +127,7 @@ function renderCharts() {
   const months = Array.from({ length: 6 }, (_, index) => {
     const date = new Date(base.getFullYear(), base.getMonth() - 5 + index, 1);
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    const rows = transactions.filter((item) => item.date.startsWith(key));
+    const rows = allTransactions().filter((item) => item.date.startsWith(key));
     return { month: date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''), income: rows.filter((item) => item.type === 'income').reduce((sum, item) => sum + Number(item.amount), 0), expense: rows.filter((item) => item.type === 'expense').reduce((sum, item) => sum + Number(item.amount), 0) };
   });
   const rawMax = Math.max(...months.flatMap((item) => [item.income, item.expense]));
@@ -148,7 +154,7 @@ function renderCharts() {
     ? 'Adicione uma entrada ou um gasto para ver o período ganhar forma.'
     : current.income >= current.expense ? 'No período, entrou <strong>mais do que saiu</strong>.' : 'No período, saiu <strong>mais do que entrou</strong>.';
 
-  const expenses = categories.map((category) => [category, monthTransactions().filter((item) => item.type === 'expense' && item.category === category).reduce((sum, item) => sum + Number(item.amount), 0)]).filter(([, amount]) => amount > 0).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const expenses = allCategories().map((category) => [category, monthTransactions().filter((item) => item.type === 'expense' && item.category === category).reduce((sum, item) => sum + Number(item.amount), 0)]).filter(([, amount]) => amount > 0).sort((a, b) => b[1] - a[1]).slice(0, 6);
   const total = expenses.reduce((sum, [, amount]) => sum + amount, 0);
   document.querySelector('#donut-total').textContent = money(total);
   const donut = document.querySelector('#expense-donut');
@@ -168,11 +174,11 @@ function renderTransactions() {
   const type = document.querySelector('#type-filter')?.value || 'all';
   const category = document.querySelector('#category-filter')?.value || 'all';
   const categorySelect = document.querySelector('#category-filter');
-  if (categorySelect && categorySelect.options.length < categories.length + 1) {
-    categorySelect.innerHTML = '<option value="all">Todas as categorias</option>' + categories.map((cat) => `<option>${escapeHtml(cat)}</option>`).join('');
+  if (categorySelect && categorySelect.options.length !== allCategories().length + 1) {
+    categorySelect.innerHTML = '<option value="all">Todas as categorias</option>' + allCategories().map((cat) => `<option>${escapeHtml(cat)}</option>`).join('');
     categorySelect.value = category;
   }
-  const filtered = [...transactions].sort((a,b) => b.date.localeCompare(a.date)).filter((item) => (type === 'all' || item.type === type) && (category === 'all' || item.category === category) && `${item.name} ${item.category}`.toLowerCase().includes(search));
+  const filtered = [...allTransactions()].sort((a,b) => b.date.localeCompare(a.date)).filter((item) => (type === 'all' || item.type === type) && (category === 'all' || item.category === category) && `${item.name} ${item.category}`.toLowerCase().includes(search));
   document.querySelector('#all-transactions').innerHTML = filtered.length ? filtered.map(transactionMarkup).join('') : '<div class="empty-state"><strong>Nenhum lançamento encontrado.</strong>Tente mudar a busca ou o filtro.</div>';
   renderRecent();
 }
@@ -210,8 +216,8 @@ function renderCategories() {
     const countLabel = `${items.length} ${items.length === 1 ? 'lançamento' : 'lançamentos'}`;
     return `<article class="category-card" style="--category-accent:${color}"><div class="category-card-head"><span class="category-card-icon">${iconMarkup(categoryIcon(category, type))}</span><div class="category-card-title"><h3>${escapeHtml(category)}</h3><p>${kind} no mês</p></div></div><div class="category-card-value"><strong>${money(amount)}</strong><span>${items.length ? countLabel : 'Sem lançamentos'}</span></div><div class="category-progress" role="progressbar" aria-label="${escapeHtml(category)}: ${share}% do total de ${kind.toLowerCase()}" aria-valuenow="${share}" aria-valuemin="0" aria-valuemax="100"><span style="width:${share}%"></span></div><div class="category-card-foot"><span>${items.length ? `${share}% do total no mês` : 'Ainda sem registros neste mês'}</span></div></article>`;
   };
-  const expenseCategories = categories.filter((category) => !normalizeImportText(category).includes('renda'));
-  const incomeCategories = categories.filter((category) => normalizeImportText(category).includes('renda'));
+  const expenseCategories = allCategories().filter((category) => !normalizeImportText(category).includes('renda'));
+  const incomeCategories = allCategories().filter((category) => normalizeImportText(category).includes('renda'));
   const activeExpenses = expenseCategories.filter((category) => current.some((item) => item.type === 'expense' && item.category === category)).length;
   const activeIncome = incomeCategories.filter((category) => current.some((item) => item.type === 'income' && item.category === category)).length;
   document.querySelector('#category-dashboard').innerHTML = `<div class="category-overview"><article class="category-stat expense-stat"><span>Gastos no mês</span><strong>${money(totals.expense)}</strong><small>${activeExpenses} ${activeExpenses === 1 ? 'categoria com gastos' : 'categorias com gastos'}</small></article><article class="category-stat income-stat"><span>Entradas no mês</span><strong>${money(totals.income)}</strong><small>${activeIncome} ${activeIncome === 1 ? 'categoria com entrada' : 'categorias com entradas'}</small></article></div><section class="category-section"><div class="category-section-head"><h2>Gastos</h2><span>${expenseCategories.length} categorias</span></div><div class="category-cards">${expenseCategories.map((category) => card(category, 'expense')).join('')}</div></section><section class="category-section"><div class="category-section-head"><h2>Entradas</h2><span>${incomeCategories.length} categorias</span></div><div class="category-cards">${incomeCategories.map((category) => card(category, 'income')).join('')}</div></section>`;
@@ -233,19 +239,23 @@ function openImport() {
   modalContent.querySelectorAll('[data-method]').forEach((button) => button.addEventListener('click', () => document.querySelector(button.dataset.method === 'spreadsheet' ? '#spreadsheet-file' : button.dataset.method === 'receipt' ? '#receipt-file' : '#paper-file').click()));
 }
 function openDataSettings() {
-  const count = transactions.length;
+  const count = allTransactions().length;
   const lastBackup = localStorage.getItem('dindin.lastBackup');
   const backupLabel = lastBackup ? new Date(lastBackup).toLocaleString('pt-BR') : 'Ainda não foi baixada';
   const driveSync = localStorage.getItem('dindin.lastDriveSync');
   const driveSyncLabel = driveSync ? new Date(driveSync).toLocaleString('pt-BR') : 'Ainda não sincronizado';
-  openModal(`<p class="modal-kicker">PRIVACIDADE E CÓPIA</p><h2 id="modal-title">Seus dados ficam com você.</h2><p class="modal-lead">Não existe cadastro. Seus ${count} lançamentos e categorias ficam salvos neste navegador, no seu aparelho.</p><div class="review-note"><strong>Para não perder seus dados:</strong> baixe uma cópia de segurança e guarde o arquivo em um lugar seguro. A Dolayout não recebe seus lançamentos nem as fotos.</div><div class="privacy-backup-meta"><span>Última cópia baixada</span><strong>${escapeHtml(backupLabel)}</strong></div><div class="modal-actions privacy-actions"><button type="button" class="secondary-button" id="restore-backup">Restaurar cópia</button><button type="button" class="primary-button small" id="download-backup">Baixar cópia de segurança</button></div><section class="drive-card" aria-labelledby="drive-title"><div><p class="drive-kicker">CÓPIA NA SUA CONTA</p><h3 id="drive-title">Google Drive</h3><p class="drive-description">Guarde uma cópia privada no seu Drive para recuperar seus dados em outro aparelho.</p></div><p class="drive-status" id="drive-status" role="status" aria-live="polite"></p><div class="drive-actions"><button type="button" class="primary-button small" id="drive-connect">Conectar ao Google Drive</button><button type="button" class="primary-button small" id="drive-sync" hidden>Sincronizar agora</button><button type="button" class="secondary-button" id="drive-disconnect" hidden>Desconectar</button></div><p class="drive-privacy">Seus lançamentos vão do navegador diretamente ao Google Drive. A função da Dolayout troca o código de autorização sem guardar códigos, tokens ou registros. O token fica em memória durante esta sessão. O Google guarda um arquivo JSON sem senha na sua conta; será preciso conectar novamente quando abrir o app.</p><p class="drive-sync-meta">Última cópia no Drive: ${escapeHtml(driveSyncLabel)}</p></section><div class="review-note drive-note"><strong>Arquivo de segurança</strong><br>A cópia JSON não tem senha e pode ser lida por quem tiver acesso ao arquivo. Apagar os dados deste aparelho não apaga a cópia guardada no Drive.</div><button type="button" class="text-button erase-data" id="erase-data">Apagar todos os dados deste aparelho</button>`);
+  openModal(`<p class="modal-kicker">PRIVACIDADE E CÓPIA</p><h2 id="modal-title">Seus dados ficam com você.</h2><p class="modal-lead">Não existe cadastro. Seus ${count} lançamentos aparecem neste aparelho, incluindo ${sharedTransactions.length} de arquivos compartilhados.</p><div class="review-note"><strong>Seus dados financeiros ficam fora da Dolayout:</strong> os registros permanecem no aparelho e, se você escolher, na sua conta Google.</div><div class="privacy-backup-meta"><span>Última cópia baixada</span><strong>${escapeHtml(backupLabel)}</strong></div><div class="modal-actions privacy-actions"><button type="button" class="secondary-button" id="restore-backup">Restaurar cópia</button><button type="button" class="primary-button small" id="download-backup">Baixar cópia de segurança</button></div><section class="drive-card" aria-labelledby="drive-title"><div><p class="drive-kicker">CÓPIA NA SUA CONTA</p><h3 id="drive-title">Google Drive</h3><p class="drive-description">Guarde seus lançamentos no seu Drive para recuperar em outro aparelho.</p></div><p class="drive-status" id="drive-status" role="status" aria-live="polite"></p><div class="drive-actions"><button type="button" class="primary-button small" id="drive-connect">Conectar ao Google Drive</button><button type="button" class="primary-button small" id="drive-sync" hidden>Sincronizar agora</button><button type="button" class="secondary-button" id="drive-disconnect" hidden>Desconectar</button><a class="secondary-button drive-open-link" id="drive-open-own" href="#" target="_blank" rel="noopener" hidden>Abrir sua cópia</a></div><p class="drive-privacy">Os registros vão do navegador diretamente ao Google Drive. A Dolayout não recebe seus lançamentos. O Google guarda um arquivo JSON sem senha na sua conta; será preciso conectar novamente ao abrir o app.</p><p class="drive-sync-meta">Última cópia no Drive: ${escapeHtml(driveSyncLabel)}</p></section><section class="drive-card shared-drive-card" aria-labelledby="shared-drive-title"><div><p class="drive-kicker">FAMÍLIA</p><h3 id="shared-drive-title">Visão compartilhada</h3><p class="drive-description">Adicione arquivos que outras pessoas compartilharam com você. Eles aparecem junto dos seus lançamentos e permanecem somente para leitura neste aparelho.</p></div><div class="drive-actions"><button type="button" class="primary-button small" id="drive-add-shared">Adicionar arquivo compartilhado</button><button type="button" class="secondary-button" id="drive-refresh-shared" ${sharedDriveFiles.length ? '' : 'hidden'}>Atualizar lançamentos</button></div><p class="drive-status" id="drive-shared-status" role="status" aria-live="polite"></p><div class="shared-drive-files" id="shared-drive-files"></div><p class="drive-privacy">Para compartilhar seus próprios dados, abra sua cópia no Drive e compartilhe o arquivo como leitor. Para uso em empresa, ainda será necessário criar espaços separados para despesas do trabalho e permissões de equipe.</p></section><div class="review-note drive-note"><strong>Permissões do Drive</strong><br>Quem tiver acesso ao arquivo JSON poderá ler seus lançamentos. Compartilhe apenas com pessoas de confiança.</div><button type="button" class="text-button erase-data" id="erase-data">Apagar todos os dados deste aparelho</button>`);
   modalContent.querySelector('#download-backup').addEventListener('click', downloadBackup);
   modalContent.querySelector('#restore-backup').addEventListener('click', () => document.querySelector('#backup-file').click());
   modalContent.querySelector('#erase-data').addEventListener('click', eraseData);
   modalContent.querySelector('#drive-connect').addEventListener('click', connectGoogleDrive);
   modalContent.querySelector('#drive-sync').addEventListener('click', () => syncDriveNow(true));
   modalContent.querySelector('#drive-disconnect').addEventListener('click', disconnectGoogleDrive);
+  modalContent.querySelector('#drive-add-shared').addEventListener('click', chooseSharedDriveFiles);
+  modalContent.querySelector('#drive-refresh-shared').addEventListener('click', () => refreshSharedDriveFiles(true));
+  renderSharedDriveFiles();
   renderDriveStatus();
+  prepareSharedDrivePicker();
 }
 function downloadBackup() {
   const backup = { app: 'Dindin', version: 1, exportedAt: new Date().toISOString(), transactions, categories };
@@ -294,9 +304,14 @@ function renderDriveStatus(message = '') {
   const connect = modalContent.querySelector('#drive-connect');
   const sync = modalContent.querySelector('#drive-sync');
   const disconnect = modalContent.querySelector('#drive-disconnect');
+  const openOwn = modalContent.querySelector('#drive-open-own');
   if (connect) connect.hidden = connected;
   if (sync) sync.hidden = !connected;
   if (disconnect) disconnect.hidden = !driveSession.accessToken;
+  if (openOwn) {
+    openOwn.hidden = !connected;
+    if (connected) openOwn.href = `https://drive.google.com/file/d/${encodeURIComponent(driveSession.fileId)}/view`;
+  }
   status.textContent = message || (connected
     ? 'Conectado nesta sessão. Alterações serão copiadas automaticamente enquanto a autorização estiver ativa.'
     : 'Não conectado nesta sessão. Seus dados continuam salvos neste aparelho.');
@@ -370,6 +385,160 @@ async function readDriveBackup(fileId) {
   const data = await driveRequest(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?alt=media`);
   if (!isValidBackup(data)) throw new Error('invalid-drive-backup');
   return data;
+}
+function renderSharedDriveFiles() {
+  const list = modalContent.querySelector('#shared-drive-files');
+  const ownLink = modalContent.querySelector('#drive-open-own');
+  if (!list) return;
+  if (ownLink && driveSession.fileId) {
+    ownLink.href = `https://drive.google.com/file/d/${encodeURIComponent(driveSession.fileId)}/view`;
+    ownLink.hidden = false;
+  }
+  list.innerHTML = sharedDriveFiles.length ? sharedDriveFiles.map((file) => `<div class="shared-drive-file"><span class="shared-drive-file-icon">${iconMarkup('sheet')}</span><span class="shared-drive-file-copy"><strong>${escapeHtml(file.name || 'Arquivo compartilhado')}</strong><small>${file.error ? escapeHtml(file.error) : `${Number(file.transactionCount || 0)} lançamentos · somente leitura`}</small></span><button type="button" class="shared-drive-remove" data-remove-shared="${escapeHtml(file.id)}" aria-label="Remover ${escapeHtml(file.name || 'arquivo')} desta visão">×</button></div>`).join('') : '<p class="shared-drive-empty">Nenhum arquivo compartilhado foi adicionado neste aparelho.</p>';
+  list.querySelectorAll('[data-remove-shared]').forEach((button) => button.addEventListener('click', () => {
+    const fileId = button.dataset.removeShared;
+    sharedDriveFiles = sharedDriveFiles.filter((file) => file.id !== fileId);
+    sharedTransactions = sharedTransactions.filter((item) => item.sharedSourceFileId !== fileId);
+    localStorage.setItem('dindin.sharedDriveFiles', JSON.stringify(sharedDriveFiles));
+    localStorage.setItem('dindin.sharedTransactions', JSON.stringify(sharedTransactions));
+    refresh();
+    renderSharedDriveFiles();
+    renderSharedDriveStatus('Arquivo removido desta visão. A cópia no Drive não foi apagada.');
+  }));
+}
+function renderSharedDriveStatus(message = '') {
+  const status = modalContent.querySelector('#drive-shared-status');
+  const savedFilesMessage = sharedDriveFiles.length
+    ? driveSession.accessToken
+      ? `${sharedDriveFiles.length} ${sharedDriveFiles.length === 1 ? 'arquivo' : 'arquivos'} compartilhado${sharedDriveFiles.length === 1 ? '' : 's'} nesta visão.`
+      : `${sharedDriveFiles.length} ${sharedDriveFiles.length === 1 ? 'arquivo' : 'arquivos'} compartilhado${sharedDriveFiles.length === 1 ? '' : 's'} salvo${sharedDriveFiles.length === 1 ? '' : 's'} neste aparelho. Conecte ao Google Drive para atualizar.`
+    : 'Adicione arquivos do Dindin que foram compartilhados com sua conta Google.';
+  if (status) status.textContent = message || savedFilesMessage;
+  const refreshButton = modalContent.querySelector('#drive-refresh-shared');
+  if (refreshButton) refreshButton.hidden = sharedDriveFiles.length === 0;
+  renderSharedDriveFiles();
+}
+async function refreshSharedDriveFiles(showMessage = false) {
+  if (!driveSession.accessToken) {
+    renderSharedDriveStatus('Conecte ao Google Drive antes de atualizar os arquivos compartilhados.');
+    return;
+  }
+  if (!sharedDriveFiles.length) {
+    renderSharedDriveStatus('Adicione um arquivo compartilhado para começar.');
+    return;
+  }
+  renderSharedDriveStatus('Buscando os lançamentos compartilhados…');
+  const nextTransactions = [];
+  const updatedFiles = [];
+  let failed = 0;
+  for (const file of sharedDriveFiles) {
+    if (file.id === driveSession.fileId) continue;
+    try {
+      const [metadata, data] = await Promise.all([
+        driveRequest(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(file.id)}?fields=id,name,mimeType,modifiedTime,capabilities(canEdit)`),
+        readDriveBackup(file.id),
+      ]);
+      const transactionRows = data.transactions.map((item, index) => ({ ...item, id: `shared:${file.id}:${item.id || index}`, sharedSourceFileId: file.id, sharedSourceName: metadata.name || file.name || 'Arquivo compartilhado' }));
+      nextTransactions.push(...transactionRows);
+      updatedFiles.push({ id: metadata.id, name: metadata.name || file.name, mimeType: metadata.mimeType, modifiedTime: metadata.modifiedTime, transactionCount: transactionRows.length, canEdit: Boolean(metadata.capabilities?.canEdit) });
+    } catch (error) {
+      failed++;
+      const message = error.message === 'invalid-drive-backup'
+        ? 'Este arquivo não é uma cópia Dindin válida.'
+        : error.status === 403 || error.status === 404
+          ? 'Sem acesso. Peça ao proprietário para compartilhar este arquivo com sua conta Google.'
+          : driveErrorMessage(error);
+      if (error.status === 401 || !navigator.onLine) {
+        nextTransactions.push(...sharedTransactions.filter((item) => item.sharedSourceFileId === file.id));
+      }
+      updatedFiles.push({ id: file.id, name: file.name, transactionCount: 0, error: message });
+    }
+  }
+  sharedDriveFiles = updatedFiles;
+  sharedTransactions = nextTransactions;
+  localStorage.setItem('dindin.sharedDriveFiles', JSON.stringify(sharedDriveFiles));
+  localStorage.setItem('dindin.sharedTransactions', JSON.stringify(sharedTransactions));
+  refresh();
+  renderSharedDriveStatus(failed ? `Atualização concluída. ${failed} arquivo${failed === 1 ? '' : 's'} não pôde${failed === 1 ? '' : 'ram'} ser lido${failed === 1 ? '' : 's'}. Confira o acesso no Google Drive.` : 'Visão compartilhada atualizada.');
+  if (showMessage && !failed) toast('Lançamentos compartilhados atualizados.');
+}
+async function getPickerDeveloperKey() {
+  if (!pickerConfigPromise) pickerConfigPromise = fetch('/api/dindin/google-picker-config', { cache: 'no-store' }).then(async (response) => {
+    const config = await response.json();
+    if (!response.ok || !config.developerKey) throw new Error('O seletor do Google ainda não foi configurado.');
+    return config.developerKey;
+  }).catch((error) => { pickerConfigPromise = null; throw error; });
+  return pickerConfigPromise;
+}
+function prepareSharedDrivePicker() {
+  const button = modalContent.querySelector('#drive-add-shared');
+  if (!button) return;
+  button.disabled = true;
+  button.textContent = 'Verificando compartilhamento…';
+  getPickerDeveloperKey().then(() => {
+    if (!button.isConnected) return;
+    button.disabled = false;
+    button.textContent = 'Adicionar arquivo compartilhado';
+  }).catch(() => {
+    if (!button.isConnected) return;
+    button.textContent = 'Compartilhamento em configuração';
+    renderSharedDriveStatus('O seletor do Google ainda está em configuração. Seus dados locais continuam disponíveis.');
+  });
+}
+async function loadPickerLibrary() {
+  if (window.google?.picker?.PickerBuilder) return;
+  if (!window.gapi?.load) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://apis.google.com/js/api.js';
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Não consegui carregar o seletor do Google.'));
+      document.head.append(script);
+    });
+  }
+  await new Promise((resolve, reject) => {
+    try { window.gapi.load('picker', { callback: resolve, onerror: () => reject(new Error('O seletor do Google não iniciou.')) }); }
+    catch (error) { reject(error); }
+  });
+}
+async function chooseSharedDriveFiles() {
+  const status = modalContent.querySelector('#drive-shared-status');
+  try {
+    const developerKey = await getPickerDeveloperKey();
+    if (!driveSession.accessToken) {
+      if (status) status.textContent = 'Conectando ao Google Drive…';
+      await connectGoogleDrive();
+      if (!driveSession.accessToken || modalContent.querySelector('#drive-use-cloud')) return;
+    }
+    if (status) status.textContent = 'Abrindo seus arquivos compartilhados…';
+    await loadPickerLibrary();
+    const view = new window.google.picker.DocsView(window.google.picker.ViewId.DOCS)
+      .setMimeTypes('application/json')
+      .setMode(window.google.picker.DocsViewMode.LIST);
+    const picker = new window.google.picker.PickerBuilder()
+      .setAppId('215401091425')
+      .setDeveloperKey(developerKey)
+      .setOAuthToken(driveSession.accessToken)
+      .setOrigin(window.location.origin)
+      .setLocale('pt-BR')
+      .setTitle('Escolha cópias do Dindin compartilhadas com você')
+      .enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED)
+      .addView(view)
+      .setCallback(async (result) => {
+        if (result.action !== window.google.picker.Action.PICKED) return;
+        const selected = (result.docs || []).filter((file) => file.id && file.id !== driveSession.fileId);
+        const files = [...new Map([...sharedDriveFiles, ...selected.map((file) => ({ id: file.id, name: file.name || 'Arquivo do Dindin' }))].map((file) => [file.id, file])).values()];
+        sharedDriveFiles = files;
+        localStorage.setItem('dindin.sharedDriveFiles', JSON.stringify(sharedDriveFiles));
+        await refreshSharedDriveFiles(false);
+      })
+      .build();
+    picker.setVisible(true);
+    if (status) status.textContent = '';
+  } catch (error) {
+    renderSharedDriveStatus(error.message || 'Não consegui abrir os arquivos compartilhados.');
+  }
 }
 async function createDriveBackupFile() {
   const metadata = await driveRequest('https://www.googleapis.com/drive/v3/files?fields=id', {
@@ -453,6 +622,7 @@ async function connectGoogleDrive() {
     }
     const syncLabel = modalContent.querySelector('.drive-sync-meta');
     if (syncLabel) syncLabel.textContent = `Última cópia no Drive: ${new Date(localStorage.getItem('dindin.lastDriveSync')).toLocaleString('pt-BR')}`;
+    if (sharedDriveFiles.length) await refreshSharedDriveFiles(false);
     toast('Google Drive conectado nesta sessão.');
   } catch (error) {
     renderDriveStatus(driveErrorMessage(error));
@@ -495,17 +665,27 @@ function disconnectGoogleDrive() {
   const token = driveSession.accessToken;
   driveSession.accessToken = null;
   driveSession.fileId = null;
+  sharedTransactions = [];
+  localStorage.setItem('dindin.sharedTransactions', JSON.stringify(sharedTransactions));
+  sharedDriveFiles = sharedDriveFiles.map((file) => ({ ...file, transactionCount: 0, error: 'Conecte novamente para atualizar.' }));
+  localStorage.setItem('dindin.sharedDriveFiles', JSON.stringify(sharedDriveFiles));
   clearTimeout(driveSession.syncTimer);
   if (token && window.google?.accounts?.oauth2) window.google.accounts.oauth2.revoke(token, () => {});
   renderDriveStatus('Desconectado. A cópia existente continua na sua conta do Google Drive.');
+  renderSharedDriveStatus('Google Drive desconectado. Conecte novamente para atualizar os arquivos compartilhados.');
+  refresh();
   toast('Google Drive desconectado. A cópia guardada não foi apagada.');
 }
 function eraseData() {
-  if (!window.confirm('Apagar todos os lançamentos e categorias personalizados deste aparelho? Esta ação não pode ser desfeita.')) return;
+  if (!window.confirm('Apagar os lançamentos locais, os arquivos compartilhados guardados neste aparelho e as categorias personalizadas? Os arquivos no Google Drive não serão apagados. Esta ação não pode ser desfeita.')) return;
   transactions = [];
+  sharedTransactions = [];
+  sharedDriveFiles = [];
   categories = [...defaultCategories];
   localStorage.removeItem('dindin.transactions');
   localStorage.removeItem('dindin.categories');
+  localStorage.removeItem('dindin.sharedTransactions');
+  localStorage.removeItem('dindin.sharedDriveFiles');
   localStorage.removeItem('dindin.lastBackup');
   refresh();
   closeModal();
@@ -688,8 +868,9 @@ function createOcrWorker() {
     workerPath: localUrl('./vendor/ocr/worker.min.js'),
     corePath: localUrl('./vendor/ocr/core/'),
     langPath: localUrl('./vendor/ocr/lang'),
-    cachePath: 'dindin-ocr-por-v1',
+    cachePath: 'dindin-ocr-por-v2',
     workerBlobURL: false,
+    errorHandler: (error) => console.error('Dindin: falha no leitor local de fotos.', error),
     logger: (event) => {
       const status = document.querySelector('#ocr-status');
       const progress = document.querySelector('#ocr-progress');
@@ -702,17 +883,48 @@ function createOcrWorker() {
   ocrWorkerPromise.catch(() => { ocrWorkerPromise = null; });
   return ocrWorkerPromise;
 }
-function imageCanvas(file) {
+function imageCanvas(file, variant = 'clean') {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => {
-      const scale = Math.min(1, 2200 / Math.max(image.naturalWidth, image.naturalHeight));
+      const sourceWidth = image.naturalWidth;
+      const sourceHeight = image.naturalHeight;
+      const scale = Math.min(1.6, 2800 / Math.max(sourceWidth, sourceHeight), Math.sqrt(6000000 / (sourceWidth * sourceHeight)));
       const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
-      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+      canvas.height = Math.max(1, Math.round(sourceHeight * scale));
       const context = canvas.getContext('2d', { willReadFrequently: true });
-      context.filter = 'grayscale(1) contrast(1.12)';
+      context.filter = variant === 'threshold' ? 'grayscale(1) contrast(1.35) brightness(1.04)' : 'grayscale(1) contrast(1.28) brightness(1.04)';
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      if (variant === 'threshold') {
+        const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+        const histogram = new Uint32Array(256);
+        const data = pixels.data;
+        for (let index = 0; index < data.length; index += 4) histogram[data[index]]++;
+        const total = canvas.width * canvas.height;
+        let sum = 0;
+        for (let value = 0; value < 256; value++) sum += value * histogram[value];
+        let backgroundWeight = 0;
+        let backgroundSum = 0;
+        let bestVariance = -1;
+        let threshold = 165;
+        for (let value = 0; value < 256; value++) {
+          backgroundWeight += histogram[value];
+          if (!backgroundWeight) continue;
+          const foregroundWeight = total - backgroundWeight;
+          if (!foregroundWeight) break;
+          backgroundSum += value * histogram[value];
+          const backgroundMean = backgroundSum / backgroundWeight;
+          const foregroundMean = (sum - backgroundSum) / foregroundWeight;
+          const variance = backgroundWeight * foregroundWeight * (backgroundMean - foregroundMean) ** 2;
+          if (variance > bestVariance) { bestVariance = variance; threshold = value; }
+        }
+        for (let index = 0; index < data.length; index += 4) {
+          const value = data[index] < threshold ? 0 : 255;
+          data[index] = value; data[index + 1] = value; data[index + 2] = value;
+        }
+        context.putImageData(pixels, 0, 0);
+      }
       URL.revokeObjectURL(image.src);
       resolve(canvas);
     };
@@ -732,12 +944,19 @@ function ocrMoneyValues(line) {
   const matches = String(line).match(/(?:R\$\s*)?(?:\d{1,3}(?:[. ]\d{3})+|\d+)(?:[,.]\d{2})/gi) || [];
   return matches.map((value) => parseImportAmount(value.replace(/\s/g, ''))).filter((value) => Number.isFinite(value) && value > 0 && value < 100000000);
 }
+function ocrResultScore(result) {
+  const text = String(result?.data?.text || '');
+  const amounts = ocrMoneyValues(text).length;
+  const usefulCharacters = (text.match(/[A-Za-zÀ-ÿ0-9]/g) || []).length;
+  const confidence = Number(result?.data?.confidence) || 0;
+  return confidence + Math.min(30, amounts * 12) + Math.min(20, usefulCharacters / 8);
+}
 function parsePhotoCandidates(text, kind) {
   const lines = String(text).split(/\r?\n/).map((line) => line.trim().replace(/\s{2,}/g, ' ')).filter(Boolean);
   const date = ocrDate(text);
   if (kind === 'receipt') {
-    const totalLine = lines.find((line) => /total|a pagar|valor pago|valor final/i.test(normalizeImportText(line)) && ocrMoneyValues(line).length);
-    const amount = totalLine ? ocrMoneyValues(totalLine).at(-1) : Math.max(0, ...lines.flatMap(ocrMoneyValues));
+    const totalLine = lines.find((line) => /total|a pagar|valor pago|valor final|total r\$/i.test(normalizeImportText(line)) && ocrMoneyValues(line).length);
+    const amount = totalLine ? ocrMoneyValues(totalLine).at(-1) : '';
     const merchant = lines.find((line) => /[A-Za-zÀ-ÿ]{3}/.test(line) && !/cnpj|cpf|inscri|documento|consumidor|cupom|fiscal|endereco|telefone|operador|venda|caixa|data|hora/i.test(normalizeImportText(line))) || 'Compra no mercado';
     return [{ name: merchant.slice(0, 70), amount: amount || '', date, category: importCategory(`${merchant} ${text.slice(0, 500)}`, 'expense'), type: 'expense' }];
   }
@@ -770,7 +989,9 @@ function showPhotoCandidates(file, kind, text, confidence, candidates, warning =
   const confidenceLabel = Number.isFinite(confidence) ? ` · leitura ${Math.round(confidence)}%` : '';
   const initialRows = candidates.length ? candidates : [{ name: '', amount: '', date: currentIsoDate(), category: 'Outros', type: 'expense' }];
   const htmlRows = initialRows.map(photoCandidateMarkup).join('');
-  openModal(`<p class="modal-kicker">REVISÃO DA FOTO</p><h2 id="modal-title">Confira o que encontramos.</h2><p class="modal-lead">${escapeHtml(file.name)} · imagem lida neste aparelho${confidenceLabel}.</p><div class="ocr-photo"><img class="photo-preview" src="${photoUrl}" alt="Prévia da foto"><div class="review-note">${warning ? `${escapeHtml(warning)} ` : ''}O reconhecimento pode errar, principalmente em escrita à mão. Confira cada campo. A foto não foi enviada à Dolayout.</div></div><form id="photo-form"><div id="ocr-rows">${htmlRows}</div><button class="secondary-button ocr-add" id="add-ocr-row" type="button">＋ Adicionar anotação</button><p class="modal-footnote">${candidates.length ? `${candidates.length} ${candidates.length === 1 ? 'lançamento sugerido' : 'lançamentos sugeridos'} a partir da foto de ${label}.` : 'Não consegui reconhecer os dados com segurança. Você pode preencher os campos abaixo.'}</p><details class="ocr-text"><summary>Ver texto reconhecido</summary><pre>${escapeHtml(text || 'Nenhum texto reconhecido.')}</pre></details><div class="modal-actions"><button type="button" class="secondary-button" id="review-cancel">Voltar</button><button class="primary-button small" type="submit">Salvar lançamentos</button></div></form>`);
+  const retryButton = warning || !text || (Number.isFinite(confidence) && confidence < 45) ? '<button type="button" class="secondary-button" id="ocr-retry">Tentar ler novamente</button>' : '';
+  openModal(`<p class="modal-kicker">REVISÃO DA FOTO</p><h2 id="modal-title">Confira o que encontramos.</h2><p class="modal-lead">${escapeHtml(file.name)} · imagem lida neste aparelho${confidenceLabel}.</p><div class="ocr-photo"><img class="photo-preview" src="${photoUrl}" alt="Prévia da foto"><div class="review-note">${warning ? `${escapeHtml(warning)} ` : ''}O reconhecimento pode errar, principalmente em escrita à mão. Confira cada campo. A foto não foi enviada à Dolayout.</div></div>${retryButton}<form id="photo-form"><div id="ocr-rows">${htmlRows}</div><button class="secondary-button ocr-add" id="add-ocr-row" type="button">＋ Adicionar anotação</button><p class="modal-footnote">${candidates.length ? `${candidates.length} ${candidates.length === 1 ? 'lançamento sugerido' : 'lançamentos sugeridos'} a partir da foto de ${label}.` : 'Não consegui reconhecer os dados com segurança. Você pode preencher os campos abaixo.'}</p><details class="ocr-text"><summary>Ver texto reconhecido</summary><pre>${escapeHtml(text || 'Nenhum texto reconhecido.')}</pre></details><div class="modal-actions"><button type="button" class="secondary-button" id="review-cancel">Voltar</button><button class="primary-button small" type="submit">Salvar lançamentos</button></div></form>`);
+  modalContent.querySelector('#ocr-retry')?.addEventListener('click', () => reviewPhoto(file, kind));
   const rows = modalContent.querySelector('#ocr-rows');
   modalContent.querySelector('#add-ocr-row').addEventListener('click', () => rows.insertAdjacentHTML('beforeend', photoCandidateMarkup({ date: currentIsoDate(), category: 'Outros', type: 'expense' }, rows.children.length)));
   modalContent.querySelectorAll('[data-remove-ocr]').forEach((button) => button.addEventListener('click', () => {
@@ -794,18 +1015,38 @@ function showPhotoCandidates(file, kind, text, confidence, candidates, warning =
 }
 async function reviewPhoto(file, kind) {
   const activePhotoUrl = photoUrl;
-  openModal(`<p class="modal-kicker">LEITURA NO APARELHO</p><h2 id="modal-title">Preparando a foto…</h2><p class="modal-lead">A primeira leitura pode demorar alguns segundos enquanto o leitor de português é preparado.</p><img class="photo-preview" src="${photoUrl}" alt="Prévia da foto"><progress id="ocr-progress" max="100" value="0"></progress><p class="ocr-status" id="ocr-status" role="status" aria-live="polite">Carregando o leitor. A imagem não sai deste aparelho.</p><div class="review-note">O reconhecimento roda no celular/computador. Nenhuma foto ou lançamento é enviado à Dolayout.</div>`);
+  openModal(`<p class="modal-kicker">LEITURA NO APARELHO</p><h2 id="modal-title">Preparando a foto…</h2><p class="modal-lead">A primeira leitura pode demorar alguns segundos enquanto o leitor de português é preparado.</p><img class="photo-preview" src="${photoUrl}" alt="Prévia da foto"><progress id="ocr-progress" max="100" value="0"></progress><p class="ocr-status" id="ocr-status" role="status" aria-live="polite">Carregando o leitor. A imagem não sai deste aparelho.</p><div class="review-note">O reconhecimento roda no celular/computador. Para melhores resultados, aproxime a câmera e evite sombras e desfoque. Nenhuma foto ou lançamento é enviado à Dolayout.</div>`);
   try {
     const worker = await createOcrWorker();
-    const canvas = await imageCanvas(file);
+    const canvas = await imageCanvas(file, 'clean');
     if (photoUrl !== activePhotoUrl || backdrop.hidden) return;
-    const result = await worker.recognize(canvas);
+    await worker.setParameters({ tessedit_pageseg_mode: '3', user_defined_dpi: '300' });
+    let result = await worker.recognize(canvas);
+    const firstText = String(result.data?.text || '');
+    if ((Number(result.data?.confidence) < 72 || !ocrMoneyValues(firstText).length) && photoUrl === activePhotoUrl && !backdrop.hidden) {
+      const status = document.querySelector('#ocr-status');
+      if (status) status.textContent = 'Tentando uma segunda leitura com mais contraste…';
+      const progress = document.querySelector('#ocr-progress');
+      if (progress) progress.value = 0;
+      const enhancedCanvas = await imageCanvas(file, 'threshold');
+      await worker.setParameters({ tessedit_pageseg_mode: '6', user_defined_dpi: '300' });
+      try {
+        const enhancedResult = await worker.recognize(enhancedCanvas);
+        if (ocrResultScore(enhancedResult) > ocrResultScore(result)) result = enhancedResult;
+      } finally {
+        await worker.setParameters({ tessedit_pageseg_mode: '3', user_defined_dpi: '300' });
+      }
+    }
     if (photoUrl !== activePhotoUrl || backdrop.hidden) return;
     const text = result.data?.text || '';
     showPhotoCandidates(file, kind, text, result.data?.confidence, parsePhotoCandidates(text, kind));
   } catch (error) {
     if (photoUrl !== activePhotoUrl || backdrop.hidden) return;
-    showPhotoCandidates(file, kind, '', NaN, [], `Não consegui ler automaticamente (${error.message || 'leitura indisponível'}).`);
+    const reason = String(error?.message || error?.error?.message || (typeof error === 'string' ? error : error?.name) || 'erro desconhecido').slice(0, 100);
+    const failedWorker = ocrWorkerPromise;
+    ocrWorkerPromise = null;
+    failedWorker?.then((worker) => worker.terminate()).catch(() => {});
+    showPhotoCandidates(file, kind, '', NaN, [], `A leitura automática falhou (${reason}). A foto continua somente neste aparelho. Tente novamente com a nota inteira, bem iluminada e mais próxima.`);
   }
 }
 async function processSpreadsheet(file) {
@@ -833,7 +1074,7 @@ async function processSpreadsheet(file) {
       }
     });
   }
-  const importedBatches = new Set(transactions.map((item) => item.importBatchId).filter(Boolean));
+  const importedBatches = new Set(allTransactions().map((item) => item.importBatchId).filter(Boolean));
   const newRows = parsed.filter((item) => !importedBatches.has(item.importBatchId));
   showSpreadsheetPreview(file, newRows, parsed.length - newRows.length, excludedFuture);
 }
@@ -914,6 +1155,9 @@ document.querySelector('#paper-file').addEventListener('change', (event) => { co
 document.querySelector('#receipt-file').addEventListener('change', (event) => { const file = event.target.files[0]; if (file) showFileReview(file, 'receipt'); event.target.value = ''; });
 document.querySelector('#backup-file').addEventListener('change', (event) => { const file = event.target.files[0]; if (file) restoreBackup(file); event.target.value = ''; });
 document.querySelector('#transaction-search').addEventListener('input', renderTransactions);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && driveSession.accessToken && sharedDriveFiles.length) refreshSharedDriveFiles(false);
+});
 document.querySelector('#type-filter').addEventListener('change', renderTransactions);
 document.querySelector('#category-filter').addEventListener('change', renderTransactions);
 document.querySelector('#month-select').addEventListener('change', refresh);

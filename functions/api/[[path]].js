@@ -16,6 +16,7 @@ export async function onRequest(context) {
 
   try {
     if (path === "dindin/google-token" && request.method === "POST") return exchangeDindinGoogleCode(request, env);
+    if (path === "dindin/google-picker-config" && request.method === "GET") return json({ developerKey: env.GOOGLE_PICKER_API_KEY || "" });
     if (path === "session" && request.method === "GET") return getSession(request, env);
     if (path === "session/challenge" && request.method === "POST") return getLoginChallenge(request, env);
     if (path === "setup" && request.method === "POST") return setupAdmin(request, env);

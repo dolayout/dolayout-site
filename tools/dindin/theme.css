@@ -331,3 +331,21 @@ small, .nav-caption, .eyebrow, .modal-kicker, .demo-pill, .month-select-wrap,
   .category-card-value strong { font-size: 14px; }
   .category-overview { grid-template-columns: 1fr; }
 }
+
+.drive-open-link { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.shared-drive-card { margin-top: 18px; }
+.shared-drive-files { display: grid; gap: 9px; margin-top: 10px; }
+.shared-drive-file { display: flex; align-items: center; gap: 11px; min-width: 0; padding: 11px 12px; border: 1px solid var(--site-line); border-radius: 11px; background: var(--site-surface-raised, var(--site-surface)); }
+.shared-drive-file-icon { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 10px; background: color-mix(in srgb, var(--site-accent) 14%, transparent); color: var(--site-accent); }
+.shared-drive-file-icon svg { width: 18px; height: 18px; }
+.shared-drive-file-copy { display: grid; flex: 1; gap: 3px; min-width: 0; }
+.shared-drive-file-copy strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.shared-drive-file-copy small { color: var(--site-muted); font-size: 11px !important; line-height: 1.4; }
+.shared-drive-remove { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; border: 1px solid var(--site-line); border-radius: 9px; background: transparent; color: var(--site-muted); font-size: 20px; }
+.shared-drive-remove:hover { border-color: var(--site-danger, #d85b5b); color: var(--site-danger, #d85b5b); }
+.shared-drive-empty { margin: 0; padding: 13px; border: 1px dashed var(--site-line); border-radius: 10px; color: var(--site-muted); font-size: 13px; text-align: center; }
+@media (max-width: 620px) {
+  .shared-drive-file { gap: 9px; padding: 10px; }
+  .shared-drive-file-copy strong { font-size: 12px; }
+  .shared-drive-file-copy small { font-size: 10px !important; }
+}
