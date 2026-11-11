@@ -11,6 +11,7 @@ const files = [
   "site-portfolio-data.js",
   "manifest.webmanifest",
   "CNAME",
+  "_redirects",
   ".nojekyll",
   "robots.txt",
   "sitemap.xml"
@@ -45,6 +46,7 @@ fs.mkdirSync(outDir, { recursive: true });
 
 files.forEach(copyFile);
 copyDirectory("cliente/casa58");
+copyDirectory("cliente/brunomoreira");
 copyDirectory("adm");
 copyDirectory("partnerships");
 copyDirectory("for-brands");
