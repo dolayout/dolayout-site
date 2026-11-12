@@ -47,6 +47,7 @@ fs.mkdirSync(outDir, { recursive: true });
 files.forEach(copyFile);
 copyDirectory("cliente/casa58");
 copyDirectory("cliente/brunomoreira");
+copyDirectory("cliente/rustic");
 copyDirectory("adm");
 copyDirectory("partnerships");
 copyDirectory("for-brands");

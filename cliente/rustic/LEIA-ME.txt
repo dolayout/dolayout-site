@@ -1,0 +1,23 @@
+RUSTIC PIZZA — PACOTE PARA PUBLICAÇÃO TEMPORÁRIA
+
+URL: https://dolayout.co/cliente/rustic/
+
+1. Crie a pasta cliente/rustic na raiz pública do servidor.
+2. Extraia o conteúdo do ZIP diretamente dentro dessa pasta.
+3. O index.html deve ficar em cliente/rustic/index.html.
+4. Preserve a pasta assets e os nomes dos arquivos.
+5. Abra https://dolayout.co/cliente/rustic/ e atualize sem cache.
+
+Site estático: não precisa de Node, instalação, banco ou build.
+O pacote já contém estilos, scripts, logos SVG e fotos utilizadas.
+Fontes são carregadas do Google Fonts; os links de pedidos, Instagram e mapas abrem serviços externos.
+A versão temporária inclui noindex/nofollow para evitar indexação.
+O caminho-base está configurado para /cliente/rustic/.
+
+Estrutura:
+index.html
+refinement.css
+refinement.js
+assets/
+
+Os links de pedidos disponíveis são da unidade Stoneybatter.
